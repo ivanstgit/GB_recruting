@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = "Django REST Framework backend"
+authors = ["Your Name <you@example.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.9.11"
+django = "4.1"
+djangorestframework = "3.14"
+markdown = "^3.5.2"
+django-filter = "23.5"
+django-cors-headers = "4.3.1"
+djangorestframework-simplejwt = "5.3.1"
+drf-yasg = "^1.21.7"
+psycopg2-binary = "2.8.6"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.12.1"
+mixer = "^7.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

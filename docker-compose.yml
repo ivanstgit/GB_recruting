@@ -1,0 +1,77 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres:13.1
+    privileged: true
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD_FILE=/run/secrets/db_password
+      - POSTGRES_DB=recruting
+      - PGDATA=/var/lib/postgres/pgdata
+    volumes:
+      - postgresdata:/var/lib/postgres
+    secrets:
+      - db_password
+    healthcheck:
+      test: "pg_isready --username=postgres && psql --username=postgres --list"
+      timeout: 10s
+      retries: 20
+
+  adminer:
+    image: adminer:4.7.8-standalone
+    container_name: dbadm
+    restart: always
+    ports:
+      - 8081:8080
+    depends_on:
+      - db
+
+  backend:
+    build: ./backend
+    # only internal access!
+    expose:
+      - 8080
+    # ports:
+    #   - 8080:8080
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings_prd
+      SECRET_KEY: /run/secrets/django_secret_key
+      ALLOWED_HOSTS: /run/secrets/django_allowed_hosts
+      POSTGRES_PASSWORD: /run/secrets/db_password
+    secrets:
+      - db_password
+      - django_secret_key
+      - django_allowed_hosts
+    command: bash -c " python manage.py migrate && python manage.py usergroups -m create && python manage.py testusers -m create && gunicorn config.wsgi -b 0.0.0.0:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backendnginx:
+    build: ./backendnginx
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 80:80
+    depends_on:
+      - backendnginx
+
+volumes:
+  postgresdata:
+
+
+secrets:
+  db_password:
+    file: secrets/db_password.txt
+  django_secret_key:
+    file: secrets/django_secret_key.txt
+  django_allowed_hosts:
+    file: secrets/django_allowed_hosts.txt
