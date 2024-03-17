@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     "drf_yasg",
     "graphene_django",
     "userapp",
-    "todoapp",
+    "recrutingapp",
 ]
 
 MIDDLEWARE = [
@@ -99,6 +99,30 @@ DATABASES = {
         "HOST": "db",
         "PORT": "5432",
     }
+}
+
+MEDIA_ROOT = "/var/www/media/"
+
+STORAGES = {
+    # uploaded by users, may be protected
+    "userfiles": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": "/userfiles",
+            "base_url": "/userfiles/",
+        },
+    },
+    # uploaded by admin or moderator, public
+    "publicfiles": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "OPTIONS": {
+            "location": "/publicfiles",
+            "base_url": "/publicfiles/",
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
 }
 
 
