@@ -116,7 +116,7 @@
 
 .navbar .navbar-brand,
 .navbar a.btn {
-    height: 75px;
+    height: 73px;
 }
 
 .navbar .navbar-nav .nav-link {
@@ -244,6 +244,10 @@
     color: var(--light);
 }
 
+/*** News ***/
+.news-item {
+    transition: .5s;
+}
 
 /*** Service ***/
 .service-item {
