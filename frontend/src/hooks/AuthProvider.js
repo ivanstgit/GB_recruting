@@ -4,7 +4,9 @@ import { useContext, createContext } from "react";
 
 import Cookies from 'universal-cookie';
 
-import { authGenerate, authRefresh } from '../services/APIAuth.js'
+import { authConfirm, authGenerate, authRefresh, authSignIn, authSignUp } from '../services/APIAuth.js'
+import AppPaths from '../routes/AppPaths.js';
+
 
 export const AuthContext = createContext();
 const AuthCookies = new Cookies()
@@ -19,9 +21,22 @@ const cookieSetOptions = {
     sameSite: 'lax'
 }
 
+export const userRoles = {
+    employer: "employer",
+    employee: "employee",
+    moderator: "moderator",
+}
+
 const initialState = {
     isAuthenticated: false,
-    login: ""
+    user: {
+        username: "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        role: "",
+        isValidated: false,
+    },
 }
 
 class AuthProvider extends React.Component {
@@ -36,37 +51,21 @@ class AuthProvider extends React.Component {
     componentDidMount() {
         console.log("mounting AuthProvider")
         this.refreshToken()
+            .then(() => this.loadUser())
         console.log("mounted AuthProvider")
     }
 
     async logIn(login, password) {
         // if (this._isAuthenticated) { this.logout() }
-
-        try {
-            console.log("sending login response")
-            const response = await authGenerate(login, password)
-
-            if (response.data.access) {
-                this._tokenAccess = response.data.access
-                console.log("Login successful")
-                AuthCookies.set(authCookieName, { login: login, token: response.data.refresh }, cookieSetOptions)
-                this.setState({
-                    isAuthenticated: true,
-                    login: login
-                })
-                return true
-            }
-        }
-        catch (err) {
-            console.log('Login error', err);
-            this.logOut()
-            return false
-        }
+        console.log("login step 1")
+        const res = await this.generateToken(login, password) && this.loadUser()
+        return res
     }
 
     async logOut() {
         this._tokenAccess = ""
-        AuthCookies.remove(authCookieName)
+        AuthCookies.set(authCookieName, { token: "" }, cookieSetOptions)
+        AuthCookies.remove(authCookieName, cookieSetOptions)
         this.setState(initialState)
         console.log("Logout successful")
     }
@@ -75,8 +74,77 @@ class AuthProvider extends React.Component {
         return this._tokenAccess
     }
 
+    getPersonalPath() {
+        if (this.state.isAuthenticated) {
+            if (this.state.user?.isValidated) {
+                const role = this.state.user?.role
+                if (role === userRoles.employee) {
+                    return AppPaths.employee.home
+                } else if (role === userRoles.employer) {
+                    return AppPaths.employer.home
+                } else if (role === userRoles.moderator) {
+                    return AppPaths.moderator.home
+                }
+            }
+            return AppPaths.confirm + "?username=" + this.state.user?.username
+        }
+        return AppPaths.signin
+    }
+
+    async loadUser() {
+        if (this._tokenAccess !== "") {
+            try {
+                console.log("load user data")
+                const response = await authSignIn(this._tokenAccess)
+
+                if (response.data) {
+                    const user = response.data[0]
+                    this.setState({
+                        isAuthenticated: true,
+                        user: {
+                            username: user?.username ?? "",
+                            firstName: user?.first_name ?? "",
+                            lastName: user?.last_name ?? "",
+                            email: user?.email ?? "",
+                            role: user?.role ?? "",
+                            isValidated: user?.is_validated ?? false
+                        }
+                    })
+                    return true
+                }
+            }
+            catch (err) {
+                console.log('Login error', err);
+                this.logOut()
+            }
+        }
+
+        this.setState(initialState)
+        return false
+    }
+
+    async generateToken(login, password) {
+
+        try {
+            console.log("sending login response")
+            const response = await authGenerate(login, password)
+
+            if (response.data.access) {
+                this._tokenAccess = response.data.access
+                console.log("Login successful")
+                AuthCookies.set(authCookieName, { token: response.data.refresh }, cookieSetOptions)
+                return true
+            }
+        }
+        catch (err) {
+            console.log('Login error', err);
+            this._tokenAccess = ""
+        }
+        return false
+    }
+
     async refreshToken() {
-        let cookieData = AuthCookies.get(authCookieName)
+        let cookieData = AuthCookies.get(authCookieName, cookieSetOptions)
 
         if (cookieData === undefined || cookieData === "undefined") {
             console.log("no cookie found")
@@ -91,19 +159,16 @@ class AuthProvider extends React.Component {
                     }
                     AuthCookies.set(authCookieName, JSON.stringify(cookieData), cookieSetOptions)
                     console.log("refreshed")
-                    this.setState({ login: cookieData.login, isAuthenticated: true })
                 } else {
                     console.log("token is undefined or incorrect")
                     this._tokenAccess = response.data.access = ""
                     AuthCookies.remove(authCookieName)
-                    this.setState(initialState)
                 }
             }
             catch (err) {
                 console.log(err)
                 this._tokenAccess = ""
                 AuthCookies.remove(authCookieName)
-                this.setState(initialState)
             }
         }
     }
@@ -112,11 +177,13 @@ class AuthProvider extends React.Component {
         return (
             <AuthContext.Provider value={{
                 isAuthenticated: this.state.isAuthenticated,
-                login: this.state.login,
+                user: this.state.user,
                 tokenFunc: this.getAccessToken.bind(this),
                 logInFunc: this.logIn.bind(this),
                 logOutFunc: this.logOut.bind(this),
-                tokenRefreshFunc: this.refreshToken.bind(this)
+                tokenRefreshFunc: this.refreshToken.bind(this),
+                userRefreshFunc: this.loadUser.bind(this),
+                personalPathFunc: this.getPersonalPath.bind(this)
             }}>
                 {/* {this.isAuthenticated} */}
                 {this.children}
@@ -125,9 +192,47 @@ class AuthProvider extends React.Component {
     }
 };
 
+export const accountCreate = async (data) => {
+    try {
+        console.log("sign up")
+        const response = await authSignUp(data)
+        console.log(response)
+
+        if (response.status === 201) {
+            return { data: response.data, error: null }
+        } else {
+            console.log(response)
+            return { data: response.data, error: response.statusText }
+        }
+    }
+    catch (error) {
+        console.log('SignUp error', error);
+        return { data: error?.response?.data ?? null, error: error.message }
+    }
+}
+
+export const accountConfirm = async (username, token) => {
+    try {
+        console.log("account confirmation")
+        const response = await authConfirm(username, token)
+        console.log(response)
+
+        if (response.status === 201) {
+            return { data: response.data, error: null }
+        } else {
+            console.log(response)
+            return { data: response.data, error: response.statusText }
+        }
+    }
+    catch (error) {
+        console.log('SignUp error', error);
+        return { data: null, error: error.message }
+    }
+
+}
+
 export default AuthProvider;
 
 export const useAuth = () => {
     return useContext(AuthContext);
 };
-

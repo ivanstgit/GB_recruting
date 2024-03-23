@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 
+from userapp.models import UserRoles, GROUP_PERMISSIONS
+
 MODES = ["create", "delete"]
 
 TEST_USERS = [
@@ -14,7 +16,9 @@ TEST_USERS = [
         "email": "testEmployer@ru.ru",
         "is_superuser": False,
         "is_staff": False,
-        "groups": ["Employers"],
+        "is_validated": True,
+        "role": UserRoles.employer.value,
+        "groups": GROUP_PERMISSIONS.get(UserRoles.employer.value),
     },
     {
         "username": "testEmployee",
@@ -24,7 +28,9 @@ TEST_USERS = [
         "email": "testEmployee@ru.ru",
         "is_superuser": False,
         "is_staff": False,
-        "groups": ["Employees"],
+        "is_validated": True,
+        "role": UserRoles.employee.value,
+        "groups": GROUP_PERMISSIONS.get(UserRoles.employee.value),
     },
     {
         "username": "testModerator",
@@ -34,7 +40,9 @@ TEST_USERS = [
         "email": "testModerator@ru.ru",
         "is_superuser": False,
         "is_staff": False,
-        "groups": ["Moderators"],
+        "is_validated": True,
+        "role": UserRoles.moderator.value,
+        "groups": GROUP_PERMISSIONS.get(UserRoles.moderator.value),
     },
 ]
 

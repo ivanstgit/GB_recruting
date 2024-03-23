@@ -7,6 +7,10 @@ export const DATA_RESOURCES = {
     publicNews: {
         api: "publicNews",
         isProtected: false
+    },
+    accountSignUp: {
+        api: "accountSignUp",
+        isProtected: false
     }
 }
 export const DataContext = createContext();
@@ -290,10 +294,10 @@ const DataProvider = (props) => {
 
     // After user change triggers effect with refreshing data
     useEffect(() => {
-        console.log("refreshing after auth change for user " + auth.login)
+        console.log("refreshing after auth change for user " + JSON.stringify(auth.user))
         refresh(DATA_RESOURCES.publicNews)
         // eslint-disable-next-line
-    }, [auth.login]);
+    }, [auth.user.username]);
 
     return (
         // two different examples:

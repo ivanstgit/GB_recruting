@@ -29,6 +29,9 @@ poetry run python manage.py createsuperuser
 prepare front
 npm install axios
 npm install react-router-dom
+
+prepare test mailing
+sudo docker run -p 1080:1080 -p 1025:1025 sj26/mailcatcher
 ================================================
 Prepare dev or test
 ================================================

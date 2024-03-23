@@ -2,15 +2,9 @@
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand
 
-MODES = ["create", "delete"]
+from userapp.models import GROUP_PERMISSIONS
 
-USER_GROUPS = {
-    "Employers": [],
-    "Employees": [],
-    "Moderators": [
-        "view_customuser",
-    ],
-}
+MODES = ["create", "delete"]
 
 
 class Command(BaseCommand):
@@ -31,7 +25,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # create
         if options.get("mode") == MODES[0]:
-            for group, permissions in USER_GROUPS.items():
+            for group, permissions in GROUP_PERMISSIONS.items():
                 g, _ = Group.objects.get_or_create(name=group)
                 # p1, __ = Permission.objects.get_or_create(name=row['permissions'])
                 # g1.permissions.add(p1)
@@ -49,7 +43,7 @@ class Command(BaseCommand):
                         )
 
         elif options.get("mode") == MODES[1]:
-            for group, perm in USER_GROUPS.items():
+            for group, perm in GROUP_PERMISSIONS.items():
                 g = Group.objects.get(name=group)
                 if g:
                     g.delete()

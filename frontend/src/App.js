@@ -14,8 +14,7 @@ import './css/all.min.css'
 // import TranslationProvider from './hooks/TranslationProvider.js';
 import './i18n';
 
-import AuthProvider from "./hooks/AuthProvider";
-import { AuthContext } from "./hooks/AuthProvider";
+import AuthProvider, { userRoles } from "./hooks/AuthProvider";
 import DataProvider from './hooks/DataProvider.js';
 
 import AppPaths from "./routes/AppPaths.js"
@@ -26,6 +25,12 @@ import Menu from "./components/Menu.js";
 import Footer from "./components/Footer.js";
 import PublicNewsList from './components/PublicNews.js';
 import PublicNewsDetail from './components/PublicNewsDetail.js';
+import NotFound404 from './components/NotFound404.js';
+import AccountSignInForm from './components/AccountSignInForm.js';
+import AccountSignUpForm from './components/AccountSignUpForm.js';
+import AccountConfirmationForm from './components/AccountConfirmationForm.js';
+import EmployeeHome from './components/EmployeeHome.js';
+import EmployerHome from './components/EmployerHome.js';
 
 
 class App extends React.Component {
@@ -45,22 +50,33 @@ class App extends React.Component {
     return (
       <Router>
         <div className="App">
-          {/* Это пример технического компонента на классе, хранит состояние аутентификации */}
-          <AuthProvider>
-            {/* Это пример технического компонента на функции, хранит данные */}
-            <DataProvider>
-
-              {/* Это пример компонента на функции, контекст передаем через хук */}
+          <AuthProvider> {/* Authentification provider */}
+            <DataProvider> {/* Data provider */}
 
               <Menu title="Menu" />
-              <div className="container-fluid p-0 mb-5">
+              <div className="container-fluid p-0 mb-5 h-100">
                 <Suspense>
                   <Routes>
                     <Route exact path={AppPaths.home} element={<Home />} />
                     <Route exact path={AppPaths.news} element={<PublicNewsList asCards={false} />} />
                     <Route exact path={AppPaths.news + ":id"} element={<PublicNewsDetail />} />
+                    <Route exact path={AppPaths.signin} element={<AccountSignInForm />} />
+                    <Route exact path={AppPaths.signup} element={<AccountSignUpForm />} />
+                    <Route exact path={AppPaths.confirm} element={<AccountConfirmationForm />} />
 
-                    <Route component={App.NotFound404} />
+                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
+                      <Route exact path={AppPaths.employee.home} element={<EmployeeHome />} />
+                    </Route>
+
+                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employer} />}>
+                      <Route exact path={AppPaths.employer.home} element={<EmployerHome />} />
+                    </Route>
+
+                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.moderator} />}>
+                      <Route exact path={AppPaths.moderator.home} element={<EmployerHome />} />
+                    </Route>
+
+                    <Route element={<NotFound404 />} />
                   </Routes>
                 </Suspense>
               </div>
@@ -74,6 +90,5 @@ class App extends React.Component {
   }
 
 }
-
 
 export default App;

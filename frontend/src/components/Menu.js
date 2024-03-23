@@ -13,7 +13,7 @@ const LoginArea = () => {
     return (
       <div>
         <button className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"
-          onClick={auth.logOutFunc} >{auth.login} <u>(logout)</u>
+          onClick={auth.logOutFunc} >{auth.user.username} <u>{t("SignOut")}</u>
         </button>
       </div>
     )
@@ -21,7 +21,7 @@ const LoginArea = () => {
     return (
       <div>
         <Link className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block border-bottom"
-          key="MenuLogout" to={AppPaths.login}>{t("Sign In")}</Link>
+          key="MenuLogout" to={AppPaths.signin}>{t("Sign In")}</Link>
       </div>
     )
   }
@@ -39,25 +39,32 @@ const MenuItems = () => {
   console.log("renders menu")
   const { t } = useTranslation("Menu");
 
+  const auth = useAuth()
+  const personalPath = auth.personalPathFunc()
+
   const items = [
     {
       link: AppPaths.news,
-      text: t('News'),
+      text: t("News"),
     },
     {
       link: AppPaths.cvs,
-      text: t('CVs'),
+      text: t("CVs"),
     },
     {
       link: AppPaths.vacancies,
-      text: t('Vacancies'),
+      text: t("Vacancies"),
+    },
+    {
+      link: personalPath,
+      text: t("Personal"),
     }
   ]
 
   return (
     <nav className="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 wow fadeIn shadow-sm">
 
-      <Link className="navbar-brand d-flex align-items-center px-4 px-lg-5" key={'MenuLogo'} to={"/"}>
+      <Link className="navbar-brand d-flex align-items-center px-4 px-lg-5" key={'MenuLogo'} to={AppPaths.home}>
         <h2 className="m-0 text-primary">{t('Recruting')}</h2>
       </Link>
       <button type="button" className="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">

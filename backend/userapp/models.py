@@ -1,13 +1,34 @@
+from enum import Enum
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-USER_GROUPS = {
-    "Employers": [],
-    "Employees": [],
-    "Moderators": [
+
+class UserGroups(Enum):
+    employers = "employers"
+    employees = "employees"
+    moderators = "moderators"
+
+
+class UserRoles(Enum):
+    employer = "employer"
+    employee = "employee"
+    moderator = "moderator"
+
+
+ROLE_GROUPS = {
+    UserRoles.employer.value: [UserGroups.employers.value],
+    UserRoles.employee.value: [UserGroups.employees.value],
+    UserRoles.moderator.value: [UserGroups.moderators.value],
+}
+
+
+GROUP_PERMISSIONS = {
+    UserGroups.employers.value: [],
+    UserGroups.employees.value: [],
+    UserGroups.moderators.value: [
         "view_customuser",
     ],
 }
@@ -43,6 +64,13 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         default=False,
         help_text=_("Designates whether the user can log into this admin site."),
     )
+    role = models.CharField(
+        _("end user role"),
+        max_length=50,
+        default="",
+        help_text=_("End user role"),
+        choices=[(r.value, r.name) for r in UserRoles],
+    )
     is_active = models.BooleanField(
         _("active"),
         default=True,
@@ -50,6 +78,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             "Designates whether this user should be treated as active. \
             Unselect this instead of deleting accounts."
         ),
+    )
+    is_validated = models.BooleanField(
+        _("validated"),
+        default=False,
+        help_text=_("Designates whether this user has validated his account"),
+    )
+    validation_code = models.CharField(
+        _("validation code"),
+        max_length=100,
+        default="",
+        help_text=_("Code for validation"),
     )
     date_created = models.DateTimeField(_("date of user creation"), auto_now_add=True)
 

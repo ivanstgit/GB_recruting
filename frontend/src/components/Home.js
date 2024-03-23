@@ -4,9 +4,11 @@ import { useTranslation } from 'react-i18next';
 
 import AppPaths from "../routes/AppPaths.js"
 import PublicNewsList from "./PublicNews.js"
+import { userRoles } from "../hooks/AuthProvider.js";
 
 const Home = () => {
     const { t } = useTranslation("Home");
+
     return (
         <div className="container-xxl py-1">
 
@@ -22,7 +24,7 @@ const Home = () => {
                             <p><i className="far fa-check-circle text-primary me-3"></i>{t("Employee.tips.4")}</p>
                             <div className="text-center col-12">
                                 <Link className="btn btn-primary rounded-pill py-3 px-5 mt-1 mb-2"
-                                    key="EmployeeRegister" to={AppPaths.home}>
+                                    key="EmployeeRegister" to={AppPaths.signup + "?role=" + userRoles.employee}>
                                     {t("Employee.button")}
                                 </Link>
                             </div>
@@ -40,7 +42,7 @@ const Home = () => {
                             <p><i className="far fa-check-circle text-primary me-3"></i>{t("Employer.tips.4")}</p>
                             <div className="text-center col-12">
                                 <Link className="btn btn-primary rounded-pill py-3 px-5 mt-1 mb-2"
-                                    key="EmployeeRegister" to={AppPaths.home}>
+                                    key="EmployeeRegister" to={AppPaths.signup + "?role=" + userRoles.employer} >
                                     {t("Employer.button")}
                                 </Link>
                             </div>

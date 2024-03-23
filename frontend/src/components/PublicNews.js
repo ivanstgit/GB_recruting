@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { DATA_RESOURCES, useData } from '../hooks/DataProvider.js'
+import { useData } from '../hooks/DataProvider.js'
 import AppPaths from "../routes/AppPaths.js"
 
 
