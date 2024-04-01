@@ -1,7 +1,9 @@
 # create or delete must be set
 from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.core.management.base import BaseCommand
 
+from recrutingapp.models import NewsPost
 from userapp.models import GROUP_PERMISSIONS
 
 MODES = ["create", "delete"]
@@ -30,6 +32,12 @@ class Command(BaseCommand):
                 # p1, __ = Permission.objects.get_or_create(name=row['permissions'])
                 # g1.permissions.add(p1)
                 self.stdout.write(self.style.SUCCESS(f"Group {group} added"))
+
+                content_type = ContentType.objects.get_for_model(NewsPost)
+                print(content_type)
+                all_permissions = Permission.objects.filter(content_type=content_type)
+                print(all_permissions)
+
                 for perm in permissions:
                     p = Permission.objects.get(codename=perm)
                     if p:

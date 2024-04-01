@@ -30,6 +30,14 @@ GROUP_PERMISSIONS = {
     UserGroups.employees.value: [],
     UserGroups.moderators.value: [
         "view_customuser",
+        "view_newspost",
+        "add_newspost",
+        "change_newspost",
+        "delete_newspost",
+        "view_newstag",
+        "add_newstag",
+        "change_newstag",
+        "delete_newstag",
     ],
 }
 

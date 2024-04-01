@@ -4,7 +4,8 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useAuth, accountConfirm } from '../hooks/AuthProvider';
 
-import { FormContainer, HeaderText, InputText, LabelError, LabelInfo, SubmitButton, formStatuses } from "../components/FormFields.js"
+import { FormContainer, HeaderText, InputText, SubmitButton, formStatuses } from "../components/FormFields.js"
+import { ErrorLabel, WarningLabel } from './CommonUI.js';
 
 const AccountConfirmationForm = (props) => {
     const location = useLocation();
@@ -62,7 +63,7 @@ const AccountConfirmationForm = (props) => {
                     <FormContainer onSubmit={(event) => handleSubmit(event)}>
                         <HeaderText text={t("Confirmation.header")} />
 
-                        <LabelInfo text={t("Confirmation.Label")} />
+                        <WarningLabel text={t("Confirmation.Label")} />
 
                         <InputText id="username" name="username" value={input.username} label={t("Confirmation.Username")}
                             onChange={(event) => handleChange(event)} />
@@ -72,7 +73,7 @@ const AccountConfirmationForm = (props) => {
 
                         <SubmitButton label={t("Confirmation.Submit")} disabled={(status === formStatuses.pending)} />
 
-                        <LabelError errorText={error} />
+                        <ErrorLabel errorText={error} />
                     </FormContainer>
                 </div>
             </div>

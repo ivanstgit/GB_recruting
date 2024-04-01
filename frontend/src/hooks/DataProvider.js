@@ -1,18 +1,36 @@
 import { useContext, createContext, useState, useEffect } from "react";
 
 import { useAuth } from "./AuthProvider.js";
-import { dataGetList, dataGetOne, dataPostOne, dataDeleteOne } from "../services/APIData.js"
+import { dataGetList, dataGetOne, dataPostOne, dataDeleteOne, dataPutOne } from "../services/APIData.js"
 
 export const DATA_RESOURCES = {
     publicNews: {
         api: "publicNews",
-        isProtected: false
+        isProtected: false,
+        isGlobal: true,
+        methods: ["get"]
     },
     accountSignUp: {
         api: "accountSignUp",
-        isProtected: false
+        isProtected: false,
+        isGlobal: false,
+        methods: ["get"]
+    },
+    staffNews: {
+        api: "staffNewsPosts",
+        isProtected: true,
+        isGlobal: false,
+        methods: ["get", "post", "put", "delete"]
     }
 }
+
+export const dataStatuses = {
+    initial: "initial",
+    loading: "loading",
+    error: "error",
+    success: "success"
+}
+
 export const DataContext = createContext();
 
 class TokenExpiredError extends Error {
@@ -88,7 +106,7 @@ const DataProvider = (props) => {
 
     const postOne = async (resource, data) => {
         if (auth.isAuthenticated) {
-            if (resource === "to do later") {
+            if (resource.methods.includes("post")) {
                 console.log("posting " + resource + ": " + JSON.stringify(data))
 
                 let isTokenExpired = false;
@@ -126,8 +144,67 @@ const DataProvider = (props) => {
 
     const _postOne = async (resource, data, token) => {
         try {
-            let response = await dataPostOne(resource, token, data)
+            let response = await dataPostOne(resource.api, token, data)
             if (response.status === 201) {
+                return { data: response.data.results, error: null }
+            } else {
+                console.log(response)
+                return { data: null, error: response.error }
+            }
+        } catch (error) {
+            console.log(error)
+            if (error.response && error.response.status === 401) {
+                throw new TokenExpiredError("Token expired")
+            } else if (error.response && error.response.status === 400) {
+                return { data: null, error: JSON.stringify(error.response.data) || "Invalid input" }
+            } else {
+                return { data: null, error: error.message }
+            }
+        }
+    }
+
+    const putOne = async (resource, id, data) => {
+        if (auth.isAuthenticated) {
+            if (resource.methods.includes("put")) {
+                console.log("puting " + resource + id + ": " + JSON.stringify(data))
+
+                let isTokenExpired = false;
+                let token = auth.tokenFunc();
+
+                try {
+                    let res = await _putOne(resource, id, data, token)
+                    return res
+                } catch (error) {
+                    if (error instanceof TokenExpiredError) {
+                        isTokenExpired = true;
+                    } else {
+                        console.log(error)
+                        return { data: null, error: error.message }
+                    }
+                }
+                if (isTokenExpired) {
+                    try {
+                        await auth.tokenRefreshFunc()
+                        let token = auth.tokenFunc();
+                        let res = await _postOne(resource, data, token)
+                        return res
+                    } catch (error) {
+                        console.log(error)
+                        return { data: null, error: error.message }
+                    }
+                }
+                return { data: null, error: null }
+            } else {
+                return { error: "method not allowed", data: null }
+            }
+        }
+        return { error: "not authenticated", data: null }
+    }
+
+    const _putOne = async (resource, id, data, token) => {
+        try {
+            let response = await dataPutOne(resource.api, token, id, data)
+            if (response.status === 200) {
                 return { data: response.data.results, error: null }
             } else {
                 console.log(response)
@@ -147,7 +224,7 @@ const DataProvider = (props) => {
 
     const deleteOne = async (resource, id) => {
         if (auth.isAuthenticated) {
-            if (resource === DATA_RESOURCES.todos || resource === DATA_RESOURCES.publicNews) {
+            if (resource.methods.includes("delete")) {
                 console.log("deleting " + resource + ": " + id)
 
                 let isTokenExpired = false;
@@ -185,7 +262,7 @@ const DataProvider = (props) => {
 
     const _deleteOne = async (resource, id, token) => {
         try {
-            let response = await dataDeleteOne(resource, token, id)
+            let response = await dataDeleteOne(resource.api, token, id)
             if (response.status === 204) {
                 return { data: response.data, error: null }
             } else {
@@ -202,12 +279,12 @@ const DataProvider = (props) => {
         }
     }
 
-    const getList = async (resource) => {
+    const getList = async (resource, params) => {
         console.log("loading " + resource.api)
         if (!resource.isProtected) {
             try {
                 let token = "";
-                let response = await dataGetList(resource.api, token)
+                let response = await dataGetList(resource.api, token, params)
                 console.log(response)
                 if (response.status === 200) {
                     return { data: response.data.results, error: null }
@@ -268,6 +345,10 @@ const DataProvider = (props) => {
     };
 
     const refresh = (resource) => {
+        if (!resource.isGlobal) {
+            return
+        }
+
         let callback = () => { }
         if (resource.api === DATA_RESOURCES.publicNews.api) {
             callback = setPublicNews
@@ -304,7 +385,7 @@ const DataProvider = (props) => {
         // 1) for direct transfer (child component refers to context => automatic rerenders)
         // 2) for async refreshing (child component should use effect on entire dataProvider if needed)
         // getList 
-        <DataContext.Provider value={{ publicNews, refreshDelayed, getOne, postOne, deleteOne }}>
+        <DataContext.Provider value={{ publicNews, refreshDelayed, getList, getOne, postOne, putOne, deleteOne }}>
             {props.children}
         </DataContext.Provider>
     );

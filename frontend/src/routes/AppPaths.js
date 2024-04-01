@@ -12,6 +12,9 @@ const AppPaths = {
     },
     moderator: {
         home: "/moderator/",
+        news: "/moderator/news/",
+        newsCreate: "/moderator/news/create/",
+        newsEdit: "/moderator/news/edit/",
     }
 }
 

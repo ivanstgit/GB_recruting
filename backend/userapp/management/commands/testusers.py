@@ -39,7 +39,7 @@ TEST_USERS = [
         "last_name": "Moderator",
         "email": "testModerator@ru.ru",
         "is_superuser": False,
-        "is_staff": False,
+        "is_staff": True,
         "is_validated": True,
         "role": UserRoles.moderator.value,
         "groups": GROUP_PERMISSIONS.get(UserRoles.moderator.value),
@@ -94,6 +94,8 @@ class Command(BaseCommand):
                     user.last_name = tuser.get("last_name")
                     user.is_superuser = tuser.get("is_superuser")
                     user.is_staff = tuser.get("is_staff")
+                    user.is_validated = tuser.get("is_validated")
+                    user.role = tuser.get("role")
                     user.save()
 
                     self.stdout.write(

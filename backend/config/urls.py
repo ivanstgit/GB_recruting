@@ -53,8 +53,8 @@ router.register("public/news", NewsPublicViewSet)
 router.register("accounts/signup", SignUpViewSet, basename="signup")
 router.register("accounts/confirm", EmailConfirmViewSet, basename="confirm")
 router.register("accounts/signin", SignInViewSet, basename="signin")
-router.register("staff/news/tags", NewsTagsStaffViewSet)
-router.register("staff/news/posts", NewsPostStaffViewSet)
+router.register("staff/news/tags", NewsTagsStaffViewSet, basename="staff_news_tags")
+router.register("staff/news/posts", NewsPostStaffViewSet, basename="staff_news_posts")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

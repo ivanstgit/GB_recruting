@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useParams } from 'react-router-dom';
 
 import { DATA_RESOURCES, useData } from '../hooks/DataProvider.js'
-import AppPaths from "../routes/AppPaths.js"
 
 const PublicNewsDetail = (props) => {
 

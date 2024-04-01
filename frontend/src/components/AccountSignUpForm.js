@@ -7,8 +7,9 @@ import { accountCreate, useAuth, userRoles } from '../hooks/AuthProvider';
 
 import {
     FormContainer, HeaderText, InputEmail, InputPassword,
-    InputRadioButtonGroup, InputText, LabelError, SubmitButton, formStatuses
+    InputRadioButtonGroup, InputText, SubmitButton, formStatuses
 } from "../components/FormFields.js"
+import { ErrorLabel } from './CommonUI.js';
 
 const AccountSignUpForm = (props) => {
     const location = useLocation();
@@ -149,7 +150,7 @@ const AccountSignUpForm = (props) => {
 
                         <SubmitButton label={t("SignUp.Submit")} disabled={(status === formStatuses.pending)} />
 
-                        <LabelError errorText={error} />
+                        <ErrorLabel errorText={error} />
                     </FormContainer>
                 </div>
             </div>

@@ -7,7 +7,7 @@ import AppPaths from "../routes/AppPaths.js"
 
 const LoginArea = () => {
   const auth = useAuth();
-  const { t } = useTranslation("Menu");
+  const { t } = useTranslation("Navigation");
 
   if (auth.isAuthenticated) {
     return (
@@ -27,17 +27,18 @@ const LoginArea = () => {
   }
 
 }
-const MenuItem = ({ item, index }) => {
+const NavItem = ({ key, item }) => {
   const resolvedPath = useResolvedPath(item.link)
   const isActive = useMatch({ path: resolvedPath.pathname }) ? " active" : ""
+  // const isActive = useMatch({ path: resolvedPath.pathname, pattern: item.pattern }) ? " active" : ""
   console.log(resolvedPath.pathname + isActive)
 
-  return (<Link key={'MenuItem_' + index} to={item.link} className={"nav-item nav-link" + isActive}>{item.text}</Link>)
+  return (<Link key={key} to={item.link} className={"nav-item nav-link" + isActive}>{item.text}</Link>)
 }
 
-const MenuItems = () => {
+const NavGlobal = () => {
   console.log("renders menu")
-  const { t } = useTranslation("Menu");
+  const { t } = useTranslation("Navigation");
 
   const auth = useAuth()
   const personalPath = auth.personalPathFunc()
@@ -46,18 +47,22 @@ const MenuItems = () => {
     {
       link: AppPaths.news,
       text: t("News"),
+      pattern: AppPaths.news,
     },
     {
       link: AppPaths.cvs,
       text: t("CVs"),
+      pattern: AppPaths.cvs
     },
     {
       link: AppPaths.vacancies,
       text: t("Vacancies"),
+      pattern: AppPaths.vacancies,
     },
     {
       link: personalPath,
       text: t("Personal"),
+      pattern: personalPath + '*',
     }
   ]
 
@@ -73,7 +78,7 @@ const MenuItems = () => {
       <div className="collapse navbar-collapse" id="navbarCollapse">
         <div className="navbar-nav ms-auto p-4 p-lg-0">
 
-          {items.map((item, index) => <MenuItem key={'MenuItem' + index} item={item} index={index} />)}
+          {items.map((item, index) => <NavItem key={'NavGlobItem' + index} item={item} index={index} />)}
 
         </div>
         <LoginArea />
@@ -82,4 +87,4 @@ const MenuItems = () => {
   );
 }
 
-export default MenuItems
+export default NavGlobal

@@ -21,7 +21,7 @@ import AppPaths from "./routes/AppPaths.js"
 import AuthRequired from './routes/AuthRequired.js'
 
 import Home from './components/Home.js'
-import Menu from "./components/Menu.js";
+import NavGlobal from './components/NavigationGlobal.js';
 import Footer from "./components/Footer.js";
 import PublicNewsList from './components/PublicNews.js';
 import PublicNewsDetail from './components/PublicNewsDetail.js';
@@ -31,6 +31,10 @@ import AccountSignUpForm from './components/AccountSignUpForm.js';
 import AccountConfirmationForm from './components/AccountConfirmationForm.js';
 import EmployeeHome from './components/EmployeeHome.js';
 import EmployerHome from './components/EmployerHome.js';
+import ModeratorHome from './components/ModeratorHome.js';
+import ModeratorNewsList from './components/ModeratorNews.js';
+import ModeratorNewsForm from './components/ModeratorNewsForm.js';
+
 
 
 class App extends React.Component {
@@ -53,7 +57,7 @@ class App extends React.Component {
           <AuthProvider> {/* Authentification provider */}
             <DataProvider> {/* Data provider */}
 
-              <Menu title="Menu" />
+              <NavGlobal />
               <div className="container-fluid p-0 mb-5 h-100">
                 <Suspense>
                   <Routes>
@@ -73,8 +77,22 @@ class App extends React.Component {
                     </Route>
 
                     <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.moderator} />}>
-                      <Route exact path={AppPaths.moderator.home} element={<EmployerHome />} />
+                      <Route exact path={AppPaths.moderator.home} element={<ModeratorHome />} />
                     </Route>
+
+                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.moderator} />}>
+                      <Route exact path={AppPaths.moderator.news} element={<ModeratorNewsList />} />
+                    </Route>
+                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.moderator} />}>
+                      <Route exact path={AppPaths.moderator.news + ":id"} element={<PublicNewsDetail />} />
+                    </Route>
+                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.moderator} />}>
+                      <Route exact path={AppPaths.moderator.newsCreate} element={<ModeratorNewsForm />} />
+                    </Route>
+                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.moderator} />}>
+                      <Route exact path={AppPaths.moderator.newsEdit + ":id"} element={<ModeratorNewsForm />} />
+                    </Route>
+
 
                     <Route element={<NotFound404 />} />
                   </Routes>

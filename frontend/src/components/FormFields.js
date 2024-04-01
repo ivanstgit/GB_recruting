@@ -8,6 +8,8 @@ const getError = (errorText) => {
 }
 
 export const formStatuses = {
+    prefill: "prefill",
+    prefilling: "prefilling",
     initial: "input",
     pending: "pending",
     error: "error",
@@ -26,12 +28,27 @@ export const FormContainer = ({ onSubmit, children }) => {
 
     );
 };
+
 export const InputText = (props) => {
     return (
         <div className="mb-3">
             <label className="form-label border-0" htmlFor={props.id}>{props.label}</label>
             <input type="text" className={"form-control " + getError(props.errorText).style} id={props.id} name={props.name}
                 value={props.value} onChange={(event) => props.onChange(event)} />
+            <div className="invalid-feedback">{getError(props.errorText).error}</div>
+            <small id={props.id + "Help"} className="form-text text-muted">{props.helpText}</small>
+        </div>
+    );
+};
+
+export const InputTextArea = (props) => {
+    const rows = props.rows ?? "2"
+    return (
+        <div className="mb-3">
+            <label className="form-label border-0" htmlFor={props.id}>{props.label}</label>
+            <textarea className={"form-control " + getError(props.errorText).style} id={props.id} name={props.name}
+                value={props.value} onChange={(event) => props.onChange(event)}
+                rows={rows} />
             <div className="invalid-feedback">{getError(props.errorText).error}</div>
             <small id={props.id + "Help"} className="form-text text-muted">{props.helpText}</small>
         </div>
@@ -106,22 +123,5 @@ export const SubmitButton = ({ label, disabled = false }) => {
 export const HeaderText = (props) => {
     return (
         <h2 className="text-center mb-3" > {props.text} </h2>
-    );
-};
-
-export const LabelError = (props) => {
-    return (
-        <div>
-            <label className={"form-label invalid border-0 " + getError(props.errorText).style}> </label>
-            <div className="invalid-feedback">{getError(props.errorText).error}</div>
-        </div>
-    );
-};
-
-export const LabelInfo = (props) => {
-    return (
-        <div>
-            <label className={"form-label border-0 " + getError(props.text).style}> </label>
-        </div>
     );
 };
