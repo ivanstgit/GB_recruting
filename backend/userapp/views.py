@@ -1,20 +1,39 @@
-from rest_framework import mixins
+from rest_framework import status
+from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, ListModelMixin
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
 
-from .models import CustomUser
-from .serializers import CustomUserModelSerializer
+from userapp.serializers import SignUpSerializer, EmailConfirmSerializer, UserSerializer
+from userapp.models import CustomUser
 
 
-class CustomUserModelViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
+class SignUpViewSet(
+    CreateModelMixin,
     GenericViewSet,
 ):
-    lookup_field = "username"
-    queryset = CustomUser.objects.all()
-    serializer_class = CustomUserModelSerializer
-    # pagination_class = PageNumberPagination
+    permission_classes = [AllowAny]
+    serializer_class = SignUpSerializer
 
-    def get_serializer_class(self):
-        return CustomUserModelSerializer
+
+class EmailConfirmViewSet(
+    CreateModelMixin,
+    GenericViewSet,
+):
+    permission_classes = [AllowAny]
+    serializer_class = EmailConfirmSerializer
+
+    # def perform_create(self, serializer):
+    #     pass
+
+
+class SignInViewSet(
+    ListModelMixin,
+    GenericViewSet,
+):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return CustomUser.objects.filter(username=self.request.user.username)

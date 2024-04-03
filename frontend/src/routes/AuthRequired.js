@@ -2,9 +2,10 @@ import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/AuthProvider";
 
-const AuthRequired = (props) => {
+const AuthRequired = ({ redirectPath, role }) => {
     const auth = useAuth();
-    if (!auth.isAuthenticated) return <Navigate to={props.redirectPath} />;
+    if (!auth.isAuthenticated) return <Navigate to={redirectPath} />;
+    if (role && (role !== auth.user.role)) return <Navigate to={redirectPath} />;
     return <Outlet />;
 };
 

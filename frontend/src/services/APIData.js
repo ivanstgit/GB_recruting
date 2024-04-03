@@ -14,6 +14,8 @@ import { API, urlPrefix } from "./config"
 
 export const API_LIST = {
     publicNews: "/v1.0/public/news/",
+    staffNewsPosts: "/v1.0/staff/news/posts/",
+    staffNewsTags: "/v1.0/staff/news/tags/",
 }
 
 function getHeader(token) {
@@ -26,11 +28,11 @@ function getHeader(token) {
     return headers
 }
 
-export function dataGetList(api, token) {
-    let headers = getHeader(token)
-    let url = urlPrefix + API_LIST[api]
+export function dataGetList(api, token, params) {
+    const headers = getHeader(token)
+    const url = urlPrefix + API_LIST[api]
 
-    return API.get(url, { headers })
+    return API.get(url, { headers: headers, params: params })
 }
 
 export function dataGetOne(api, token, id) {
@@ -45,6 +47,13 @@ export function dataPostOne(api, token, data) {
     let url = urlPrefix + API_LIST[api]
 
     return API.post(url, data, { headers })
+}
+
+export function dataPutOne(api, token, id, data) {
+    let headers = getHeader(token)
+    let url = urlPrefix + API_LIST[api] + id + "/"
+
+    return API.put(url, data, { headers })
 }
 
 export function dataDeleteOne(api, token, id) {

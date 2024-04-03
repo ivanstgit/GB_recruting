@@ -1,0 +1,22 @@
+{
+    "Recruting": "Рекрутинг",
+    "News": "Новости",
+    "CVs": "Резюме",
+    "Vacancies": "Вакансии",
+    "Personal": "Личный кабинет",
+    "Sign In": "Войти",
+    "SignOut": "Выйти",
+    "Moderator": {
+        "Home": "Домашняя",
+        "News": "Новости",
+        "Vacancies": "Вакансии",
+        "Companies": "Компании",
+        "CVs": "Резюме"
+    },
+    "Employee": {
+        "Home": "Домашняя"
+    },
+    "Employer": {
+        "Home": "Домашняя"
+    }
+}

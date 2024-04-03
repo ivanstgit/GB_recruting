@@ -1,9 +1,10 @@
 from rest_framework.permissions import (
     DjangoModelPermissionsOrAnonReadOnly,
     DjangoModelPermissions,
+    IsAuthenticated,
 )
 
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 
@@ -18,7 +19,7 @@ from recrutingapp.serializers import (
 from recrutingapp.filters import NewsFilter
 
 
-class NewsPagination(PageNumberPagination):
+class NewsPagination(LimitOffsetPagination):
     default_limit = 10
 
 
@@ -48,11 +49,15 @@ class NewsTagsStaffViewSet(ModelViewSet):
 class NewsPostStaffViewSet(ModelViewSet):
     """View for staff"""
 
-    queryset = NewsPost.objects.order_by("-created_at").prefetch_related("tags")
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [IsAuthenticated, DjangoModelPermissions]
     serializer_class = NewsStaffSerializer
     pagination_class = NewsPagination
     filterset_class = NewsFilter
+
+    def get_queryset(self):
+        if self.action == "list":
+            return NewsPost.objects.order_by("-created_at").prefetch_related("tags")
+        return NewsPost.objects.all()
 
     # On create reads user from context
     def perform_create(self, serializer):

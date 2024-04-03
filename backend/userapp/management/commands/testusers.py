@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 
+from userapp.models import UserRoles, GROUP_PERMISSIONS
+
 MODES = ["create", "delete"]
 
 TEST_USERS = [
@@ -14,7 +16,9 @@ TEST_USERS = [
         "email": "testEmployer@ru.ru",
         "is_superuser": False,
         "is_staff": False,
-        "groups": ["Employers"],
+        "is_validated": True,
+        "role": UserRoles.employer.value,
+        "groups": GROUP_PERMISSIONS.get(UserRoles.employer.value),
     },
     {
         "username": "testEmployee",
@@ -24,7 +28,9 @@ TEST_USERS = [
         "email": "testEmployee@ru.ru",
         "is_superuser": False,
         "is_staff": False,
-        "groups": ["Employees"],
+        "is_validated": True,
+        "role": UserRoles.employee.value,
+        "groups": GROUP_PERMISSIONS.get(UserRoles.employee.value),
     },
     {
         "username": "testModerator",
@@ -33,8 +39,10 @@ TEST_USERS = [
         "last_name": "Moderator",
         "email": "testModerator@ru.ru",
         "is_superuser": False,
-        "is_staff": False,
-        "groups": ["Moderators"],
+        "is_staff": True,
+        "is_validated": True,
+        "role": UserRoles.moderator.value,
+        "groups": GROUP_PERMISSIONS.get(UserRoles.moderator.value),
     },
 ]
 
@@ -86,6 +94,8 @@ class Command(BaseCommand):
                     user.last_name = tuser.get("last_name")
                     user.is_superuser = tuser.get("is_superuser")
                     user.is_staff = tuser.get("is_staff")
+                    user.is_validated = tuser.get("is_validated")
+                    user.role = tuser.get("role")
                     user.save()
 
                     self.stdout.write(

@@ -7,13 +7,13 @@ import AppPaths from "../routes/AppPaths.js"
 
 const LoginArea = () => {
   const auth = useAuth();
-  const { t } = useTranslation("Menu");
+  const { t } = useTranslation("Navigation");
 
   if (auth.isAuthenticated) {
     return (
       <div>
         <button className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"
-          onClick={auth.logOutFunc} >{auth.login} <u>(logout)</u>
+          onClick={auth.logOutFunc} >{auth.user.username} <u>{t("SignOut")}</u>
         </button>
       </div>
     )
@@ -21,43 +21,55 @@ const LoginArea = () => {
     return (
       <div>
         <Link className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block border-bottom"
-          key="MenuLogout" to={AppPaths.login}>{t("Sign In")}</Link>
+          key="MenuLogout" to={AppPaths.signin}>{t("Sign In")}</Link>
       </div>
     )
   }
 
 }
-const MenuItem = ({ item, index }) => {
+const NavItem = ({ key, item }) => {
   const resolvedPath = useResolvedPath(item.link)
   const isActive = useMatch({ path: resolvedPath.pathname }) ? " active" : ""
+  // const isActive = useMatch({ path: resolvedPath.pathname, pattern: item.pattern }) ? " active" : ""
   console.log(resolvedPath.pathname + isActive)
 
-  return (<Link key={'MenuItem_' + index} to={item.link} className={"nav-item nav-link" + isActive}>{item.text}</Link>)
+  return (<Link key={key} to={item.link} className={"nav-item nav-link" + isActive}>{item.text}</Link>)
 }
 
-const MenuItems = () => {
+const NavGlobal = () => {
   console.log("renders menu")
-  const { t } = useTranslation("Menu");
+  const { t } = useTranslation("Navigation");
+
+  const auth = useAuth()
+  const personalPath = auth.personalPathFunc()
 
   const items = [
     {
       link: AppPaths.news,
-      text: t('News'),
+      text: t("News"),
+      pattern: AppPaths.news,
     },
     {
       link: AppPaths.cvs,
-      text: t('CVs'),
+      text: t("CVs"),
+      pattern: AppPaths.cvs
     },
     {
       link: AppPaths.vacancies,
-      text: t('Vacancies'),
+      text: t("Vacancies"),
+      pattern: AppPaths.vacancies,
+    },
+    {
+      link: personalPath,
+      text: t("Personal"),
+      pattern: personalPath + '*',
     }
   ]
 
   return (
     <nav className="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 wow fadeIn shadow-sm">
 
-      <Link className="navbar-brand d-flex align-items-center px-4 px-lg-5" key={'MenuLogo'} to={"/"}>
+      <Link className="navbar-brand d-flex align-items-center px-4 px-lg-5" key={'MenuLogo'} to={AppPaths.home}>
         <h2 className="m-0 text-primary">{t('Recruting')}</h2>
       </Link>
       <button type="button" className="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -66,7 +78,7 @@ const MenuItems = () => {
       <div className="collapse navbar-collapse" id="navbarCollapse">
         <div className="navbar-nav ms-auto p-4 p-lg-0">
 
-          {items.map((item, index) => <MenuItem key={'MenuItem' + index} item={item} index={index} />)}
+          {items.map((item, index) => <NavItem key={'NavGlobItem' + index} item={item} index={index} />)}
 
         </div>
         <LoginArea />
@@ -75,4 +87,4 @@ const MenuItems = () => {
   );
 }
 
-export default MenuItems
+export default NavGlobal
