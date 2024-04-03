@@ -9,8 +9,10 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 
 
-from recrutingapp.models import NewsTag, NewsPost
+from recrutingapp.models import EmployeeProfile, NewsTag, NewsPost
+from recrutingapp.permissions import IsSelf
 from recrutingapp.serializers import (
+    EmployeeProfileSerializer,
     NewsPublicListSerializer,
     NewsPublicDetailSerializer,
     NewsTagStaffSerializer,
@@ -67,3 +69,20 @@ class NewsPostStaffViewSet(ModelViewSet):
     def perform_update(self, serializer):
         request = serializer.context["request"]
         serializer.save(updated_by=request.user)
+
+
+class EmployeeProfileViewSet(ModelViewSet):
+    """View for employee"""
+
+    permission_classes = [IsAuthenticated, DjangoModelPermissions, IsSelf]
+    serializer_class = EmployeeProfileSerializer
+
+    def get_queryset(self):
+        return EmployeeProfile.objects.filter(user=self.request.user).prefetch_related(
+            "skills"
+        )
+
+    # On create reads user from context
+    def perform_create(self, serializer):
+        request = serializer.context["request"]
+        serializer.save(user=request.user)

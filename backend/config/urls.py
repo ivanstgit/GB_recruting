@@ -30,6 +30,7 @@ from drf_yasg import openapi
 
 from userapp.views import SignUpViewSet, EmailConfirmViewSet, SignInViewSet
 from recrutingapp.views import (
+    EmployeeProfileViewSet,
     NewsPublicViewSet,
     NewsPostStaffViewSet,
     NewsTagsStaffViewSet,
@@ -55,6 +56,7 @@ router.register("accounts/confirm", EmailConfirmViewSet, basename="confirm")
 router.register("accounts/signin", SignInViewSet, basename="signin")
 router.register("staff/news/tags", NewsTagsStaffViewSet, basename="staff_news_tags")
 router.register("staff/news/posts", NewsPostStaffViewSet, basename="staff_news_posts")
+router.register("employee/profile", EmployeeProfileViewSet, basename="employee/profile")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

@@ -11,6 +11,89 @@ CONTENT_TYPES = [
 ]
 
 
+class Region(models.Model):
+    name = models.CharField(
+        max_length=100,
+        help_text=_("Region name"),
+        unique=True,
+        error_messages={
+            "unique": _("Region already exists!"),
+        },
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("region")
+        verbose_name_plural = _("regions")
+
+
+class City(models.Model):
+    name = models.CharField(
+        max_length=100,
+        help_text=_("City name"),
+        unique=True,
+        error_messages={
+            "unique": _("Region already exists!"),
+        },
+    )
+
+    region = models.ForeignKey(
+        Region,
+        help_text=_("Region"),
+        on_delete=models.PROTECT,
+    )
+
+    @property
+    def fullname(self):
+        return ", ".join([self.name, " ,", str(self.region)])
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("city")
+        verbose_name_plural = _("cities")
+
+
+class Skill(models.Model):
+    name = models.CharField(
+        max_length=100,
+        help_text=_("Skill name"),
+        unique=True,
+        error_messages={
+            "unique": _("Skill already exists!"),
+        },
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("skill")
+        verbose_name_plural = _("skills")
+
+
+class Gender(models.Model):
+    id = models.CharField(
+        max_length=1,
+        primary_key=True,
+        help_text=_("Gender id"),
+    )
+    name = models.CharField(
+        max_length=25,
+        help_text=_("Gender name"),
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("gender")
+        verbose_name_plural = _("genders")
+
+
 class NewsTag(models.Model):
     name = models.CharField(
         max_length=30,
@@ -64,3 +147,82 @@ class NewsPost(models.Model):
     class Meta:
         verbose_name = _("newspost")
         verbose_name_plural = _("newsposts")
+
+
+class EmployeeExperience(models.Model):
+    datefrom = models.DateField
+    dateto = models.DateField(blank=True)
+    is_current = models.BooleanField(default=False)
+
+    city = models.ForeignKey(
+        City,
+        on_delete=models.PROTECT,
+    )
+    company = models.CharField(
+        _("Company"),
+        max_length=100,
+        unique=True,
+    )
+    content = models.TextField(
+        help_text=_("Content"),
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class EmployeeEducation(models.Model):
+    date = models.DateField
+
+    institution = models.CharField(
+        _("Institution"),
+        max_length=100,
+        unique=True,
+    )
+    content = models.TextField(
+        help_text=_("Content"),
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class EmployeeProfile(models.Model):
+    user = models.OneToOneField(
+        CustomUser,
+        help_text=_("User"),
+        on_delete=models.PROTECT,
+    )
+    gender = models.ForeignKey(
+        Gender,
+        on_delete=models.PROTECT,
+    )
+    email = models.CharField(
+        _("email address"),
+        max_length=256,
+        unique=True,
+        error_messages={
+            "unique": _("An employee with that email address already exists."),
+        },
+    )
+    city = models.ForeignKey(
+        City,
+        on_delete=models.PROTECT,
+    )
+    skills = models.ManyToManyField(Skill, help_text=_("Skills"), related_name="skills")
+    experience = models.ManyToManyField(
+        EmployeeExperience, help_text=_("Experience"), related_name="experience"
+    )
+    education = models.ManyToManyField(
+        EmployeeEducation, help_text=_("Education"), related_name="education"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "Employee" + str(self.user.get_full_name())
+
+    class Meta:
+        verbose_name = _("ee_profile")
+        verbose_name_plural = _("ee_profiles")

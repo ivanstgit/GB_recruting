@@ -1,0 +1,1 @@
+[{"model": "recrutingapp.gender", "pk": "f", "fields": {"name": "Женский"}}, {"model": "recrutingapp.gender", "pk": "m", "fields": {"name": "Мужской"}}]
