@@ -9,10 +9,20 @@ from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
 
 
-from recrutingapp.models import EmployeeProfile, NewsTag, NewsPost
-from recrutingapp.permissions import IsSelf
+from recrutingapp.models import (
+    NewsTag,
+    NewsPost,
+    Employee,
+    EmployeeEducation,
+    EmployeeExperience,
+)
+from recrutingapp.permissions import IsOwner
 from recrutingapp.serializers import (
-    EmployeeProfileSerializer,
+    EmployeeSerializerExt,
+    EmployeeSerializerInt,
+    EmployeeEducationSerializer,
+    EmployeeExperienceSerializerExt,
+    EmployeeExperienceSerializerInt,
     NewsPublicListSerializer,
     NewsPublicDetailSerializer,
     NewsTagStaffSerializer,
@@ -71,18 +81,68 @@ class NewsPostStaffViewSet(ModelViewSet):
         serializer.save(updated_by=request.user)
 
 
-class EmployeeProfileViewSet(ModelViewSet):
+class EmployeeViewSet(ModelViewSet):
     """View for employee"""
 
-    permission_classes = [IsAuthenticated, DjangoModelPermissions, IsSelf]
-    serializer_class = EmployeeProfileSerializer
+    permission_classes = [IsAuthenticated, DjangoModelPermissions, IsOwner]
+    serializer_class = EmployeeSerializerExt
+    pagination_class = None
 
     def get_queryset(self):
-        return EmployeeProfile.objects.filter(user=self.request.user).prefetch_related(
-            "skills"
+        return Employee.objects.filter(user=self.request.user).prefetch_related(
+            "skills", "city"
         )
+
+    def get_serializer_class(self):
+        if self.detail:
+            return EmployeeSerializerInt
+        return EmployeeSerializerExt
 
     # On create reads user from context
     def perform_create(self, serializer):
         request = serializer.context["request"]
-        serializer.save(user=request.user)
+        serializer.save(owner=request.user)
+
+
+class EmployeeExperienceViewSet(ModelViewSet):
+    """View for employee experience"""
+
+    permission_classes = [IsAuthenticated, DjangoModelPermissions, IsOwner]
+    serializer_class = EmployeeExperienceSerializerExt
+    pagination_class = None
+
+    def get_queryset(self):
+        return EmployeeExperience.objects.filter(
+            owner=self.request.user
+        ).prefetch_related("city")
+
+    def get_serializer_class(self):
+        if self.detail:
+            return EmployeeExperienceSerializerInt
+        return EmployeeExperienceSerializerExt
+
+    # On create reads user from context
+    def perform_create(self, serializer):
+        request = serializer.context["request"]
+        serializer.save(owner=request.user)
+
+
+class EmployeeEducationViewSet(ModelViewSet):
+    """View for employee education"""
+
+    permission_classes = [IsAuthenticated, DjangoModelPermissions, IsOwner]
+    serializer_class = EmployeeEducationSerializer
+    pagination_class = None
+
+    def get_queryset(self):
+        return EmployeeEducation.objects.filter(
+            owner=self.request.user
+        ).prefetch_related("city")
+
+    def get_serializer_class(self):
+        return EmployeeEducationSerializer
+
+    # On create reads user from context
+    def perform_create(self, serializer):
+        request = serializer.context["request"]
+        serializer.save(owner=request.user)

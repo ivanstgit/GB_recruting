@@ -149,48 +149,10 @@ class NewsPost(models.Model):
         verbose_name_plural = _("newsposts")
 
 
-class EmployeeExperience(models.Model):
-    datefrom = models.DateField
-    dateto = models.DateField(blank=True)
-    is_current = models.BooleanField(default=False)
-
-    city = models.ForeignKey(
-        City,
-        on_delete=models.PROTECT,
-    )
-    company = models.CharField(
-        _("Company"),
-        max_length=100,
-        unique=True,
-    )
-    content = models.TextField(
-        help_text=_("Content"),
-    )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class EmployeeEducation(models.Model):
-    date = models.DateField
-
-    institution = models.CharField(
-        _("Institution"),
-        max_length=100,
-        unique=True,
-    )
-    content = models.TextField(
-        help_text=_("Content"),
-    )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
-class EmployeeProfile(models.Model):
-    user = models.OneToOneField(
+class Employee(models.Model):
+    owner = models.OneToOneField(
         CustomUser,
-        help_text=_("User"),
+        help_text=_("Owner"),
         on_delete=models.PROTECT,
     )
     gender = models.ForeignKey(
@@ -210,12 +172,12 @@ class EmployeeProfile(models.Model):
         on_delete=models.PROTECT,
     )
     skills = models.ManyToManyField(Skill, help_text=_("Skills"), related_name="skills")
-    experience = models.ManyToManyField(
-        EmployeeExperience, help_text=_("Experience"), related_name="experience"
-    )
-    education = models.ManyToManyField(
-        EmployeeEducation, help_text=_("Education"), related_name="education"
-    )
+    # experience = models.OneToManyField(
+    #     EmployeeExperience, help_text=_("Experience"), related_name="experience"
+    # )
+    # education = models.ManyToManyField(
+    #     EmployeeEducation, help_text=_("Education"), related_name="education"
+    # )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -224,5 +186,52 @@ class EmployeeProfile(models.Model):
         return "Employee" + str(self.user.get_full_name())
 
     class Meta:
-        verbose_name = _("ee_profile")
-        verbose_name_plural = _("ee_profiles")
+        verbose_name = _("employee")
+        verbose_name_plural = _("employees")
+
+
+class EmployeeExperience(models.Model):
+
+    owner = models.ForeignKey(
+        CustomUser,
+        help_text=_("Owner"),
+        on_delete=models.PROTECT,
+    )
+    datefrom = models.DateField()
+    dateto = models.DateField(blank=True)
+    is_current = models.BooleanField(default=False)
+
+    city = models.ForeignKey(
+        City,
+        on_delete=models.PROTECT,
+    )
+    company = models.CharField(
+        _("Company"),
+        max_length=100,
+    )
+    content = models.TextField(
+        help_text=_("Content"),
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class EmployeeEducation(models.Model):
+    owner = models.ForeignKey(
+        CustomUser,
+        help_text=_("Owner"),
+        on_delete=models.PROTECT,
+    )
+    date = models.DateField()
+
+    institution = models.CharField(
+        _("Institution"),
+        max_length=100,
+    )
+    content = models.TextField(
+        help_text=_("Content"),
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
