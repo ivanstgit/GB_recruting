@@ -1,28 +1,21 @@
-from rest_framework.permissions import (
-    DjangoModelPermissionsOrAnonReadOnly,
-    DjangoModelPermissions,
-    IsAuthenticated,
-)
-
-from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.mixins import ListModelMixin, RetrieveModelMixin
+from rest_framework import permissions
+from rest_framework import pagination
+from rest_framework import viewsets
+from rest_framework import mixins
 
 
 from recrutingapp.models import (
     NewsTag,
     NewsPost,
     Employee,
-    EmployeeEducation,
-    EmployeeExperience,
+    CV,
 )
-from recrutingapp.permissions import IsOwner
+from recrutingapp.permissions import CVPermission, IsOwner
 from recrutingapp.serializers import (
     EmployeeSerializerExt,
     EmployeeSerializerInt,
-    EmployeeEducationSerializer,
-    EmployeeExperienceSerializerExt,
-    EmployeeExperienceSerializerInt,
+    CVSerializerInt,
+    CVSerializerExt,
     NewsPublicListSerializer,
     NewsPublicDetailSerializer,
     NewsTagStaffSerializer,
@@ -30,16 +23,32 @@ from recrutingapp.serializers import (
 )
 from recrutingapp.filters import NewsFilter
 
+REQUEST_METHODS_CHANGE = ("POST", "PUT", "PATCH")
 
-class NewsPagination(LimitOffsetPagination):
+
+class LoggedModelMixin:
+    def perform_update(self, serializer):
+        request = serializer.context["request"]
+        serializer.save(updated_by=request.user)
+
+
+class OwnedModelMixin:
+    def perform_create(self, serializer):
+        request = serializer.context["request"]
+        serializer.save(owner=request.user, updated_by=request.user)
+
+
+class NewsPagination(pagination.LimitOffsetPagination):
     default_limit = 10
 
 
-class NewsPublicViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
+class NewsPublicViewSet(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
     """View for end or anonimous users"""
 
     queryset = NewsPost.objects.order_by("-created_at").prefetch_related("tags")
-    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
     serializer_class = NewsPublicListSerializer
     pagination_class = NewsPagination
     filterset_class = NewsFilter
@@ -50,18 +59,21 @@ class NewsPublicViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         return NewsPublicListSerializer
 
 
-class NewsTagsStaffViewSet(ModelViewSet):
+class NewsTagsStaffViewSet(viewsets.ModelViewSet):
     """View for staff"""
 
     queryset = NewsTag.objects.all()
-    permission_classes = [DjangoModelPermissions]
+    permission_classes = [permissions.DjangoModelPermissions]
     serializer_class = NewsTagStaffSerializer
 
 
-class NewsPostStaffViewSet(ModelViewSet):
+class NewsPostStaffViewSet(viewsets.ModelViewSet):
     """View for staff"""
 
-    permission_classes = [IsAuthenticated, DjangoModelPermissions]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        permissions.DjangoModelPermissions,
+    ]
     serializer_class = NewsStaffSerializer
     pagination_class = NewsPagination
     filterset_class = NewsFilter
@@ -81,68 +93,66 @@ class NewsPostStaffViewSet(ModelViewSet):
         serializer.save(updated_by=request.user)
 
 
-class EmployeeViewSet(ModelViewSet):
+class EmployeeProfileViewSet(OwnedModelMixin, LoggedModelMixin, viewsets.ModelViewSet):
     """View for employee"""
 
-    permission_classes = [IsAuthenticated, DjangoModelPermissions, IsOwner]
+    permission_classes = [
+        permissions.IsAuthenticated,
+        permissions.DjangoModelPermissions,
+        IsOwner,
+    ]
     serializer_class = EmployeeSerializerExt
     pagination_class = None
 
     def get_queryset(self):
-        return Employee.objects.filter(user=self.request.user).prefetch_related(
+        return Employee.objects.filter(owner=self.request.user).prefetch_related(
             "skills", "city"
         )
 
     def get_serializer_class(self):
-        if self.detail:
+        if self.request.method in REQUEST_METHODS_CHANGE:
             return EmployeeSerializerInt
         return EmployeeSerializerExt
 
-    # On create reads user from context
-    def perform_create(self, serializer):
-        request = serializer.context["request"]
-        serializer.save(owner=request.user)
 
-
-class EmployeeExperienceViewSet(ModelViewSet):
+class EmployeeCVViewSet(OwnedModelMixin, LoggedModelMixin, viewsets.ModelViewSet):
     """View for employee experience"""
 
-    permission_classes = [IsAuthenticated, DjangoModelPermissions, IsOwner]
-    serializer_class = EmployeeExperienceSerializerExt
+    permission_classes = [
+        permissions.IsAuthenticated,
+        permissions.DjangoModelPermissions,
+        CVPermission,
+    ]
+    serializer_class = CVSerializerExt
     pagination_class = None
 
     def get_queryset(self):
-        return EmployeeExperience.objects.filter(
-            owner=self.request.user
-        ).prefetch_related("city")
+        return CV.objects.filter(owner=self.request.user).prefetch_related(
+            "experience", "education"
+        )
 
     def get_serializer_class(self):
-        if self.detail:
-            return EmployeeExperienceSerializerInt
-        return EmployeeExperienceSerializerExt
+        if self.request.method in REQUEST_METHODS_CHANGE:
+            return CVSerializerInt
+        return CVSerializerExt
 
-    # On create reads user from context
     def perform_create(self, serializer):
         request = serializer.context["request"]
-        serializer.save(owner=request.user)
+        serializer.save(
+            owner=request.user, updated_by=request.user, employee=request.user.employee
+        )
 
 
-class EmployeeEducationViewSet(ModelViewSet):
-    """View for employee education"""
-
-    permission_classes = [IsAuthenticated, DjangoModelPermissions, IsOwner]
-    serializer_class = EmployeeEducationSerializer
-    pagination_class = None
-
-    def get_queryset(self):
-        return EmployeeEducation.objects.filter(
-            owner=self.request.user
-        ).prefetch_related("city")
-
-    def get_serializer_class(self):
-        return EmployeeEducationSerializer
-
-    # On create reads user from context
-    def perform_create(self, serializer):
-        request = serializer.context["request"]
-        serializer.save(owner=request.user)
+# from rest_framework import status, viewsets
+# from rest_framework.decorators import action
+# from rest_framework.response import Response
+#     @action(detail=True, methods=['patch'])
+#     def to_moderation(self, request, pk=None):
+#         cv = self.get_object()
+#         if cv.status in (ConstDocumentStatus.draft, ConstDocumentStatus.rejected):
+#             cv.status = ConstDocumentStatus.pending
+#             cv.save()
+#             return Response({'status': 'password set'})
+#         else:
+#             return Response(serializer.errors,
+#                             status=status.HTTP_400_BAD_REQUEST)

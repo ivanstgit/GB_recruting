@@ -2,13 +2,27 @@ from rest_framework import serializers
 
 from recrutingapp.models import (
     City,
-    EmployeeEducation,
-    EmployeeExperience,
     Employee,
+    CV,
+    CVEducation,
+    CVExperience,
     Gender,
     NewsTag,
     NewsPost,
 )
+
+
+class OwnedModelMixin(serializers.ModelSerializer):
+    is_owned = True
+    owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
+
+
+class LoggedModelMixin(serializers.ModelSerializer):
+    is_logged = True
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+    # Update users by login in view
+    updated_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
 
 
 class GenderSerializer(serializers.ModelSerializer):
@@ -69,15 +83,15 @@ class NewsTagStaffSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class NewsStaffSerializer(serializers.ModelSerializer):
+class NewsStaffSerializer(LoggedModelMixin, serializers.ModelSerializer):
     """
     Serializer for administration
     """
 
-    created_at = serializers.DateTimeField(read_only=True)
-    updated_at = serializers.DateTimeField(read_only=True)
-    # Update users by login in view
-    updated_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    # created_at = serializers.DateTimeField(read_only=True)
+    # updated_at = serializers.DateTimeField(read_only=True)
+    # # Update users by login in view
+    # updated_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
     tags = serializers.SlugRelatedField(
         many=True, slug_field="name", queryset=NewsTag.objects.all(), required=False
     )
@@ -99,91 +113,10 @@ class NewsStaffSerializer(serializers.ModelSerializer):
         depth = 1
 
 
-class EmployeeExperienceSerializerInt(serializers.ModelSerializer):
-    """
-    Serializer for employee experience
-    """
-
-    owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
-
-    datefrom = serializers.DateField(required=True)
-    dateto = serializers.DateField(required=False)
-    is_current = serializers.BooleanField()
-    city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
-
-    class Meta:
-        model = EmployeeExperience
-        fields = [
-            "id",
-            "owner",
-            "datefrom",
-            "dateto",
-            "is_current",
-            "city",
-            "company",
-            "content",
-        ]
-        depth = 1
-
-
-class EmployeeExperienceSerializerExt(serializers.ModelSerializer):
-    """
-    Serializer for employee experience
-    """
-
-    owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
-
-    created_at = serializers.DateTimeField(read_only=True)
-    updated_at = serializers.DateTimeField(read_only=True)
-
-    class Meta:
-        model = EmployeeExperience
-        fields = [
-            "id",
-            "owner",
-            "datefrom",
-            "dateto",
-            "is_current",
-            "city",
-            "company",
-            "content",
-            "created_at",
-            "updated_at",
-        ]
-        depth = 1
-
-
-class EmployeeEducationSerializer(serializers.ModelSerializer):
-    """
-    Serializer for employee education
-    """
-
-    owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
-
-    date = serializers.DateField()
-    created_at = serializers.DateTimeField(read_only=True)
-    updated_at = serializers.DateTimeField(read_only=True)
-
-    class Meta:
-        model = EmployeeEducation
-        fields = [
-            "id",
-            "owner",
-            "date",
-            "institution",
-            "content",
-            "created_at",
-            "updated_at",
-        ]
-        depth = 1
-
-
-class EmployeeSerializerExt(serializers.ModelSerializer):
+class EmployeeSerializerExt(OwnedModelMixin, serializers.ModelSerializer):
     """
     Serializer for reading
     """
-
-    owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
 
     class Meta:
         model = Employee
@@ -196,16 +129,15 @@ class EmployeeSerializerExt(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        # user & tag updated by name
         depth = 1
 
 
-class EmployeeSerializerInt(serializers.ModelSerializer):
+class EmployeeSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
     """
     Serializer internal pk
     """
 
-    owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    # owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
 
     email = serializers.EmailField(required=True)
     city = serializers.PrimaryKeyRelatedField(
@@ -226,39 +158,160 @@ class EmployeeSerializerInt(serializers.ModelSerializer):
             "email",
             "city",
             "gender",
-            # "experience",
-            # "education",
             "created_at",
             "updated_at",
         ]
         # user updated by name
         depth = 1
 
-    # def create(self, validated_data):
-    #     experience_data = validated_data.pop("experience")
-    #     education_data = validated_data.pop("education")
-    #     employee = Employee.objects.create(**validated_data)
-    #     for experience in experience_data:
-    #         EmployeeExperience.objects.create(employee=employee, **experience)
-    #     for education in education_data:
-    #         EmployeeEducation.objects.create(employee=employee, **education)
-    #     return employee
 
-    # def update(self, instance, validated_data):
-    #     experience_data = validated_data.pop("experience")
-    #     education_data = validated_data.pop("education")
+class CVExperienceSerializerInt(serializers.ModelSerializer):
+    """
+    Serializer for employee experience
+    """
 
-    #     for field, value in validated_data:
-    #         instance[field] = value
+    datefrom = serializers.DateField(required=True)
+    dateto = serializers.DateField(required=False)
+    is_current = serializers.BooleanField()
+    city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
 
-    #     employee=instance
+    class Meta:
+        model = CVExperience
+        fields = [
+            "id",
+            "datefrom",
+            "dateto",
+            "is_current",
+            "city",
+            "company",
+            "content",
+        ]
 
-    #     if experience_data:
-    #         employee.experience.delete()
-    #         for experience in experience_data:
-    #             EmployeeExperience.objects.create(employee=employee, **experience)
-    #     if education_data:
-    #         employee.experience.delete()
-    #     for education in education_data:
-    #         EmployeeEducation.objects.create(employee=employee, **education)
-    #     return employee
+
+class CVExperienceSerializerExt(serializers.ModelSerializer):
+    """
+    Serializer for employee experience
+    """
+
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = CVExperience
+        fields = [
+            "id",
+            "datefrom",
+            "dateto",
+            "is_current",
+            "city",
+            "company",
+            "content",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1
+
+
+class CVEducationSerializer(serializers.ModelSerializer):
+    """
+    Serializer for employee education
+    """
+
+    date = serializers.DateField()
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = CVEducation
+        fields = [
+            "id",
+            "date",
+            "institution",
+            "content",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1
+
+
+class CVSerializerInt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer):
+    """
+    Serializer internal pk
+    """
+
+    # owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    experience = CVExperienceSerializerInt(many=True)
+    education = CVEducationSerializer(many=True)
+
+    class Meta:
+        model = CV
+        fields = [
+            "id",
+            "owner",
+            "employee",
+            "title",
+            "description",
+            "experience",
+            "education",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1
+
+    def create(self, validated_data):
+        experience_data = validated_data.pop("experience")
+        education_data = validated_data.pop("education")
+        cv = CV.objects.create(**validated_data)
+        for experience_ in experience_data:
+            CVExperience.objects.create(cv=cv, **experience_)
+        for education_ in education_data:
+            CVEducation.objects.create(cv=cv, **education_)
+        return cv
+
+    def update(self, instance, validated_data: dict):
+        experience_data = validated_data.pop("experience")
+        education_data = validated_data.pop("education")
+
+        instance.title = validated_data.get("title", instance.title)
+        instance.description = validated_data.get("description", instance.description)
+
+        cv = instance
+
+        if experience_data:
+            cv.experience.all().delete()
+            for experience_ in experience_data:
+                CVExperience.objects.create(cv=cv, **experience_)
+        if education_data:
+            cv.education.all().delete()
+            for education_ in education_data:
+                CVEducation.objects.create(cv=cv, **education_)
+        return cv
+
+
+class CVSerializerExt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer):
+    """
+    Serializer for reading
+    """
+
+    # owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
+
+    employee = EmployeeSerializerExt()
+    experience = CVExperienceSerializerExt(many=True)
+    education = CVEducationSerializer(many=True)
+
+    class Meta:
+        model = CV
+        fields = [
+            "id",
+            "owner",
+            "employee",
+            "status",
+            "status_info",
+            "title",
+            "description",
+            "experience",
+            "education",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1

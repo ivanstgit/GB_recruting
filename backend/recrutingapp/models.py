@@ -11,6 +11,82 @@ CONTENT_TYPES = [
 ]
 
 
+class ConstDocumentStatus:
+    draft = "d"
+    pending = "p"
+    approved = "a"
+    rejected = "r"
+
+
+DOCUMENT_STATUSES = [
+    (ConstDocumentStatus.draft, "Draft"),
+    (ConstDocumentStatus.pending, "Pending"),
+    (ConstDocumentStatus.approved, "Approved"),
+    (ConstDocumentStatus.rejected, "Rejected"),
+]
+
+
+class DocumentStatus(models.Model):
+    id = models.CharField(
+        max_length=1,
+        primary_key=True,
+        help_text=_("Status code"),
+        choices=DOCUMENT_STATUSES,
+    )
+    name = models.CharField(
+        max_length=25,
+        help_text=_("Status name"),
+    )
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("status")
+        verbose_name_plural = _("statuses")
+
+
+class DocStatusMixin(models.Model):
+    status = models.ForeignKey(
+        DocumentStatus,
+        help_text=_("Status"),
+        on_delete=models.PROTECT,
+        choices=DOCUMENT_STATUSES,
+        default=ConstDocumentStatus.draft,
+    )
+    status_info = models.CharField(
+        max_length=150, help_text=_("Status info"), default=""
+    )
+
+    class Meta:
+        abstract = True
+
+
+class LoggingMixin(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(
+        CustomUser,
+        related_name="+",
+        help_text=_("Updated by"),
+        on_delete=models.PROTECT,
+    )
+
+    class Meta:
+        abstract = True
+
+
+class OwnedMixin(models.Model):
+    owner = models.ForeignKey(
+        CustomUser,
+        help_text=_("Owner"),
+        on_delete=models.PROTECT,
+    )
+
+    class Meta:
+        abstract = True
+
+
 class Region(models.Model):
     name = models.CharField(
         max_length=100,
@@ -112,7 +188,7 @@ class NewsTag(models.Model):
         verbose_name_plural = _("newstags")
 
 
-class NewsPost(models.Model):
+class NewsPost(LoggingMixin, models.Model):
 
     title = models.CharField(
         max_length=60,
@@ -133,14 +209,6 @@ class NewsPost(models.Model):
         NewsTag, help_text=_("Tag list"), related_name="posts"
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    updated_by = models.ForeignKey(
-        CustomUser,
-        help_text=_("Creator (author)"),
-        on_delete=models.PROTECT,
-    )
-
     def __str__(self):
         return self.title
 
@@ -149,7 +217,7 @@ class NewsPost(models.Model):
         verbose_name_plural = _("newsposts")
 
 
-class Employee(models.Model):
+class Employee(LoggingMixin, models.Model):
     owner = models.OneToOneField(
         CustomUser,
         help_text=_("Owner"),
@@ -172,15 +240,6 @@ class Employee(models.Model):
         on_delete=models.PROTECT,
     )
     skills = models.ManyToManyField(Skill, help_text=_("Skills"), related_name="skills")
-    # experience = models.OneToManyField(
-    #     EmployeeExperience, help_text=_("Experience"), related_name="experience"
-    # )
-    # education = models.ManyToManyField(
-    #     EmployeeEducation, help_text=_("Education"), related_name="education"
-    # )
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return "Employee" + str(self.user.get_full_name())
@@ -190,13 +249,29 @@ class Employee(models.Model):
         verbose_name_plural = _("employees")
 
 
-class EmployeeExperience(models.Model):
-
-    owner = models.ForeignKey(
-        CustomUser,
-        help_text=_("Owner"),
-        on_delete=models.PROTECT,
+class CV(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+    employee = models.ForeignKey(
+        Employee,
+        on_delete=models.CASCADE,
     )
+
+    title = models.CharField(
+        max_length=60,
+        help_text=_("Title"),
+        error_messages={},
+    )
+
+    description = models.TextField()
+
+    class Meta:
+        verbose_name = _("cv")
+        verbose_name_plural = _("cvs")
+
+
+class CVExperience(models.Model):
+
+    cv = models.ForeignKey(CV, on_delete=models.CASCADE, related_name="experience")
+
     datefrom = models.DateField()
     dateto = models.DateField(blank=True)
     is_current = models.BooleanField(default=False)
@@ -213,16 +288,15 @@ class EmployeeExperience(models.Model):
         help_text=_("Content"),
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        verbose_name = _("experience")
+        verbose_name_plural = _("experience")
 
 
-class EmployeeEducation(models.Model):
-    owner = models.ForeignKey(
-        CustomUser,
-        help_text=_("Owner"),
-        on_delete=models.PROTECT,
-    )
+class CVEducation(models.Model):
+
+    cv = models.ForeignKey(CV, on_delete=models.CASCADE, related_name="education")
+
     date = models.DateField()
 
     institution = models.CharField(
@@ -231,7 +305,9 @@ class EmployeeEducation(models.Model):
     )
     content = models.TextField(
         help_text=_("Content"),
+        max_length=1024,
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    class Meta:
+        verbose_name = _("education")
+        verbose_name_plural = _("education")

@@ -1,5 +1,8 @@
 from rest_framework import permissions
 
+from recrutingapp.models import CV, ConstDocumentStatus
+from userapp.models import UserRoles
+
 
 class IsOwner(permissions.BasePermission):
     """
@@ -26,3 +29,36 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
         # Instance must have an attribute named `owner`.
         return obj.owner == request.user
+
+
+class CVPermission(permissions.BasePermission):
+    """
+    Grants permission based on role, status
+    """
+
+    def has_object_permission(self, request, view, obj: CV):
+        role = request.user.role
+
+        # employee has full permissions except changing data in pending status
+        if role == UserRoles.employee.value and obj.owner == request.user:
+            if request.method in permissions.SAFE_METHODS or obj.status in (
+                ConstDocumentStatus.draft,
+                ConstDocumentStatus.rejected,
+            ):
+                return True
+
+        # moderator has read permissions on all documents, and write permissions on moderated documents
+        elif role == UserRoles.moderator.value:
+            if request.method in permissions.SAFE_METHODS or (
+                obj and obj.status == ConstDocumentStatus.pending
+            ):
+                return True
+
+        # employers can view all approved resume
+        elif role == UserRoles.employer.value:
+            if request.method in permissions.SAFE_METHODS and (
+                obj and obj.status == ConstDocumentStatus.approved
+            ):
+                return True
+
+        return False
