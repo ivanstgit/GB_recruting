@@ -1,3 +1,6 @@
+import datetime
+from dateutil.relativedelta import relativedelta
+
 from django.core.validators import URLValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -223,6 +226,8 @@ class Employee(LoggingMixin, models.Model):
         help_text=_("Owner"),
         on_delete=models.PROTECT,
     )
+    name = models.CharField(_("Name"), max_length=100)
+    birthday = models.DateField()
     gender = models.ForeignKey(
         Gender,
         on_delete=models.PROTECT,
@@ -239,7 +244,14 @@ class Employee(LoggingMixin, models.Model):
         City,
         on_delete=models.PROTECT,
     )
+    description = models.CharField(max_length=250, default="")
     skills = models.ManyToManyField(Skill, help_text=_("Skills"), related_name="skills")
+
+    @property
+    def age(self):
+        if self.birthday:
+            return relativedelta(datetime.date.today(), self.birthday)
+        return 0
 
     def __str__(self):
         return "Employee" + str(self.user.get_full_name())

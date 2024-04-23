@@ -6,7 +6,7 @@ import AppPaths from "../routes/AppPaths.js"
 import PublicNewsList from "./PublicNews.js"
 import { userRoles } from "../hooks/AuthProvider.js";
 
-const Home = () => {
+const PublicHome = () => {
     const { t } = useTranslation("Home");
 
     return (
@@ -55,4 +55,4 @@ const Home = () => {
 
     )
 }
-export default Home
+export default PublicHome

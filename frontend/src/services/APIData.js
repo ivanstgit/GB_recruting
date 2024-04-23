@@ -16,6 +16,7 @@ export const API_LIST = {
     publicNews: "/v1.0/public/news/",
     staffNewsPosts: "/v1.0/staff/news/posts/",
     staffNewsTags: "/v1.0/staff/news/tags/",
+    employeeProfile: "/v1.0/employee/",
 }
 
 function getHeader(token) {

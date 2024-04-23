@@ -6,6 +6,8 @@ const AppPaths = {
     confirm: "/confirm/",
     employee: {
         home: "/employee/",
+        profile: "/employee/profile/",
+        cvs: "/employee/cv/",
     },
     employer: {
         home: "/employer/",

@@ -4,8 +4,8 @@ import { Navigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks/AuthProvider';
 
-import { FormContainer, HeaderText, InputPassword, InputText, SubmitButton, formStatuses } from "../components/FormFields.js";
-import { ErrorLabel } from './CommonUI.js';
+import { FormContainer, HeaderText, InputPassword, InputText, SubmitButton, formStatuses } from "./LibFormFields.js";
+import { ErrorLabel } from './LibUICommon.js';
 
 const initialState = { login: "", password: "", error: "" }
 

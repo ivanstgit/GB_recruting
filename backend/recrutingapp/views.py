@@ -2,9 +2,14 @@ from rest_framework import permissions
 from rest_framework import pagination
 from rest_framework import viewsets
 from rest_framework import mixins
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 
 from recrutingapp.models import (
+    ConstDocumentStatus,
+    DocumentStatus,
     NewsTag,
     NewsPost,
     Employee,
@@ -12,6 +17,7 @@ from recrutingapp.models import (
 )
 from recrutingapp.permissions import CVPermission, IsOwner
 from recrutingapp.serializers import (
+    DocumentStatusMixinSerializer,
     EmployeeSerializerExt,
     EmployeeSerializerInt,
     CVSerializerInt,
@@ -22,6 +28,7 @@ from recrutingapp.serializers import (
     NewsStaffSerializer,
 )
 from recrutingapp.filters import NewsFilter
+from userapp.models import UserRoles
 
 REQUEST_METHODS_CHANGE = ("POST", "PUT", "PATCH")
 
@@ -36,6 +43,36 @@ class OwnedModelMixin:
     def perform_create(self, serializer):
         request = serializer.context["request"]
         serializer.save(owner=request.user, updated_by=request.user)
+
+
+class DocStatusModelMixin:
+    @action(detail=True, methods=["patch"])
+    def status(self, request, version=None, pk=None):
+        cv = self.get_object()
+        serializer = DocumentStatusMixinSerializer(data=request.data)
+        if serializer.is_valid():
+            new_status = serializer.validated_data["status"]
+            new_status_info = serializer.validated_data["info"]
+            if cv and (
+                (
+                    cv.status.id
+                    in (ConstDocumentStatus.draft, ConstDocumentStatus.rejected)
+                    and new_status == ConstDocumentStatus.pending
+                )
+                or (
+                    cv.status.id == ConstDocumentStatus.pending
+                    and new_status
+                    in (ConstDocumentStatus.approved, ConstDocumentStatus.rejected)
+                )
+            ):
+                status_obj = DocumentStatus.objects.get(id=new_status)
+                cv.status = status_obj
+                cv.status_info = new_status_info
+                cv.save()
+                return Response({"status": new_status})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class NewsPagination(pagination.LimitOffsetPagination):
@@ -115,8 +152,10 @@ class EmployeeProfileViewSet(OwnedModelMixin, LoggedModelMixin, viewsets.ModelVi
         return EmployeeSerializerExt
 
 
-class EmployeeCVViewSet(OwnedModelMixin, LoggedModelMixin, viewsets.ModelViewSet):
-    """View for employee experience"""
+class CVViewSet(
+    OwnedModelMixin, LoggedModelMixin, DocStatusModelMixin, viewsets.ModelViewSet
+):
+    """View for CV"""
 
     permission_classes = [
         permissions.IsAuthenticated,
@@ -127,7 +166,27 @@ class EmployeeCVViewSet(OwnedModelMixin, LoggedModelMixin, viewsets.ModelViewSet
     pagination_class = None
 
     def get_queryset(self):
-        return CV.objects.filter(owner=self.request.user).prefetch_related(
+
+        if self.request.user.is_superuser:
+            return CV.objects.all().prefetch_related(
+                "employee", "experience", "education"
+            )
+
+        role = self.request.user.role
+
+        # employee -> own
+        if role == UserRoles.employee.value:
+            return CV.objects.filter(owner=self.request.user).prefetch_related(
+                "experience", "education"
+            )
+
+        # moderator -> on moderation
+        elif role == UserRoles.moderator.value:
+            return CV.objects.filter(
+                status=ConstDocumentStatus.pending
+            ).prefetch_related("experience", "education")
+
+        return CV.objects.filter(status=ConstDocumentStatus.approved).prefetch_related(
             "experience", "education"
         )
 
@@ -141,18 +200,3 @@ class EmployeeCVViewSet(OwnedModelMixin, LoggedModelMixin, viewsets.ModelViewSet
         serializer.save(
             owner=request.user, updated_by=request.user, employee=request.user.employee
         )
-
-
-# from rest_framework import status, viewsets
-# from rest_framework.decorators import action
-# from rest_framework.response import Response
-#     @action(detail=True, methods=['patch'])
-#     def to_moderation(self, request, pk=None):
-#         cv = self.get_object()
-#         if cv.status in (ConstDocumentStatus.draft, ConstDocumentStatus.rejected):
-#             cv.status = ConstDocumentStatus.pending
-#             cv.save()
-#             return Response({'status': 'password set'})
-#         else:
-#             return Response(serializer.errors,
-#                             status=status.HTTP_400_BAD_REQUEST)

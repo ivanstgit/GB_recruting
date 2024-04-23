@@ -67,6 +67,18 @@ export const InputEmail = (props) => {
     );
 };
 
+export const InputDate = ({ id, name, label, value, errorText = "", helpText = "", onChange }) => {
+    return (
+        <div className="mb-3">
+            <label className="form-label border-0" htmlFor={id}>{label}</label>
+            <input type="date" className={"form-control " + getError(errorText).style} id={id} name={name}
+                value={value} onChange={(event) => onChange(event)} />
+            <div className="invalid-feedback">{getError(errorText).error}</div>
+            <small id={id + "Help"} className="form-text text-muted">{helpText}</small>
+        </div>
+    );
+};
+
 export const InputPassword = (props) => {
     return (
         <div className="mb-3">
@@ -116,6 +128,15 @@ export const SubmitButton = ({ label, disabled = false }) => {
     return (
         <div className="mt-3">
             <button className="btn btn-primary py-3 w-100 mt-3" type="submit" disabled={disabled}>{label}</button>
+        </div>
+    );
+};
+
+export const AdditionalActionLink = ({ label, disabled = false, onClick }) => {
+    return (
+        <div className="mt-3">
+            <button type="button" className="btn btn-link" disabled={disabled}
+                onClick={(event) => onClick(event)}>{label}</button>
         </div>
     );
 };

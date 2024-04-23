@@ -148,6 +148,10 @@
     }
 }
 
+/*** Navbar Local ***/
+.navbarlocal {
+    height: 85vh;
+}
 
 /*** Header ***/
 .header-carousel .owl-carousel-text {

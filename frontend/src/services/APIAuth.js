@@ -6,6 +6,7 @@ const tokenRefreshURL = urlPrefix + '/token/refresh/'
 
 const accSignUpURL = urlPrefix + '/v1.0/accounts/signup/'
 const accConfirmURL = urlPrefix + '/v1.0/accounts/confirm/'
+const accConfirmResendURL = urlPrefix + '/v1.0/accounts/confirm/resend/'
 const accSignInURL = urlPrefix + '/v1.0/accounts/signin/'
 
 export function authGenerate(login, password) {
@@ -30,6 +31,16 @@ export function authConfirm(username, token) {
         "username": username,
         "token": token
     })
+}
+
+export function authConfirmResend(token) {
+    let headers = {
+        'Content-Type': 'application/json'
+    }
+    if (token !== "") {
+        headers['Authorization'] = 'Bearer ' + token
+    }
+    return API.post(accConfirmResendURL, {}, { headers })
 }
 
 export function authSignIn(token) {

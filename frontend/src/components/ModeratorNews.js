@@ -5,7 +5,7 @@ import { useData, DATA_RESOURCES, dataStatuses } from '../hooks/DataProvider.js'
 import AppPaths from "../routes/AppPaths.js"
 import NavLocal from "./NavigationLocal.js";
 import { useState } from "react";
-import { ErrorLabel } from "./CommonUI.js";
+import { ErrorLabel } from "./LibUICommon.js";
 
 
 const ModeratorNewsItem = ({ item, linkTextDetail, linkTextEdit, linkTextDelete, onDelete }) => {

@@ -39,6 +39,9 @@ class CVPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj: CV):
         role = request.user.role
 
+        if request.user.is_superuser:
+            return True
+
         # employee has full permissions except changing data in pending status
         if role == UserRoles.employee.value and obj.owner == request.user:
             if request.method in permissions.SAFE_METHODS or obj.status in (

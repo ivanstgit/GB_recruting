@@ -4,7 +4,7 @@ import { useContext, createContext } from "react";
 
 import Cookies from 'universal-cookie';
 
-import { authConfirm, authGenerate, authRefresh, authSignIn, authSignUp } from '../services/APIAuth.js'
+import { authConfirm, authConfirmResend, authGenerate, authRefresh, authSignIn, authSignUp } from '../services/APIAuth.js'
 import AppPaths from '../routes/AppPaths.js';
 
 
@@ -225,7 +225,27 @@ export const accountConfirm = async (username, token) => {
         }
     }
     catch (error) {
-        console.log('SignUp error', error);
+        console.log('confirmation error', error);
+        return { data: null, error: error.message }
+    }
+
+}
+
+export const accountConfirmResend = async (token) => {
+    try {
+        console.log("account confirmation resend")
+        const response = await authConfirmResend(token)
+        console.log(response)
+
+        if (response.status === 201) {
+            return { data: null, error: null }
+        } else {
+            console.log(response)
+            return { data: null, error: response.statusText }
+        }
+    }
+    catch (error) {
+        console.log('confirmation resend error', error);
         return { data: null, error: error.message }
     }
 

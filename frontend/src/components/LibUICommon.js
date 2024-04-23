@@ -72,3 +72,30 @@ export const Paginator = ({ selectedPage, pagesCount, onPageSelect }) => {
             </ul>
         </nav>)
 }
+
+const NameValueTableItem = ({ key, name, value }) => {
+    return (
+        <tr>
+            <th scope="row">{name}</th>
+            <td>{value}</td>
+        </tr>
+    )
+}
+
+export const NameValueTable = ({ items, nameField = "name", valueField = "value", key = "NVT" }) => {
+    return (
+        <div className="table-responsive table-borderless">
+            <table className="table">
+                <thead>
+                </thead>
+                <tbody>
+                    {items.map((item, index) => <NameValueTableItem
+                        key={key + index}
+                        name={item?.[nameField] ?? ""}
+                        value={item?.[valueField] ?? ""}
+                    />)}
+                </tbody>
+            </table>
+        </div>
+    )
+}

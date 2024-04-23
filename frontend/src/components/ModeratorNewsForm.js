@@ -8,9 +8,9 @@ import { useData, DATA_RESOURCES } from '../hooks/DataProvider.js'
 import {
     FormContainer, formStatuses,
     HeaderText, InputText, SubmitButton, InputTextArea
-} from "../components/FormFields.js";
+} from "./LibFormFields.js";
 import AppPaths from '../routes/AppPaths.js';
-import { ErrorLabel } from './CommonUI.js';
+import { ErrorLabel } from './LibUICommon.js';
 
 const initialState = {
     title: "",

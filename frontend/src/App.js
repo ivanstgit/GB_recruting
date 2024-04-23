@@ -1,4 +1,4 @@
-import React, { Suspense, Loader } from 'react';
+import React, { Suspense } from 'react';
 
 import {
   BrowserRouter as Router,
@@ -20,12 +20,12 @@ import DataProvider from './hooks/DataProvider.js';
 import AppPaths from "./routes/AppPaths.js"
 import AuthRequired from './routes/AuthRequired.js'
 
-import Home from './components/Home.js'
 import NavGlobal from './components/NavigationGlobal.js';
-import Footer from "./components/Footer.js";
+import NavigationFooter from "./components/NavigationFooter.js";
+import PublicHome from './components/PublicHome.js'
 import PublicNewsList from './components/PublicNews.js';
 import PublicNewsDetail from './components/PublicNewsDetail.js';
-import NotFound404 from './components/NotFound404.js';
+import NotFound404 from './components/PublicNotFound404.js';
 import AccountSignInForm from './components/AccountSignInForm.js';
 import AccountSignUpForm from './components/AccountSignUpForm.js';
 import AccountConfirmationForm from './components/AccountConfirmationForm.js';
@@ -34,7 +34,7 @@ import EmployerHome from './components/EmployerHome.js';
 import ModeratorHome from './components/ModeratorHome.js';
 import ModeratorNewsList from './components/ModeratorNews.js';
 import ModeratorNewsForm from './components/ModeratorNewsForm.js';
-
+import EmployeeProfileForm from './components/EmployeeProfileForm.js';
 
 
 class App extends React.Component {
@@ -58,10 +58,10 @@ class App extends React.Component {
             <DataProvider> {/* Data provider */}
 
               <NavGlobal />
-              <div className="container-fluid p-0 mb-5 h-100">
+              <div className="container-fluid p-0 mb-0 mh-100">
                 <Suspense>
                   <Routes>
-                    <Route exact path={AppPaths.home} element={<Home />} />
+                    <Route exact path={AppPaths.home} element={<PublicHome />} />
                     <Route exact path={AppPaths.news} element={<PublicNewsList asCards={false} />} />
                     <Route exact path={AppPaths.news + ":id"} element={<PublicNewsDetail />} />
                     <Route exact path={AppPaths.signin} element={<AccountSignInForm />} />
@@ -70,6 +70,9 @@ class App extends React.Component {
 
                     <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
                       <Route exact path={AppPaths.employee.home} element={<EmployeeHome />} />
+                    </Route>
+                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
+                      <Route exact path={AppPaths.employee.profile} element={<EmployeeProfileForm />} />
                     </Route>
 
                     <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employer} />}>
@@ -98,7 +101,7 @@ class App extends React.Component {
                   </Routes>
                 </Suspense>
               </div>
-              <Footer note="Footer Note" />
+              <NavigationFooter note="Footer Note" />
 
             </DataProvider>
           </AuthProvider>

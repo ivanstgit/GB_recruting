@@ -1,7 +1,11 @@
+import datetime
 from rest_framework import serializers
 
 from recrutingapp.models import (
+    DOCUMENT_STATUSES,
     City,
+    DocStatusMixin,
+    DocumentStatus,
     Employee,
     CV,
     CVEducation,
@@ -35,6 +39,20 @@ class CitySerializer(serializers.ModelSerializer):
     class Meta:
         model = City
         fields = ["id", "name", "region", "fullname"]
+
+
+class DocumentStatusMixinSerializer(serializers.Serializer):
+    status = serializers.CharField(max_length=1)
+    info = serializers.CharField(max_length=150, allow_blank=True)
+
+    def validate_status(self, value):
+        statuses = (_[0] for _ in DOCUMENT_STATUSES)
+        if value not in statuses:
+            raise serializers.ValidationError("Invalid status")
+        return value
+
+    class Meta:
+        fields = ["status", "info"]
 
 
 class NewsPublicListSerializer(serializers.ModelSerializer):
@@ -123,10 +141,12 @@ class EmployeeSerializerExt(OwnedModelMixin, serializers.ModelSerializer):
         fields = [
             "id",
             "owner",
+            "name",
+            "age",
             "email",
             "city",
             "gender",
-            "created_at",
+            "description",
             "updated_at",
         ]
         depth = 1
@@ -138,7 +158,8 @@ class EmployeeSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
     """
 
     # owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
-
+    name = serializers.CharField(max_length=100)
+    birthday = serializers.DateField()
     email = serializers.EmailField(required=True)
     city = serializers.PrimaryKeyRelatedField(
         queryset=City.objects.all(), required=True
@@ -147,8 +168,14 @@ class EmployeeSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
         queryset=Gender.objects.all(), required=True
     )
 
-    # experience = EmployeeExperienceSerializer(many=True)
-    # education = EmployeeEducationSerializer(many=True)
+    def validate_birthday(self, value):
+        if (
+            isinstance(value, datetime.date)
+            and value < datetime.date.today()
+            and value > datetime.date(1910, 1, 1)
+        ):
+            return value
+        raise serializers.ValidationError("Incorrect date")
 
     class Meta:
         model = Employee
@@ -156,10 +183,12 @@ class EmployeeSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
             "id",
             "owner",
             "email",
+            "name",
+            "birthday",
             "city",
             "gender",
-            "created_at",
-            "updated_at",
+            "description",
+            "skills",
         ]
         # user updated by name
         depth = 1
@@ -209,7 +238,7 @@ class CVExperienceSerializerExt(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        depth = 1
+        depth = 2
 
 
 class CVEducationSerializer(serializers.ModelSerializer):

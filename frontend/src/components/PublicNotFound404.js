@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import AppPaths from "../routes/AppPaths.js"
 
-const NotFound404 = () => {
+const PublicNotFound404 = () => {
     const { t } = useTranslation("NotFound404");
     return (
         <div className="container-xxl py-5 wow fadeInUp">
@@ -22,4 +22,4 @@ const NotFound404 = () => {
     )
 }
 
-export default NotFound404
+export default PublicNotFound404

@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Navigate, useLocation } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
-import { useAuth, accountConfirm } from '../hooks/AuthProvider';
+import { useAuth, accountConfirm, accountConfirmResend } from '../hooks/AuthProvider';
 
-import { FormContainer, HeaderText, InputText, SubmitButton, formStatuses } from "../components/FormFields.js"
-import { ErrorLabel, WarningLabel } from './CommonUI.js';
+import { AdditionalActionLink, FormContainer, HeaderText, InputText, SubmitButton, formStatuses } from "./LibFormFields.js"
+import { ErrorLabel, WarningLabel } from './LibUICommon.js';
 
 const AccountConfirmationForm = (props) => {
     const location = useLocation();
@@ -31,6 +31,9 @@ const AccountConfirmationForm = (props) => {
         }));
     }
 
+    const handleResend = (e) => {
+        accountConfirmResend(auth.tokenFunc())
+    }
     const handleSubmit = (e) => {
         e.preventDefault()
         setStatus(formStatuses.pending)
@@ -73,8 +76,12 @@ const AccountConfirmationForm = (props) => {
 
                         <SubmitButton label={t("Confirmation.Submit")} disabled={(status === formStatuses.pending)} />
 
+                        <AdditionalActionLink label={t("Confirmation.Resend")} disabled={(status === formStatuses.pending)}
+                            onClick={(event) => handleResend(event)} />
+
                         <ErrorLabel errorText={error} />
                     </FormContainer>
+
                 </div>
             </div>
         </div>
