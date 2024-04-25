@@ -73,7 +73,7 @@ export const Paginator = ({ selectedPage, pagesCount, onPageSelect }) => {
         </nav>)
 }
 
-const NameValueTableItem = ({ key, name, value }) => {
+const NameValueTableItem = ({ name, value }) => {
     return (
         <tr>
             <th scope="row">{name}</th>

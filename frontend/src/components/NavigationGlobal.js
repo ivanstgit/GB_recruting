@@ -27,13 +27,13 @@ const LoginArea = () => {
   }
 
 }
-const NavItem = ({ key, item }) => {
+const NavItem = ({ index, item }) => {
   const resolvedPath = useResolvedPath(item.link)
   const isActive = useMatch({ path: resolvedPath.pathname }) ? " active" : ""
   // const isActive = useMatch({ path: resolvedPath.pathname, pattern: item.pattern }) ? " active" : ""
   console.log(resolvedPath.pathname + isActive)
 
-  return (<Link key={key} to={item.link} className={"nav-item nav-link" + isActive}>{item.text}</Link>)
+  return (<Link key={"GN" + index} to={item.link} className={"nav-item nav-link" + isActive}>{item.text}</Link>)
 }
 
 const NavGlobal = () => {

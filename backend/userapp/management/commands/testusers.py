@@ -18,7 +18,7 @@ TEST_USERS = [
         "is_staff": False,
         "is_validated": True,
         "role": UserRoles.employer.value,
-        "groups": GROUP_PERMISSIONS.get(UserRoles.employer.value),
+        "groups": [GROUP_PERMISSIONS.get(UserRoles.employer.value)],
     },
     {
         "username": "testEmployee",
@@ -30,7 +30,7 @@ TEST_USERS = [
         "is_staff": False,
         "is_validated": True,
         "role": UserRoles.employee.value,
-        "groups": GROUP_PERMISSIONS.get(UserRoles.employee.value),
+        "groups": [GROUP_PERMISSIONS.get(UserRoles.employee.value)],
     },
     {
         "username": "testModerator",
@@ -42,7 +42,7 @@ TEST_USERS = [
         "is_staff": True,
         "is_validated": True,
         "role": UserRoles.moderator.value,
-        "groups": GROUP_PERMISSIONS.get(UserRoles.moderator.value),
+        "groups": [GROUP_PERMISSIONS.get(UserRoles.moderator.value)],
     },
 ]
 

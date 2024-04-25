@@ -142,11 +142,13 @@ class EmployeeSerializerExt(OwnedModelMixin, serializers.ModelSerializer):
             "id",
             "owner",
             "name",
+            "birthday",
             "age",
             "email",
             "city",
             "gender",
             "description",
+            "skills",
             "updated_at",
         ]
         depth = 1

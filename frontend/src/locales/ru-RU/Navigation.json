@@ -15,6 +15,7 @@
     },
     "Employee": {
         "Home": "Домашняя",
+        "Profile": "Профиль",
         "CVs": "Резюме"
     },
     "Employer": {

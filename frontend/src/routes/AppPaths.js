@@ -4,20 +4,16 @@ const AppPaths = {
     signin: "/signin/",
     signup: "/signup/",
     confirm: "/confirm/",
-    employee: {
-        home: "/employee/",
-        profile: "/employee/profile/",
-        cvs: "/employee/cv/",
-    },
-    employer: {
-        home: "/employer/",
-    },
-    moderator: {
-        home: "/moderator/",
-        news: "/moderator/news/",
-        newsCreate: "/moderator/news/create/",
-        newsEdit: "/moderator/news/edit/",
-    }
+
+    // private:
+    employee: "/employee/",
+    employer: "/employer/",
+    moderator: "/moderator/",
+}
+
+export const ObjectActions = {
+    add: "new",
+    edit: "edit",
 }
 
 export default AppPaths

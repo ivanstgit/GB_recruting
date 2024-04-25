@@ -27,7 +27,11 @@ ROLE_GROUPS = {
 
 GROUP_PERMISSIONS = {
     UserGroups.employers.value: [],
-    UserGroups.employees.value: [],
+    UserGroups.employees.value: [
+        "view_employee",
+        "add_employee",
+        "change_employee",
+    ],
     UserGroups.moderators.value: [
         "view_customuser",
         "view_newspost",

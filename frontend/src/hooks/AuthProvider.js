@@ -79,11 +79,11 @@ class AuthProvider extends React.Component {
             if (this.state.user?.isValidated) {
                 const role = this.state.user?.role
                 if (role === userRoles.employee) {
-                    return AppPaths.employee.home
+                    return AppPaths.employee
                 } else if (role === userRoles.employer) {
-                    return AppPaths.employer.home
+                    return AppPaths.employer
                 } else if (role === userRoles.moderator) {
-                    return AppPaths.moderator.home
+                    return AppPaths.moderator
                 }
             }
             return AppPaths.confirm + "?username=" + this.state.user?.username

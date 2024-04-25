@@ -124,6 +124,23 @@ export const InputRadioButtonGroup = (props) => {
     );
 };
 
+export const InputSelect = ({ id, name, label, options, value, errorText = "", helpText = "", onChange }) => {
+    return (
+        <div className="mb-3">
+            <label className="form-label border-0" htmlFor={id}>{label}</label>
+            <select className={"form-select " + getError(errorText).style} id={id} name={name} value={value}
+                onChange={(event) => onChange(event)}>
+                <option>-</option>
+                {options.map((item) =>
+                    <option key={id + "SO_" + item.id} value={item.id}>{item.name}</option>
+                )}
+            </select>
+            <div className="invalid-feedback">{getError(errorText).error}</div>
+            <small id={id + "Help"} className="form-text text-muted">{helpText}</small>
+        </div>
+    );
+};
+
 export const SubmitButton = ({ label, disabled = false }) => {
     return (
         <div className="mt-3">

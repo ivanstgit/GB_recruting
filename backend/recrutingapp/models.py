@@ -250,7 +250,7 @@ class Employee(LoggingMixin, models.Model):
     @property
     def age(self):
         if self.birthday:
-            return relativedelta(datetime.date.today(), self.birthday)
+            return relativedelta(datetime.date.today(), self.birthday).years
         return 0
 
     def __str__(self):

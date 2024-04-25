@@ -8,8 +8,10 @@ from rest_framework.response import Response
 
 
 from recrutingapp.models import (
+    City,
     ConstDocumentStatus,
     DocumentStatus,
+    Gender,
     NewsTag,
     NewsPost,
     Employee,
@@ -17,11 +19,13 @@ from recrutingapp.models import (
 )
 from recrutingapp.permissions import CVPermission, IsOwner
 from recrutingapp.serializers import (
+    CitySerializer,
     DocumentStatusMixinSerializer,
     EmployeeSerializerExt,
     EmployeeSerializerInt,
     CVSerializerInt,
     CVSerializerExt,
+    GenderSerializer,
     NewsPublicListSerializer,
     NewsPublicDetailSerializer,
     NewsTagStaffSerializer,
@@ -128,6 +132,26 @@ class NewsPostStaffViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         request = serializer.context["request"]
         serializer.save(updated_by=request.user)
+
+
+class GenderViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class = GenderSerializer
+    pagination_class = None
+
+    queryset = Gender.objects.all()
+
+
+class CityViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    serializer_class = CitySerializer
+    pagination_class = None
+
+    queryset = City.objects.all()
 
 
 class EmployeeProfileViewSet(OwnedModelMixin, LoggedModelMixin, viewsets.ModelViewSet):

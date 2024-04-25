@@ -16,6 +16,18 @@ export const DATA_RESOURCES = {
         isGlobal: false,
         methods: ["get"]
     },
+    commonCities: {
+        api: "commonCities",
+        isProtected: true,
+        isGlobal: false,
+        methods: ["get"]
+    },
+    commonGenders: {
+        api: "commonGenders",
+        isProtected: true,
+        isGlobal: false,
+        methods: ["get"]
+    },
     employeeProfile: {
         api: "employeeProfile",
         isProtected: true,
@@ -296,7 +308,8 @@ const DataProvider = (props) => {
                 let response = await dataGetList(resource.api, token, params)
                 console.log(response)
                 if (response.status === 200) {
-                    return { data: response.data.results, error: null }
+                    let res = response.data.results ?? response.data ?? []
+                    return { data: res, error: null }
                 } else {
                     console.log(response)
                     return { data: [], error: response.error }
@@ -314,7 +327,8 @@ const DataProvider = (props) => {
                 let token = auth.tokenFunc();
                 let response = await dataGetList(resource.api, token)
                 if (response.status === 200) {
-                    return { data: response.data.results ?? [], error: null }
+                    let res = response.data.results ?? response.data ?? []
+                    return { data: res, error: null }
                 } else {
                     console.log(response)
                     return { data: [], error: response.error }
@@ -335,7 +349,8 @@ const DataProvider = (props) => {
                     let response = await dataGetList(resource.api, token)
                     if (response.status === 200) {
 
-                        return { data: response.data.results, error: null }
+                        let res = response.data.results ?? response.data ?? []
+                        return { data: res, error: null }
                     } else {
                         console.log(response)
                         return { data: [], error: response.error }

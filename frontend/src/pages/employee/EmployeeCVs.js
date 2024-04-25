@@ -1,11 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
-import { useData, DATA_RESOURCES, dataStatuses } from '../hooks/DataProvider.js'
-import AppPaths from "../routes/AppPaths.js"
-import NavLocal from "./NavigationLocal.js";
-import { useState } from "react";
-import { ErrorLabel } from "./LibUICommon.js";
+import { ObjectActions } from "../../routes/AppPaths.js"
+import { useData, DATA_RESOURCES, dataStatuses } from '../../hooks/DataProvider.js'
+import { ErrorLabel } from "../../components/LibUICommon.js";
 
 
 const ModeratorNewsItem = ({ item, linkTextDetail, linkTextEdit, linkTextDelete, onDelete }) => {
@@ -16,8 +15,8 @@ const ModeratorNewsItem = ({ item, linkTextDetail, linkTextEdit, linkTextDelete,
             <td><p className="card-text">{item.body}</p></td>
             <td>
                 <div className="btn-group btn-group-sm" role="group" aria-label="">
-                    <Link to={AppPaths.moderator.news + item.id + "/"} className="btn btn-link btn-secondary">{linkTextDetail}</Link>
-                    <Link to={AppPaths.moderator.newsEdit + item.id + "/"} className="btn btn-warning">{linkTextEdit}</Link>
+                    <Link to={item.id + "/"} className="btn btn-link btn-secondary">{linkTextDetail}</Link>
+                    <Link to={item.id + "/" + ObjectActions.edit} className="btn btn-warning">{linkTextEdit}</Link>
                     <button className="btn btn-danger" onClick={() => onDelete(item.id)}>{linkTextDelete}</button>
                 </div>
             </td>
@@ -26,7 +25,7 @@ const ModeratorNewsItem = ({ item, linkTextDetail, linkTextEdit, linkTextDelete,
     )
 }
 
-const ModeratorNewsList = (props) => {
+const ModeratorNewsPage = () => {
     const { t } = useTranslation("Moderator");
     const linkTextDetail = t("News.actions.detail")
     const linkTextAdd = t("News.actions.add")
@@ -67,11 +66,9 @@ const ModeratorNewsList = (props) => {
             })
     }
 
-    console.log("News renders" + props)
-
 
     return (
-        <NavLocal>
+        <div>
 
             <h3>{t("News.header")}</h3>
 
@@ -83,7 +80,7 @@ const ModeratorNewsList = (props) => {
 
             <div className="row">
                 <div className="col-6">
-                    <Link to={AppPaths.moderator.newsCreate} className="btn btn-primary">{linkTextAdd}</Link>
+                    <Link to={ObjectActions.add} className="btn btn-primary">{linkTextAdd}</Link>
                 </div>
             </div>
 
@@ -110,8 +107,8 @@ const ModeratorNewsList = (props) => {
                 </table>
             </div>
 
-        </NavLocal>
+        </div>
     )
 }
 
-export default ModeratorNewsList
+export default ModeratorNewsPage

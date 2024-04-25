@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Navigate, useLocation } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
-import { useAuth, accountConfirm, accountConfirmResend } from '../hooks/AuthProvider';
+import { useAuth, accountConfirm, accountConfirmResend } from '../../hooks/AuthProvider.js';
 
-import { AdditionalActionLink, FormContainer, HeaderText, InputText, SubmitButton, formStatuses } from "./LibFormFields.js"
-import { ErrorLabel, WarningLabel } from './LibUICommon.js';
+import { AdditionalActionLink, FormContainer, HeaderText, InputText, SubmitButton, formStatuses } from "../../components/LibFormFields.js"
+import { ErrorLabel, WarningLabel } from '../../components/LibUICommon.js';
 
 const AccountConfirmationForm = (props) => {
     const location = useLocation();

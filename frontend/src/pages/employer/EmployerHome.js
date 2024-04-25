@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
 
-import AppPaths from "../routes/AppPaths.js"
-import { userRoles } from "../hooks/AuthProvider.js";
+import AppPaths from "../../routes/AppPaths.js"
+import { userRoles } from "../../hooks/AuthProvider.js";
 
 const EmployerHome = () => {
     const { t } = useTranslation("Employer");
