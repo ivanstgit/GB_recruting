@@ -7,7 +7,7 @@ import { useData, DATA_RESOURCES, dataStatuses } from '../../hooks/DataProvider.
 import { ErrorLabel } from "../../components/LibUICommon.js";
 
 
-const ModeratorNewsItem = ({ item, linkTextDetail, linkTextEdit, linkTextDelete, onDelete }) => {
+const EmployeeCVListItem = ({ item, linkTextDetail, linkTextEdit, linkTextDelete, onDelete }) => {
     return (
         <tr>
             <td>{item.title}</td>
@@ -25,8 +25,8 @@ const ModeratorNewsItem = ({ item, linkTextDetail, linkTextEdit, linkTextDelete,
     )
 }
 
-const ModeratorNewsPage = () => {
-    const { t } = useTranslation("Moderator");
+const EmployeeCVsPage = () => {
+    const { t } = useTranslation("Employee");
     const linkTextDetail = t("News.actions.detail")
     const linkTextAdd = t("News.actions.add")
     const linkTextEdit = t("News.actions.edit")
@@ -95,7 +95,7 @@ const ModeratorNewsPage = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {items.map((item, index) => <ModeratorNewsItem
+                        {items.map((item, index) => <EmployeeCVListItem
                             key={'NewsItem' + index}
                             item={item}
                             linkTextDetail={linkTextDetail}
@@ -111,4 +111,4 @@ const ModeratorNewsPage = () => {
     )
 }
 
-export default ModeratorNewsPage
+export default EmployeeCVsPage
