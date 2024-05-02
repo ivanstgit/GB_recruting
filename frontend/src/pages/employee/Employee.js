@@ -3,10 +3,13 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
 import NavLocal from "../../components/NavigationLocal"
+import { ObjectActions } from "../../routes/AppPaths.js"
+
 import EmployeeHomePage from "./EmployeeHome.js"
 import EmployeeProfileForm from "./EmployeeProfileForm.js"
 import EmployeeProfilePage from "./EmployeeProfile.js"
-import { ObjectActions } from "../../routes/AppPaths.js"
+import EmployeeCVsPage from "./EmployeeCVs.js"
+import EmployeeCVForm from "./EmployeeCVForm.js"
 
 export const EmployeePaths = {
     home: "home/",
@@ -41,6 +44,11 @@ const EmployeePage = () => {
                         <Route exact path={EmployeePaths.home} element={<EmployeeHomePage />} />
                         <Route exact path={EmployeePaths.profile} element={<EmployeeProfilePage />} />
                         <Route exact path={EmployeePaths.profile + ObjectActions.edit} element={<EmployeeProfileForm />} />
+                        <Route exact path={EmployeePaths.cvs} element={<EmployeeCVsPage />} />
+                        <Route exact path={EmployeePaths.cvs + ObjectActions.add} element={<EmployeeCVForm
+                            backTo={"../" + EmployeePaths.news} />} />
+                        <Route exact path={EmployeePaths.news + ":id/" + ObjectActions.edit} element={<EmployeeCVForm
+                            backTo={"../" + EmployeePaths.news} />} />
                         <Route element={<EmployeeHomePage />} />
                     </Routes>
                 </div>

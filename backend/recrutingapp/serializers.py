@@ -236,6 +236,7 @@ class CVExperienceSerializerExt(serializers.ModelSerializer):
             "is_current",
             "city",
             "company",
+            "position",
             "content",
             "created_at",
             "updated_at",

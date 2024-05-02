@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ObjectActions } from "../../routes/AppPaths.js"
 import { useData, DATA_RESOURCES, dataStatuses } from '../../hooks/DataProvider.js'
-import { ErrorLabel } from "../../components/LibUICommon.js";
+import { ErrorLabel } from "../../components/common/UICommon.js";
 
 
 const ModeratorNewsItem = ({ item, linkTextDetail, linkTextEdit, linkTextDelete, onDelete }) => {

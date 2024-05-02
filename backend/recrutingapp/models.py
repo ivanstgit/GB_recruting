@@ -296,6 +296,10 @@ class CVExperience(models.Model):
         _("Company"),
         max_length=100,
     )
+    position = models.CharField(
+        _("Position"),
+        max_length=100,
+    )
     content = models.TextField(
         help_text=_("Content"),
     )

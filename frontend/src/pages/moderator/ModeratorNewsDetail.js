@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from "react-i18next";
 
 import { DATA_RESOURCES, useData } from '../../hooks/DataProvider.js'
-import { NewsDetail } from "../../components/NewsElements.js";
+import { NewsDetail } from "../../components/shared/News.js";
 
 
 const ModeratorNewsDetailPage = ({ backTo }) => {

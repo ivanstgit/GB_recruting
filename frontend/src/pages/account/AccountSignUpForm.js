@@ -8,8 +8,8 @@ import { accountCreate, useAuth, userRoles } from '../../hooks/AuthProvider.js';
 import {
     FormContainer, HeaderText, InputEmail, InputPassword,
     InputRadioButtonGroup, InputText, SubmitButton, formStatuses
-} from "../../components/LibFormFields.js"
-import { ErrorLabel } from '../../components/LibUICommon.js';
+} from "../../components/common/FormFields.js"
+import { ErrorLabel } from '../../components/common/UICommon.js';
 
 const AccountSignUpForm = (props) => {
     const location = useLocation();

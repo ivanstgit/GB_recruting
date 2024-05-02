@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { NameValueTable } from "./LibUICommon.js";
+import { NameValueTable } from '../common/UICommon';
 
 const EmployeeProfileCard = ({ profile }) => {
     const { t } = useTranslation("Employee");

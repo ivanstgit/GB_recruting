@@ -79,6 +79,19 @@ export const InputDate = ({ id, name, label, value, errorText = "", helpText = "
     );
 };
 
+export const InputCheckBox = ({ id, name, label, value, errorText = "", helpText = "", onChange }) => {
+    return (
+        <div className="mb-3 form-check">
+
+            <input type="checkbox" className={"form-check-input " + getError(errorText).style} id={id} name={name}
+                value={value} onChange={(event) => onChange(event)} />
+            <label className="form-check-label border-0" htmlFor={id}>{label}</label>
+            <div className="invalid-feedback">{getError(errorText).error}</div>
+            <small id={id + "Help"} className="form-text text-muted">{helpText}</small>
+        </div>
+    );
+};
+
 export const InputPassword = (props) => {
     return (
         <div className="mb-3">
@@ -149,6 +162,14 @@ export const SubmitButton = ({ label, disabled = false }) => {
     );
 };
 
+export const FormButton = ({ label, disabled = false, onClick }) => {
+    return (
+        <div className="mt-3">
+            <button className="btn btn-primary py-3 w-100 mt-3" onClick={(e) => onClick(e)} disabled={disabled}>{label}</button>
+        </div>
+    );
+};
+
 export const AdditionalActionLink = ({ label, disabled = false, onClick }) => {
     return (
         <div className="mt-3">
@@ -158,8 +179,13 @@ export const AdditionalActionLink = ({ label, disabled = false, onClick }) => {
     );
 };
 
-export const HeaderText = (props) => {
+export const HeaderText = ({ text }) => {
     return (
-        <h2 className="text-center mb-3" > {props.text} </h2>
+        <h2 className="text-center mb-3" > {text} </h2>
+    );
+};
+export const SubHeaderText = ({ text }) => {
+    return (
+        <h3 className="text-center mb-3" > {text} </h3>
     );
 };

@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import { useData } from "../../hooks/DataProvider.js";
-import EmployeeProfileCard from "../../components/EmployeeProfileCard.js";
-import { WarningLabel } from "../../components/LibUICommon.js";
+import EmployeeProfileCard from "../../components/shared/Employee.js";
+import { WarningLabel } from "../../components/common/UICommon.js";
 import { EmployeePaths } from "./Employee.js";
 import { ObjectActions } from "../../routes/AppPaths.js";
 

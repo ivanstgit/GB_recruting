@@ -4,42 +4,41 @@ import { useTranslation } from 'react-i18next';
 
 import { ObjectActions } from "../../routes/AppPaths.js"
 import { useData, DATA_RESOURCES, dataStatuses } from '../../hooks/DataProvider.js'
-import { ErrorLabel } from "../../components/LibUICommon.js";
+import { ErrorLabel } from "../../components/common/UICommon.js";
 
 
-const EmployeeCVListItem = ({ item, linkTextDetail, linkTextEdit, linkTextDelete, onDelete }) => {
+const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
+    const { t } = useTranslation("Employee");
+
     return (
         <tr>
             <td>{item.title}</td>
+            <td><p className="card-text">{item.status}</p></td>
             <td>{new Date(item.created_at).toLocaleString()}</td>
-            <td><p className="card-text">{item.body}</p></td>
             <td>
                 <div className="btn-group btn-group-sm" role="group" aria-label="">
-                    <Link to={item.id + "/"} className="btn btn-link btn-secondary">{linkTextDetail}</Link>
-                    <Link to={item.id + "/" + ObjectActions.edit} className="btn btn-warning">{linkTextEdit}</Link>
-                    <button className="btn btn-danger" onClick={() => onDelete(item.id)}>{linkTextDelete}</button>
+                    <Link to={item.id + "/"} className="btn btn-link btn-secondary">{t("CVs.actions.detail")}</Link>
+                    <Link to={item.id + "/" + ObjectActions.edit} className="btn btn-warning">{t("CVs.actions.edit")}</Link>
+                    <button className="btn btn-danger" onClick={() => onDelete(item.id)}>{t("CVs.actions.delete")}</button>
+                    <button className="btn btn-success" onClick={() => onPublish(item.id)}>{t("CVs.actions.publish")}</button>
                 </div>
             </td>
-            {/* <Link to={AppPaths.news + item.id + "/"} className="card-link mb-0">{linkText}</Link> */}
         </tr>
     )
 }
 
 const EmployeeCVsPage = () => {
+    // const { tEmployee } = useTranslation("Employee");
     const { t } = useTranslation("Employee");
-    const linkTextDetail = t("News.actions.detail")
-    const linkTextAdd = t("News.actions.add")
-    const linkTextEdit = t("News.actions.edit")
-    const linkTextDelete = t("News.actions.delete")
 
     const dataProvider = useData()
+
     const [items, setItems] = useState([])
     const [error, setError] = useState("")
     const [status, setStatus] = useState(dataStatuses.initial)
 
-    if (status === dataStatuses.initial) {
-        setStatus(dataStatuses.loading)
-        dataProvider.getList(DATA_RESOURCES.staffNews)
+    const loadItems = () => {
+        dataProvider.getList(DATA_RESOURCES.cvs)
             .then((res) => {
                 if (res.error) {
                     setItems([])
@@ -54,7 +53,7 @@ const EmployeeCVsPage = () => {
     }
 
     const deleteItem = (id) => {
-        dataProvider.deleteOne(DATA_RESOURCES.staffNews, id)
+        dataProvider.deleteOne(DATA_RESOURCES.cvs, id)
             .then((res) => {
                 if (res.error) {
                     setError(res.error)
@@ -66,47 +65,64 @@ const EmployeeCVsPage = () => {
             })
     }
 
+    const publishItem = (id) => {
+        // dataProvider.deleteOne(DATA_RESOURCES.cvs, id)
+        //     .then((res) => {
+        //         if (res.error) {
+        //             setError(res.error)
+        //             setStatus(dataStatuses.error)
+        //         } else {
+        //             setError("")
+        //             setStatus(dataStatuses.initial)
+        //         }
+        //     })
+    }
+
+
+    if (status === dataStatuses.initial) {
+        setStatus(dataStatuses.loading)
+        loadItems()
+    }
+
+    const headerText = t("CVs.header")
 
     return (
         <div>
 
-            <h3>{t("News.header")}</h3>
+            <h3>{headerText}</h3>
 
             <div className="row">
-
                 <ErrorLabel errorText={error} />
             </div>
 
-
             <div className="row">
                 <div className="col-6">
-                    <Link to={ObjectActions.add} className="btn btn-primary">{linkTextAdd}</Link>
+                    <Link to={ObjectActions.add} className="btn btn-primary">{t("CVs.actions.add")}</Link>
                 </div>
             </div>
-
-            <div className="table-responsive">
-                <table className="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">{t("News.table.header.title")}</th>
-                            <th scope="col">{t("News.table.header.created")}</th>
-                            <th scope="col">{t("News.table.header.body")}</th>
-                            <th scope="col">{t("News.table.header.actions")}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {items.map((item, index) => <EmployeeCVListItem
-                            key={'NewsItem' + index}
-                            item={item}
-                            linkTextDetail={linkTextDetail}
-                            linkTextEdit={linkTextEdit}
-                            linkTextDelete={linkTextDelete}
-                            onDelete={deleteItem}
-                        />)}
-                    </tbody>
-                </table>
+            <div className="row">
+                <div className="table-responsive">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">{t("CVs.table.header.title")}</th>
+                                <th scope="col">{t("CVs.table.header.status")}</th>
+                                <th scope="col">{t("CVs.table.header.created")}</th>
+                                <th scope="col">{t("CVs.table.header.actions")}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {items.map((item, index) =>
+                                <EmployeeCVListItem
+                                    key={'CVListItem' + index}
+                                    item={item}
+                                    onDelete={deleteItem}
+                                    onPublish={publishItem}
+                                />)}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
         </div>
     )
 }

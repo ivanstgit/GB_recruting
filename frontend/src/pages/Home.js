@@ -6,7 +6,7 @@ import AppPaths from "../routes/AppPaths.js"
 import { userRoles } from "../hooks/AuthProvider.js";
 import { useData } from "../hooks/DataProvider.js";
 
-import { NewsList } from "../components/NewsElements.js";
+import { NewsList } from "../components/shared/News.js";
 
 const HomePage = () => {
     const { t } = useTranslation("Home");

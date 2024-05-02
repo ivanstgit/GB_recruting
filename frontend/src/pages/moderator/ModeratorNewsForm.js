@@ -8,8 +8,8 @@ import { useData, DATA_RESOURCES } from '../../hooks/DataProvider.js'
 import {
     FormContainer, formStatuses,
     HeaderText, InputText, SubmitButton, InputTextArea
-} from "../../components/LibFormFields.js";
-import { ErrorLabel } from '../../components/LibUICommon.js';
+} from "../../components/common/FormFields.js";
+import { ErrorLabel } from '../../components/common/UICommon.js';
 
 const initialState = {
     title: "",

@@ -41,6 +41,13 @@ export const DATA_RESOURCES = {
         isGlobal: false,
         roles: [userRoles.moderator],
         methods: ["get", "post", "put", "delete"]
+    },
+    cvs: {
+        api: "cvs",
+        isProtected: true,
+        isGlobal: false,
+        roles: [userRoles.employee, userRoles.employer, userRoles.moderator],
+        methods: ["get", "post", "put", "delete", "patch"]
     }
 }
 

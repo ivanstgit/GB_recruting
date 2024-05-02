@@ -4,8 +4,8 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useAuth, accountConfirm, accountConfirmResend } from '../../hooks/AuthProvider.js';
 
-import { AdditionalActionLink, FormContainer, HeaderText, InputText, SubmitButton, formStatuses } from "../../components/LibFormFields.js"
-import { ErrorLabel, WarningLabel } from '../../components/LibUICommon.js';
+import { AdditionalActionLink, FormContainer, HeaderText, InputText, SubmitButton, formStatuses } from "../../components/common/FormFields.js"
+import { ErrorLabel, WarningLabel } from '../../components/common/UICommon.js';
 
 const AccountConfirmationForm = (props) => {
     const location = useLocation();
