@@ -67,12 +67,12 @@ export const InputEmail = (props) => {
     );
 };
 
-export const InputDate = ({ id, name, label, value, errorText = "", helpText = "", onChange }) => {
+export const InputDate = ({ id, name, label, value, errorText = "", helpText = "", onChange, disabled = false }) => {
     return (
         <div className="mb-3">
             <label className="form-label border-0" htmlFor={id}>{label}</label>
             <input type="date" className={"form-control " + getError(errorText).style} id={id} name={name}
-                value={value} onChange={(event) => onChange(event)} />
+                value={value} onChange={(event) => onChange(event)} disabled={disabled} />
             <div className="invalid-feedback">{getError(errorText).error}</div>
             <small id={id + "Help"} className="form-text text-muted">{helpText}</small>
         </div>
@@ -84,7 +84,7 @@ export const InputCheckBox = ({ id, name, label, value, errorText = "", helpText
         <div className="mb-3 form-check">
 
             <input type="checkbox" className={"form-check-input " + getError(errorText).style} id={id} name={name}
-                value={value} onChange={(event) => onChange(event)} />
+                checked={value} onChange={(event) => onChange(event)} />
             <label className="form-check-label border-0" htmlFor={id}>{label}</label>
             <div className="invalid-feedback">{getError(errorText).error}</div>
             <small id={id + "Help"} className="form-text text-muted">{helpText}</small>

@@ -5,7 +5,7 @@ import { Link, useResolvedPath, useMatch } from "react-router-dom";
 const NavItem = ({ item, index }) => {
   const resolvedPath = useResolvedPath(item.link + "*")
   const isActive = useMatch({ path: resolvedPath.pathname }) ? " active" : " link-dark"
-  console.log(resolvedPath.pathname + isActive)
+  // console.log(resolvedPath.pathname + isActive)
 
   return (<Link key={"NLL" + index} to={item.link} className={"nav-link" + isActive}>{item.text}</Link>)
 }

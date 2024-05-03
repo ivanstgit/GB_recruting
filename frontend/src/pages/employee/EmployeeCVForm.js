@@ -57,7 +57,7 @@ const CVExperienceBlock = ({ index, item, cities, onSubmit }) => {
     const [status, setStatus] = useState(formStatuses.prefill)
     const [validationErrors, setValidationErrors] = useState({});
 
-    const { t } = useTranslation("SharedCVs");
+    const { t } = useTranslation("SharedCV");
 
     const empty_field_error = t("form.fieldIsRequired")
 
@@ -79,14 +79,23 @@ const CVExperienceBlock = ({ index, item, cities, onSubmit }) => {
             let field = fields[index]
 
             if (input[field] === initialStateExperience[field]) {
-                res[field] = empty_field_error
+                if (field === "is_current" || field === "dateto") {
+                    if ((input.dateto === "") && (input.is_current === false)) {
+                        res[field] = empty_field_error
+                    }
+                } else {
+                    res[field] = empty_field_error
+                }
             }
         }
         return res
     }
 
     const handleChange = (e) => {
-        let { name, value } = e.target;
+        // let { name, value } = e.target;
+        const { target } = e;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const { name } = target;
         setInput((prev) => ({
             ...prev,
             [name]: value,
@@ -114,17 +123,16 @@ const CVExperienceBlock = ({ index, item, cities, onSubmit }) => {
             <div className="row g-3">
                 <div className="col">
 
-                    <InputDate id="datefrom" name="datefrom" value={input.datefrom} label={t("experience.interval")}
+                    <InputDate id="datefrom" name="datefrom" value={input.datefrom} label={t("experience.interval") + ": " + t("experience.datefrom")}
                         errorText={validationErrors?.datefrom ?? ""}
                         onChange={(event) => handleChange(event)} />
                 </div>
                 <div className="col">
-                    <InputDate id="dateto" name="dateto" value={input.dateto} label=""
+                    <InputDate id="dateto" name="dateto" value={input.dateto} label={t("experience.dateto")}
                         errorText={validationErrors?.dateto ?? ""}
-                        onChange={(event) => handleChange(event)} />
-                </div>
-                <div className="col">
-                    <InputCheckBox id="is_current" name="is_current" value={input.is_current} label={t("experience.interval")}
+                        onChange={(event) => handleChange(event)}
+                        disabled={input.is_current} />
+                    <InputCheckBox id="is_current" name="is_current" value={input.is_current} label={t("experience.is_current")}
                         errorText={validationErrors?.dateto ?? ""}
                         onChange={(event) => handleChange(event)} />
                 </div>
@@ -136,7 +144,7 @@ const CVExperienceBlock = ({ index, item, cities, onSubmit }) => {
                 options={cities}
             />
 
-            <InputText id="company" name="company" value={input.position} label={t("experience.company")}
+            <InputText id="company" name="company" value={input.company} label={t("experience.company")}
                 errorText={validationErrors?.company ?? ""}
                 onChange={(event) => handleChange(event)} />
 
@@ -160,7 +168,7 @@ const CVEducationBlock = ({ index, item, onSubmit }) => {
     const [status, setStatus] = useState(formStatuses.prefill)
     const [validationErrors, setValidationErrors] = useState({});
 
-    const { t } = useTranslation("SharedCVs");
+    const { t } = useTranslation("SharedCV");
 
     const empty_field_error = t("form.fieldIsRequired")
 
@@ -207,15 +215,15 @@ const CVEducationBlock = ({ index, item, onSubmit }) => {
             setStatus(formStatuses.error)
         } else {
             onSubmit(input)
-            setInput(initialStateExperience)
+            setInput(initialStateEducation)
             setStatus(formStatuses.initial)
         }
     }
 
     return (
         <div>
-            <InputDate id="date" name="date" value={input.datefrom} label={t("education.date")}
-                errorText={validationErrors?.education_date ?? ""}
+            <InputDate id="date" name="date" value={input.date} label={t("education.date")}
+                errorText={validationErrors?.date ?? ""}
                 onChange={(event) => handleChange(event)} />
 
             <InputText id="institution" name="institution" value={input.institution} label={t("education.institution")}
@@ -244,7 +252,7 @@ const EmployeeCVForm = (props) => {
     const [selectedExperienceIndex, setSelectedExperienceIndex] = useState(-1);
     const [selectedEducationIndex, setSelectedEducationIndex] = useState(-1);
 
-    const { t } = useTranslation("SharedCVs");
+    const { t } = useTranslation("SharedCV");
 
     const dataProvider = useData()
 
@@ -405,38 +413,45 @@ const EmployeeCVForm = (props) => {
                         onChange={(event) => handleChange(event)} rows="5" />
 
                     {/* Experience */}
+                    <p> </p>
                     <SubHeaderText text={t("experience.header")} />
-
-                    <div>
-                        {input.experience.map((item, index) => <CVExperienceItem
-                            key={'ExperienceItem' + index}
-                            index={index}
-                            item={item}
-                            cityName={cities.find(x => x.id === item.id).name}
-                        />)}
+                    <div className="row g-3">
+                        <div className="col">
+                            {input.experience.map((item, index) => <CVExperienceItem
+                                key={'ExperienceItem' + index}
+                                index={index}
+                                item={item}
+                                cityName={cities.find(x => x.id === item.id).name}
+                            />)}
+                        </div>
+                        <div className="col">
+                            <CVExperienceBlock
+                                index={selectedExperienceIndex}
+                                item={input.experience[selectedExperienceIndex] ?? null}
+                                cities={cities}
+                                onSubmit={(item) => handleChangeExperience(item)} />
+                        </div>
                     </div>
-
-                    <CVExperienceBlock
-                        index={selectedExperienceIndex}
-                        item={input.experience[selectedExperienceIndex] ?? null}
-                        onSubmit={(item) => handleChangeExperience(item)} />
-
 
                     {/* Education */}
+                    <p> </p>
                     <SubHeaderText text={t("education.header")} />
 
-                    <div>
-                        {input.experience.map((item, index) => <CVEducationItem
-                            key={'EducationItem' + index}
-                            index={index}
-                            item={item}
-                        />)}
+                    <div className="row g-3">
+                        <div className="col">
+                            {input.education.map((item, index) => <CVEducationItem
+                                key={'EducationItem' + index}
+                                index={index}
+                                item={item}
+                            />)}
+                        </div>
+                        <div className="col">
+                            <CVEducationBlock
+                                index={selectedEducationIndex}
+                                item={input.education[selectedEducationIndex] ?? null}
+                                onSubmit={(item) => handleChangeEducation(item)} />
+                        </div>
                     </div>
-
-                    <CVEducationBlock
-                        index={selectedEducationIndex}
-                        item={input.experience[selectedEducationIndex] ?? null}
-                        onSubmit={(item) => handleChangeEducation(item)} />
 
                     <div className="col-12">
                         <SubmitButton label={isEdit ? t("actions.edit") : t("actions.create")}

@@ -31,13 +31,13 @@ const NavItem = ({ index, item }) => {
   const resolvedPath = useResolvedPath(item.link)
   const isActive = useMatch({ path: resolvedPath.pathname }) ? " active" : ""
   // const isActive = useMatch({ path: resolvedPath.pathname, pattern: item.pattern }) ? " active" : ""
-  console.log(resolvedPath.pathname + isActive)
+  // console.log(resolvedPath.pathname + isActive)
 
   return (<Link key={"GN" + index} to={item.link} className={"nav-item nav-link" + isActive}>{item.text}</Link>)
 }
 
 const NavGlobal = () => {
-  console.log("renders menu")
+  // console.log("renders menu")
   const { t } = useTranslation("Navigation");
 
   const auth = useAuth()
