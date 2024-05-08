@@ -19,7 +19,7 @@ export const API_LIST = {
     commonGenders: "/v1.0/common/genders/",
     commonCities: "/v1.0/common/cities/",
     employeeProfile: "/v1.0/employee/profile/",
-    cvs: "/v1.0/cvs",
+    cvs: "/v1.0/cvs/",
 }
 
 function getHeader(token) {

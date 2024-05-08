@@ -46,9 +46,9 @@ const EmployeePage = () => {
                         <Route exact path={EmployeePaths.profile + ObjectActions.edit} element={<EmployeeProfileForm />} />
                         <Route exact path={EmployeePaths.cvs} element={<EmployeeCVsPage />} />
                         <Route exact path={EmployeePaths.cvs + ObjectActions.add} element={<EmployeeCVForm
-                            backTo={"../" + EmployeePaths.news} />} />
-                        <Route exact path={EmployeePaths.news + ":id/" + ObjectActions.edit} element={<EmployeeCVForm
-                            backTo={"../" + EmployeePaths.news} />} />
+                            backTo={"../" + EmployeePaths.cvs} />} />
+                        <Route exact path={EmployeePaths.cvs + ":id/" + ObjectActions.edit} element={<EmployeeCVForm
+                            backTo={"../" + EmployeePaths.cvs} />} />
                         <Route element={<EmployeeHomePage />} />
                     </Routes>
                 </div>

@@ -44,7 +44,7 @@ class CVPermission(permissions.BasePermission):
 
         # employee has full permissions except changing data in pending status
         if role == UserRoles.employee.value and obj.owner == request.user:
-            if request.method in permissions.SAFE_METHODS or obj.status in (
+            if request.method in permissions.SAFE_METHODS or obj.status.id in (
                 ConstDocumentStatus.draft,
                 ConstDocumentStatus.rejected,
             ):

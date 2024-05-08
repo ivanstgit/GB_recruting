@@ -319,6 +319,10 @@ class CVEducation(models.Model):
         _("Institution"),
         max_length=100,
     )
+    specialty = models.CharField(
+        _("Speciality"),
+        max_length=100,
+    )
     content = models.TextField(
         help_text=_("Content"),
         max_length=1024,

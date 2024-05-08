@@ -8,9 +8,8 @@ import {
     FormContainer, formStatuses,
     HeaderText, InputText, SubmitButton, InputTextArea, InputDate, InputSelect, SubHeaderText, InputCheckBox, FormButton
 } from "../../components/common/FormFields.js";
-import { ErrorLabel } from '../../components/common/UICommon.js';
+import { ErrorLabel, Loading, commonActions } from '../../components/common/UICommon.js';
 import { CVEducationCard, CVExperienceCard } from '../../components/shared/CV.js';
-
 
 const initialState = {
     title: "",
@@ -30,29 +29,35 @@ const initialStateExperience = {
 const initialStateEducation = {
     date: "",
     institution: "",
+    specialty: "",
     content: "",
 }
 
-const CVExperienceItem = ({ index, item, cityName }) => {
-
+const CVExperienceItem = ({ index, item, cityName, onEdit, onDelete }) => {
+    let actions = {}
+    actions[commonActions.edit] = () => onEdit(index)
+    actions[commonActions.delete] = () => onDelete(index)
     return (
         <div>
-            <CVExperienceCard item={item} cityName={cityName} />
+            <CVExperienceCard item={item} cityName={cityName} actions={actions} />
         </div>
     )
 }
 
-const CVEducationItem = ({ index, item }) => {
-
+const CVEducationItem = ({ index, item, onEdit, onDelete }) => {
+    let actions = {}
+    actions[commonActions.edit] = () => onEdit(index)
+    actions[commonActions.delete] = () => onDelete(index)
     return (
         <div>
-            <CVEducationCard item={item} />
+            <CVEducationCard item={item} actions={actions} />
         </div>
     )
 }
 
 const CVExperienceBlock = ({ index, item, cities, onSubmit }) => {
 
+    const [currentIndex, setCurrentIndex] = useState(-1);
     const [input, setInput] = useState(initialStateExperience);
     const [status, setStatus] = useState(formStatuses.prefill)
     const [validationErrors, setValidationErrors] = useState({});
@@ -61,12 +66,13 @@ const CVExperienceBlock = ({ index, item, cities, onSubmit }) => {
 
     const empty_field_error = t("form.fieldIsRequired")
 
-    const isEdit = (index > 0)
+    const isEdit = (index >= 0)
 
-    if (status === formStatuses.prefill) {
+    if ((index !== currentIndex) || (status === formStatuses.prefill)) {
         if (isEdit) {
             setInput(item)
         }
+        setCurrentIndex(index)
         setStatus(formStatuses.initial)
     }
 
@@ -102,17 +108,22 @@ const CVExperienceBlock = ({ index, item, cities, onSubmit }) => {
         }));
     }
 
-    const handleClick = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
         setStatus(formStatuses.pending)
 
         const errors = validateInput()
 
+        let data = input
+        if (data.is_current) {
+            data.dateto = new Date().toISOString().substring(0, 10)
+        }
+
         if (Object.keys(errors).length > 0) {
             setValidationErrors(errors)
             setStatus(formStatuses.error)
         } else {
-            onSubmit(input)
+            onSubmit(data)
             setInput(initialStateExperience)
             setStatus(formStatuses.initial)
         }
@@ -157,13 +168,14 @@ const CVExperienceBlock = ({ index, item, cities, onSubmit }) => {
                 onChange={(event) => handleChange(event)} rows="5"
                 helpText={t("experience.contentHelp")} />
 
-            <FormButton label={isEdit ? t("actions.edit") : t("actions.add")} onClick={(e) => handleClick(e)} />
+            <FormButton label={isEdit ? t("actions.edit") : t("actions.add")} onClick={(e) => handleSubmit(e)} />
         </div>
     )
 }
 
 
-const CVEducationBlock = ({ index, item, onSubmit }) => {
+const CVEducationBlock = ({ index, item, isSelected, onSubmit }) => {
+    const [currentIndex, setCurrentIndex] = useState(-1);
     const [input, setInput] = useState(initialStateEducation);
     const [status, setStatus] = useState(formStatuses.prefill)
     const [validationErrors, setValidationErrors] = useState({});
@@ -172,12 +184,13 @@ const CVEducationBlock = ({ index, item, onSubmit }) => {
 
     const empty_field_error = t("form.fieldIsRequired")
 
-    const isEdit = (index > 0)
+    const isEdit = (index >= 0)
 
-    if (status === formStatuses.prefill) {
+    if ((index !== currentIndex) || (status === formStatuses.prefill)) {
         if (isEdit) {
             setInput(item)
         }
+        setCurrentIndex(index)
         setStatus(formStatuses.initial)
     }
 
@@ -204,7 +217,7 @@ const CVEducationBlock = ({ index, item, onSubmit }) => {
         }));
     }
 
-    const handleClick = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
         setStatus(formStatuses.pending)
 
@@ -222,26 +235,30 @@ const CVEducationBlock = ({ index, item, onSubmit }) => {
 
     return (
         <div>
-            <InputDate id="date" name="date" value={input.date} label={t("education.date")}
+            <InputDate name="date" value={input.date} label={t("education.date")}
                 errorText={validationErrors?.date ?? ""}
                 onChange={(event) => handleChange(event)} />
 
-            <InputText id="institution" name="institution" value={input.institution} label={t("education.institution")}
+            <InputText name="institution" value={input.institution} label={t("education.institution")}
                 errorText={validationErrors?.institution ?? ""}
                 onChange={(event) => handleChange(event)} />
 
-            <InputTextArea id="content" name="content" value={input.content} label={t("education.content")}
+            <InputText name="specialty" value={input.specialty} label={t("education.specialty")}
+                errorText={validationErrors?.specialty ?? ""}
+                onChange={(event) => handleChange(event)} />
+
+            <InputTextArea name="content" value={input.content} label={t("education.content")}
                 errorText={validationErrors?.content ?? ""}
                 onChange={(event) => handleChange(event)} rows="5"
                 helpText={t("education.contentHelp")} />
 
-            <FormButton label={isEdit ? t("actions.edit") : t("actions.add")} onClick={(e) => handleClick(e)} />
+            <FormButton label={isEdit ? t("actions.edit") : t("actions.add")} onClick={(e) => handleSubmit(e)} />
         </div>
     )
 }
 
 
-const EmployeeCVForm = (props) => {
+const EmployeeCVForm = ({ backTo }) => {
 
     const [cities, setCities] = useState([]);
 
@@ -271,17 +288,21 @@ const EmployeeCVForm = (props) => {
 
         // form prefill from server
         if (isEdit) {
-            dataProvider.getOne(DATA_RESOURCES.staffNews, id)
+            dataProvider.getOne(DATA_RESOURCES.cvs, id)
                 .then((res) => {
                     if (res.error) {
                         setError(res.error)
                         setStatus(formStatuses.error)
                     } else {
+                        let expList = res.data.experience
+                        expList.forEach(el => {
+                            el.city = el.city.id
+                        });
                         setInput(
                             {
                                 title: res.data.title,
                                 description: res.data.description,
-                                experience: res.data.experience,
+                                experience: expList,
                                 education: res.data.education
                             })
                         setError("")
@@ -298,11 +319,12 @@ const EmployeeCVForm = (props) => {
         const res = {}
 
         const fields = Object.keys(initialState)
+        const reqiredFields = ["title", "description"]
 
         for (const index in fields) {
             let field = fields[index]
 
-            if (input[field] === initialState[field]) {
+            if ((input[field] === initialState[field]) && reqiredFields.includes(field)) {
                 res[field] = empty_field_error
             }
         }
@@ -317,7 +339,30 @@ const EmployeeCVForm = (props) => {
         }));
     }
 
-    const handleChangeExperience = (item) => {
+    const handleEditExperience = (index) => {
+        console.log("edit " + index)
+        if (selectedExperienceIndex !== index) {
+            setSelectedExperienceIndex(index)
+        }
+    }
+
+    const handleDeleteExperience = (index) => {
+        console.log("delete " + index)
+
+        let exp = input.experience
+
+        if (selectedExperienceIndex === index) {
+            setSelectedExperienceIndex(-1)
+        }
+        exp.splice(index, 1)
+
+        setInput((prev) => ({
+            ...prev,
+            experience: exp,
+        }));
+    }
+
+    const handleSubmitExperience = (item) => {
         let exp = input.experience
 
         if (selectedExperienceIndex >= 0) {
@@ -333,7 +378,29 @@ const EmployeeCVForm = (props) => {
         setSelectedExperienceIndex(-1)
     }
 
-    const handleChangeEducation = (item) => {
+    const handleEditEducation = (index) => {
+        console.log("edit " + index)
+        if (selectedEducationIndex !== index) {
+            setSelectedEducationIndex(index)
+        }
+    }
+
+    const handleDeleteEducation = (index) => {
+        console.log("delete " + index)
+
+        let edu = input.education
+
+        if (selectedEducationIndex === index) {
+            setSelectedEducationIndex(-1)
+        }
+        edu.splice(index, 1)
+
+        setInput((prev) => ({
+            ...prev,
+            education: edu,
+        }));
+    }
+    const handleSubmitEducation = (item) => {
         let edu = input.education
 
         if (selectedEducationIndex >= 0) {
@@ -393,10 +460,14 @@ const EmployeeCVForm = (props) => {
     }
 
     if (status === formStatuses.success) {
-        return (<Navigate to={"../"} />)
+        return (<Navigate to={backTo} />)
     }
+    if (status === formStatuses.prefilling) {
+        return (<Loading />)
+    }
+    const cities2 = cities
     return (
-        <div className="container-xxl">
+        <div className="">
             <div className="row">
                 <FormContainer onSubmit={(event) => handleSubmit(event)}>
                     <HeaderText text={isEdit ? t("form.headerEdit") : t("form.headerCreate")} />
@@ -421,15 +492,17 @@ const EmployeeCVForm = (props) => {
                                 key={'ExperienceItem' + index}
                                 index={index}
                                 item={item}
-                                cityName={cities.find(x => x.id === item.id).name}
+                                cityName={cities.find(x => x.id === Number(item.city))?.name ?? ""}
+                                onEdit={handleEditExperience}
+                                onDelete={handleDeleteExperience}
                             />)}
                         </div>
                         <div className="col">
                             <CVExperienceBlock
                                 index={selectedExperienceIndex}
                                 item={input.experience[selectedExperienceIndex] ?? null}
-                                cities={cities}
-                                onSubmit={(item) => handleChangeExperience(item)} />
+                                cities={cities2}
+                                onSubmit={(item) => handleSubmitExperience(item)} />
                         </div>
                     </div>
 
@@ -443,13 +516,15 @@ const EmployeeCVForm = (props) => {
                                 key={'EducationItem' + index}
                                 index={index}
                                 item={item}
+                                onEdit={handleEditEducation}
+                                onDelete={handleDeleteEducation}
                             />)}
                         </div>
                         <div className="col">
                             <CVEducationBlock
                                 index={selectedEducationIndex}
                                 item={input.education[selectedEducationIndex] ?? null}
-                                onSubmit={(item) => handleChangeEducation(item)} />
+                                onSubmit={(item) => handleSubmitEducation(item)} />
                         </div>
                     </div>
 

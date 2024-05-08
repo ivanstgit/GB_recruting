@@ -215,6 +215,7 @@ class CVExperienceSerializerInt(serializers.ModelSerializer):
             "is_current",
             "city",
             "company",
+            "position",
             "content",
         ]
 
@@ -258,6 +259,7 @@ class CVEducationSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "date",
+            "specialty",
             "institution",
             "content",
             "created_at",

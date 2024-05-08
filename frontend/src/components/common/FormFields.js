@@ -1,5 +1,7 @@
 // import React, { useState } from 'react';
 
+import { getUID } from "../../utils/UniqueId";
+
 const getError = (errorText) => {
     if (errorText) {
         return { error: errorText, style: "is-invalid" }
@@ -29,57 +31,61 @@ export const FormContainer = ({ onSubmit, children }) => {
     );
 };
 
-export const InputText = (props) => {
+export const InputText = ({ name, value, label, onChange, errorText = "", helpText = "" }) => {
+    const id = getUID()
     return (
         <div className="mb-3">
-            <label className="form-label border-0" htmlFor={props.id}>{props.label}</label>
-            <input type="text" className={"form-control " + getError(props.errorText).style} id={props.id} name={props.name}
-                value={props.value} onChange={(event) => props.onChange(event)} />
-            <div className="invalid-feedback">{getError(props.errorText).error}</div>
-            <small id={props.id + "Help"} className="form-text text-muted">{props.helpText}</small>
+            <label className="form-label border-0" htmlFor={id}>{label}</label>
+            <input type="text" className={"form-control " + getError(errorText).style} id={id} name={name}
+                value={value} onChange={(event) => onChange(event)} />
+            <div className="invalid-feedback">{getError(errorText).error}</div>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>
     );
 };
 
-export const InputTextArea = (props) => {
-    const rows = props.rows ?? "2"
+export const InputTextArea = ({ name, value, label, onChange, errorText = "", helpText = "", rows = 2 }) => {
+    const id = getUID()
     return (
         <div className="mb-3">
-            <label className="form-label border-0" htmlFor={props.id}>{props.label}</label>
-            <textarea className={"form-control " + getError(props.errorText).style} id={props.id} name={props.name}
-                value={props.value} onChange={(event) => props.onChange(event)}
+            <label className="form-label border-0" htmlFor={id}>{label}</label>
+            <textarea className={"form-control " + getError(errorText).style} id={id} name={name}
+                value={value} onChange={(event) => onChange(event)}
                 rows={rows} />
-            <div className="invalid-feedback">{getError(props.errorText).error}</div>
-            <small id={props.id + "Help"} className="form-text text-muted">{props.helpText}</small>
+            <div className="invalid-feedback">{getError(errorText).error}</div>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>
     );
 };
 
-export const InputEmail = (props) => {
+export const InputEmail = (name, value, label, onChange, errorText = "", helpText = "") => {
+    const id = getUID()
     return (
         <div className="mb-3">
-            <label className="form-label border-0" htmlFor={props.id}>{props.label}</label>
-            <input type="text" className={"form-control " + getError(props.errorText).style} id={props.id} name={props.name}
-                value={props.value} onChange={(event) => props.onChange(event)} />
-            <div className="invalid-feedback">{getError(props.errorText).error}</div>
-            <small id={props.id + "Help"} className="form-text text-muted">{props.helpText}</small>
+            <label className="form-label border-0" htmlFor={id}>{label}</label>
+            <input type="text" className={"form-control " + getError(errorText).style} id={id} name={name}
+                value={value} onChange={(event) => onChange(event)} />
+            <div className="invalid-feedback">{getError(errorText).error}</div>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>
     );
 };
 
-export const InputDate = ({ id, name, label, value, errorText = "", helpText = "", onChange, disabled = false }) => {
+export const InputDate = ({ name, label, value, errorText = "", helpText = "", onChange, disabled = false }) => {
+    const id = getUID()
     return (
         <div className="mb-3">
             <label className="form-label border-0" htmlFor={id}>{label}</label>
             <input type="date" className={"form-control " + getError(errorText).style} id={id} name={name}
                 value={value} onChange={(event) => onChange(event)} disabled={disabled} />
             <div className="invalid-feedback">{getError(errorText).error}</div>
-            <small id={id + "Help"} className="form-text text-muted">{helpText}</small>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>
     );
 };
 
-export const InputCheckBox = ({ id, name, label, value, errorText = "", helpText = "", onChange }) => {
+export const InputCheckBox = ({ name, label, value, errorText = "", helpText = "", onChange }) => {
+    const id = getUID()
     return (
         <div className="mb-3 form-check">
 
@@ -87,26 +93,28 @@ export const InputCheckBox = ({ id, name, label, value, errorText = "", helpText
                 checked={value} onChange={(event) => onChange(event)} />
             <label className="form-check-label border-0" htmlFor={id}>{label}</label>
             <div className="invalid-feedback">{getError(errorText).error}</div>
-            <small id={id + "Help"} className="form-text text-muted">{helpText}</small>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>
     );
 };
 
-export const InputPassword = (props) => {
+export const InputPassword = ({ name, label, value, errorText = "", helpText = "", onChange }) => {
+    const id = getUID()
     return (
         <div className="mb-3">
-            <label className="form-label border-0" htmlFor={props.id}>{props.label}</label>
-            <input type="password" className={"form-control " + getError(props.errorText).style} id={props.id} name={props.name}
-                value={props.value} onChange={(event) => props.onChange(event)} />
-            <div className="invalid-feedback">{getError(props.errorText).error}</div>
-            <small id="passwordHelp" className="form-text text-muted">{props.helpText}</small>
+            <label className="form-label border-0" htmlFor={id}>{label}</label>
+            <input type="password" className={"form-control " + getError(errorText).style} id={id} name={name}
+                value={value} onChange={(event) => onChange(event)} />
+            <div className="invalid-feedback">{getError(errorText).error}</div>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>
     );
 };
 
-export const InputRadioButtonGroup = (props) => {
+export const InputRadioButtonGroup = ({ name, label, value, errorText = "", helpText = "", onChange, options }) => {
+    const id = getUID()
     const isChecked = (option) => {
-        if (props.value === option) {
+        if (value === option) {
             return true
         }
         return false
@@ -114,12 +122,12 @@ export const InputRadioButtonGroup = (props) => {
 
     const radio = (index, value, desc) => {
         return (
-            <div className="form-check" key={props.id + index + 1}>
-                <input type="radio" className="form-check-input" key={props.id + index + 2}
-                    id={props.id + index} name={props.name} value={value}
-                    onChange={(event) => props.onChange(event)}
+            <div className="form-check" key={id + index + 1}>
+                <input type="radio" className="form-check-input" key={id + index + 2}
+                    id={id + index} name={name} value={value}
+                    onChange={(event) => onChange(event)}
                     checked={isChecked(value)} />
-                <label className="form-check-label" htmlFor={props.id + index} key={props.id + index + 3}>
+                <label className="form-check-label" htmlFor={id + index} key={id + index + 3}>
                     {desc}
                 </label>
             </div>
@@ -128,16 +136,17 @@ export const InputRadioButtonGroup = (props) => {
 
     return (
         <div className="mb-3">
-            <label className="form-label border-0">{props.label}</label>
+            <label className="form-label border-0">{label}</label>
 
-            {props.options.map((item, index) => radio(index, item[0], item[1]))}
+            {options.map((item, index) => radio(index, item[0], item[1]))}
 
-            <div className="invalid-feedback">{getError(props.errorText).error}</div>
+            <div className="invalid-feedback">{getError(errorText).error}</div>
         </div>
     );
 };
 
-export const InputSelect = ({ id, name, label, options, value, errorText = "", helpText = "", onChange }) => {
+export const InputSelect = ({ name, label, options, value, errorText = "", helpText = "", onChange }) => {
+    const id = getUID()
     return (
         <div className="mb-3">
             <label className="form-label border-0" htmlFor={id}>{label}</label>
@@ -149,7 +158,7 @@ export const InputSelect = ({ id, name, label, options, value, errorText = "", h
                 )}
             </select>
             <div className="invalid-feedback">{getError(errorText).error}</div>
-            <small id={id + "Help"} className="form-text text-muted">{helpText}</small>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>
     );
 };

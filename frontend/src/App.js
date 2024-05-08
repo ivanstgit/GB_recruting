@@ -10,6 +10,7 @@ import {
 import './css/bootstrap.min.css'
 import './css/style.css'
 import './css/all.min.css'
+import "bootstrap-icons/font/bootstrap-icons.css";
 
 // import TranslationProvider from './hooks/TranslationProvider.js';
 import './i18n';

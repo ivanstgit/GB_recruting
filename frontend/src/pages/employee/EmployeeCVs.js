@@ -13,7 +13,7 @@ const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
     return (
         <tr>
             <td>{item.title}</td>
-            <td><p className="card-text">{item.status}</p></td>
+            <td><p className="card-text">{item.status.name}</p></td>
             <td>{new Date(item.created_at).toLocaleString()}</td>
             <td>
                 <div className="btn-group btn-group-sm" role="group" aria-label="">
