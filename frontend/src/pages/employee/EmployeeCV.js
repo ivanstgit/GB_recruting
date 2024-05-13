@@ -1,14 +1,20 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import { ObjectActions } from "../../routes/AppPaths.js"
 import { useData, DATA_RESOURCES, dataStatuses } from '../../hooks/DataProvider.js'
 import { ErrorLabel } from "../../components/common/UICommon.js";
+import { ActionGroup, commonActions } from "../../components/common/Actions.js";
 
 
 const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
-    const { t } = useTranslation("Employee");
+    const navigate = useNavigate();
+    let actions = {}
+    actions[commonActions.detail] = () => navigate(item.id + "/")
+    actions[commonActions.copy] = () => navigate(ObjectActions.add, { state: { fromId: item.id } })
+    actions[commonActions.edit] = () => navigate(item.id + "/" + ObjectActions.edit)
+    actions[commonActions.delete] = () => onDelete(item.id)
 
     return (
         <tr>
@@ -16,12 +22,13 @@ const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
             <td><p className="card-text">{item.status.name}</p></td>
             <td>{new Date(item.created_at).toLocaleString()}</td>
             <td>
-                <div className="btn-group btn-group-sm" role="group" aria-label="">
+                {/* <div className="btn-group btn-group-sm" role="group" aria-label="">
                     <Link to={item.id + "/"} className="btn btn-link btn-secondary">{t("CVs.actions.detail")}</Link>
                     <Link to={item.id + "/" + ObjectActions.edit} className="btn btn-warning">{t("CVs.actions.edit")}</Link>
                     <button className="btn btn-danger" onClick={() => onDelete(item.id)}>{t("CVs.actions.delete")}</button>
                     <button className="btn btn-success" onClick={() => onPublish(item.id)}>{t("CVs.actions.publish")}</button>
-                </div>
+                </div> */}
+                <ActionGroup actions={actions} />
             </td>
         </tr>
     )

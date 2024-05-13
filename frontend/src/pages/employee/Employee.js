@@ -8,8 +8,9 @@ import { ObjectActions } from "../../routes/AppPaths.js"
 import EmployeeHomePage from "./EmployeeHome.js"
 import EmployeeProfileForm from "./EmployeeProfileForm.js"
 import EmployeeProfilePage from "./EmployeeProfile.js"
-import EmployeeCVsPage from "./EmployeeCVs.js"
+import EmployeeCVsPage from "./EmployeeCV.js"
 import EmployeeCVForm from "./EmployeeCVForm.js"
+import EmployeeCVDetailPage from "./EmployeeCVDetail.js"
 
 export const EmployeePaths = {
     home: "home/",
@@ -45,6 +46,8 @@ const EmployeePage = () => {
                         <Route exact path={EmployeePaths.profile} element={<EmployeeProfilePage />} />
                         <Route exact path={EmployeePaths.profile + ObjectActions.edit} element={<EmployeeProfileForm />} />
                         <Route exact path={EmployeePaths.cvs} element={<EmployeeCVsPage />} />
+                        <Route exact path={EmployeePaths.cvs + ":id/"} element={<EmployeeCVDetailPage
+                            backTo={"../" + EmployeePaths.cvs} />} />
                         <Route exact path={EmployeePaths.cvs + ObjectActions.add} element={<EmployeeCVForm
                             backTo={"../" + EmployeePaths.cvs} />} />
                         <Route exact path={EmployeePaths.cvs + ":id/" + ObjectActions.edit} element={<EmployeeCVForm

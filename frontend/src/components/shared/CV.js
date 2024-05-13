@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { ActionToolbar } from '../common/UICommon';
+import { ActionToolbar } from '../common/Actions';
+import { HeaderText, SubHeaderText } from '../common/FormFields';
 
 export const CVExperienceCard = ({ item, cityName = "", actions = {} }) => {
     const { t } = useTranslation("SharedCV");
@@ -69,6 +70,28 @@ export const CVEducationCard = ({ item, actions = {} }) => {
                     </div>
                 </div>
             </div>
+        </div>
+    )
+}
+
+export const CVDetail = ({ item, actions = {} }) => {
+    const { t } = useTranslation("SharedCV");
+
+    return (
+        <div className="">
+            <SubHeaderText text={t("generalInfo.header")} />
+            <SubHeaderText text={t("experience.header")} />
+            {item.experience.map((item, index) => <CVExperienceCard
+                key={'ExperienceItem' + index}
+                index={index}
+                item={item}
+            />)}
+            <SubHeaderText text={t("education.header")} />
+            {item.education.map((item, index) => <CVEducationCard
+                key={'EducationItem' + index}
+                index={index}
+                item={item}
+            />)}
         </div>
     )
 }

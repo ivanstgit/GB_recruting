@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import { useData, DATA_RESOURCES } from '../../hooks/DataProvider.js'
@@ -8,8 +8,9 @@ import {
     FormContainer, formStatuses,
     HeaderText, InputText, SubmitButton, InputTextArea, InputDate, InputSelect, SubHeaderText, InputCheckBox, FormButton
 } from "../../components/common/FormFields.js";
-import { ErrorLabel, Loading, commonActions } from '../../components/common/UICommon.js';
+import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
 import { CVEducationCard, CVExperienceCard } from '../../components/shared/CV.js';
+import { commonActions } from '../../components/common/Actions.js';
 
 const initialState = {
     title: "",
@@ -274,7 +275,11 @@ const EmployeeCVForm = ({ backTo }) => {
     const dataProvider = useData()
 
     const { id } = useParams();
+    const location = useLocation()
+    const fromId = location.state?.fromId
+
     const isEdit = id ? true : false
+    const isCopy = fromId ? true : false
 
     const empty_field_error = t("form.fieldIsRequired")
 
@@ -287,8 +292,9 @@ const EmployeeCVForm = ({ backTo }) => {
             })
 
         // form prefill from server
-        if (isEdit) {
-            dataProvider.getOne(DATA_RESOURCES.cvs, id)
+        if (isEdit || isCopy) {
+            let src = id ?? fromId
+            dataProvider.getOne(DATA_RESOURCES.cvs, src)
                 .then((res) => {
                     if (res.error) {
                         setError(res.error)
