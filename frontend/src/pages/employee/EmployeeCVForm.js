@@ -6,7 +6,7 @@ import { useData, DATA_RESOURCES } from '../../hooks/DataProvider.js'
 
 import {
     FormContainer, formStatuses,
-    HeaderText, InputText, SubmitButton, InputTextArea, InputDate, InputSelect, SubHeaderText, InputCheckBox, FormButton
+    HeaderText, InputText, SubmitButton, InputTextArea, InputDate, InputSelect, SubHeaderText, InputCheckBox, FormButton, InputNumber
 } from "../../components/common/FormFields.js";
 import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
 import { CVEducationCard, CVExperienceCard } from '../../components/shared/CV.js';
@@ -14,6 +14,8 @@ import { commonActions } from '../../components/common/Actions.js';
 
 const initialState = {
     title: "",
+    position: "",
+    salary: 0,
     description: "",
     experience: [],
     education: []
@@ -478,16 +480,25 @@ const EmployeeCVForm = ({ backTo }) => {
                 <FormContainer onSubmit={(event) => handleSubmit(event)}>
                     <HeaderText text={isEdit ? t("form.headerEdit") : t("form.headerCreate")} />
 
-                    {/* General information */}
-                    <SubHeaderText text={t("generalInfo.header")} />
+                    {/* Internal information */}
+                    <SubHeaderText text={t("internal.header")} />
 
-                    <InputText id="title" name="title" value={input.title} label={t("generalInfo.title")}
+                    <InputText id="title" name="title" value={input.title} label={t("internal.title")}
                         errorText={validationErrors?.title ?? ""}
                         onChange={(event) => handleChange(event)} />
 
-                    <InputTextArea id="description" name="description" value={input.description} label={t("generalInfo.description")}
+                    {/* Position */}
+                    <SubHeaderText text={t("position.header")} />
+                    <InputText id="position" name="position" value={input.position} label={t("position.position")}
+                        errorText={validationErrors?.position ?? ""}
+                        onChange={(event) => handleChange(event)} />
+                    <InputNumber id="salary" name="salary" value={input.salary} label={t("position.salary")}
+                        errorText={validationErrors?.salary ?? ""}
+                        onChange={(event) => handleChange(event)} />
+                    <InputTextArea id="description" name="description" value={input.description} label={t("position.description")}
                         errorText={validationErrors?.description ?? ""}
-                        onChange={(event) => handleChange(event)} rows="5" />
+                        onChange={(event) => handleChange(event)} rows="5"
+                        helpText={t("position.descriptionHelp")} />
 
                     {/* Experience */}
                     <p> </p>

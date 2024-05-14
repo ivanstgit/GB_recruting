@@ -48,6 +48,7 @@
             "header": {
                 "title": "Описание",
                 "status": "Статус",
+                "position": "Позиция",
                 "created": "Создано",
                 "actions": "Действия"
             }

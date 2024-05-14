@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { ActionToolbar } from '../common/Actions';
 import { HeaderText, SubHeaderText } from '../common/FormFields';
+import { EmployeeCVCard } from './Employee';
 
 export const CVExperienceCard = ({ item, cityName = "", actions = {} }) => {
     const { t } = useTranslation("SharedCV");
@@ -79,7 +80,19 @@ export const CVDetail = ({ item, actions = {} }) => {
 
     return (
         <div className="">
-            <SubHeaderText text={t("generalInfo.header")} />
+            <SubHeaderText text={t("employee.header")} />
+            <EmployeeCVCard item={item.employee} />
+            <SubHeaderText text={t("position.header")} />
+            <div className="card">
+                <div className="p-3 card-body">
+
+                    <h5 className="card-title">{item.position}</h5>
+                    <h6 className="card-subtitle text-muted"><i className="bi bi-cash-stack me-3"></i>{t("position.salary")}: {item.salary}</h6>
+                    <p className="card-text mt-1 "><i className="bi bi-card-text me-3" />{item.description}</p>
+
+                </div>
+            </div>
+
             <SubHeaderText text={t("experience.header")} />
             {item.experience.map((item, index) => <CVExperienceCard
                 key={'ExperienceItem' + index}

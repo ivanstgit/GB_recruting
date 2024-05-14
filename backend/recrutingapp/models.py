@@ -273,6 +273,13 @@ class CV(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
         error_messages={},
     )
 
+    position = models.CharField(
+        _("Position"),
+        max_length=100,
+    )
+
+    salary = models.DecimalField(decimal_places=0, max_digits=10)
+
     description = models.TextField()
 
     class Meta:

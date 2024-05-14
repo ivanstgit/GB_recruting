@@ -31,6 +31,19 @@ export const FormContainer = ({ onSubmit, children }) => {
     );
 };
 
+export const InputNumber = ({ name, value, label, onChange, errorText = "", helpText = "" }) => {
+    const id = getUID()
+    return (
+        <div className="mb-3">
+            <label className="form-label border-0" htmlFor={id}>{label}</label>
+            <input type="number" className={"form-control " + getError(errorText).style} id={id} name={name}
+                value={value} onChange={(event) => onChange(event)} />
+            <div className="invalid-feedback">{getError(errorText).error}</div>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
+        </div>
+    );
+};
+
 export const InputText = ({ name, value, label, onChange, errorText = "", helpText = "" }) => {
     const id = getUID()
     return (
@@ -195,6 +208,6 @@ export const HeaderText = ({ text }) => {
 };
 export const SubHeaderText = ({ text }) => {
     return (
-        <h3 className="text-center mb-3" > {text} </h3>
+        <h3 className="text-center mt-3 mb-2" > {text} </h3>
     );
 };

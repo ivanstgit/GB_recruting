@@ -20,6 +20,7 @@ const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
         <tr>
             <td>{item.title}</td>
             <td><p className="card-text">{item.status.name}</p></td>
+            <td><p className="card-text">{item.position}</p></td>
             <td>{new Date(item.created_at).toLocaleString()}</td>
             <td>
                 {/* <div className="btn-group btn-group-sm" role="group" aria-label="">
@@ -114,6 +115,7 @@ const EmployeeCVsPage = () => {
                             <tr>
                                 <th scope="col">{t("CVs.table.header.title")}</th>
                                 <th scope="col">{t("CVs.table.header.status")}</th>
+                                <th scope="col">{t("CVs.table.header.position")}</th>
                                 <th scope="col">{t("CVs.table.header.created")}</th>
                                 <th scope="col">{t("CVs.table.header.actions")}</th>
                             </tr>
