@@ -67,3 +67,10 @@ export function dataDeleteOne(api, token, id) {
     return API.delete(url, { headers })
 }
 
+export function dataSetStatus(api, token, id, status, info) {
+    let headers = getHeader(token)
+    let url = urlPrefix + API_LIST[api] + id + "/status/"
+
+    return API.patch(url, { "status": status, "info": info }, { headers })
+}
+

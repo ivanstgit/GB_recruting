@@ -309,6 +309,8 @@ const EmployeeCVForm = ({ backTo }) => {
                         setInput(
                             {
                                 title: res.data.title,
+                                position: res.data.position,
+                                salary: res.data.salary,
                                 description: res.data.description,
                                 experience: expList,
                                 education: res.data.education

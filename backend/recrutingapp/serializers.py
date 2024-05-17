@@ -309,7 +309,11 @@ class CVSerializerInt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerial
         education_data = validated_data.pop("education")
 
         instance.title = validated_data.get("title", instance.title)
+        instance.position = validated_data.get("position", instance.position)
+        instance.salary = validated_data.get("salary", instance.salary)
         instance.description = validated_data.get("description", instance.description)
+
+        instance.save()
 
         cv = instance
 

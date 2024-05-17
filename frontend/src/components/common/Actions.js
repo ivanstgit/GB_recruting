@@ -2,10 +2,13 @@ import { useTranslation } from "react-i18next";
 
 export const commonActions = {
     create: "create",
-    detail: "detail",
     edit: "edit",
     delete: "delete",
-    copy: "copy"
+    copy: "copy",
+    publish: "publish",
+
+    back: "back",
+    detail: "detail"
 }
 
 // Action toolbars
@@ -16,7 +19,7 @@ const ActionIcon = ({ label = "", showText = false, onClick, iconStyle, buttonSt
             return (
                 <button type="button"
                     className={"btn border-0 p-1 mt-0 " + buttonStyle + " bi " + iconStyle}
-                    onClick={onClick}>{label}</button>
+                    onClick={onClick}> {" " + label}</button>
             )
         else
             return (
@@ -32,7 +35,7 @@ export const ActionIconDetail = ({ showText = false, onClick }) => {
     const { t } = useTranslation("CommonActions");
     return (
         <ActionIcon label={t("actions.detail")} showText={showText} onClick={onClick}
-            iconStyle="bi-chevron-double-right" />
+            iconStyle="bi-box-arrow-right" />
     )
 }
 export const ActionIconEdit = ({ showText = false, onClick }) => {
@@ -56,14 +59,30 @@ export const ActionIconDelete = ({ showText = false, onClick }) => {
             iconStyle="bi-trash" buttonStyle="btn-outline-danger" />
     )
 }
-
-const ActionToolbarItem = ({ action, onClick }) => {
-    if (action === commonActions.edit) return (<ActionIconEdit onClick={onClick} />)
-    if (action === commonActions.detail) return (<ActionIconDetail onClick={onClick} />)
-    if (action === commonActions.delete) return (<ActionIconDelete onClick={onClick} />)
-    if (action === commonActions.copy) return (<ActionIconCopy onClick={onClick} />)
+export const ActionIconPublish = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.publish")} showText={showText} onClick={onClick}
+            iconStyle="bi-send-check" buttonStyle="btn-outline-success" />
+    )
 }
-export const ActionToolbar = ({ actions }) => {
+export const ActionIconBack = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.back")} showText={showText} onClick={onClick}
+            iconStyle="bi-arrow-return-left" />
+    )
+}
+
+const ActionToolbarItem = ({ action, onClick, showText = false }) => {
+    if (action === commonActions.edit) return (<ActionIconEdit onClick={onClick} showText={showText} />)
+    if (action === commonActions.delete) return (<ActionIconDelete onClick={onClick} showText={showText} />)
+    if (action === commonActions.copy) return (<ActionIconCopy onClick={onClick} showText={showText} />)
+    if (action === commonActions.publish) return (<ActionIconPublish onClick={onClick} showText={showText} />)
+    if (action === commonActions.back) return (<ActionIconBack onClick={onClick} showText={showText} />)
+    if (action === commonActions.detail) return (<ActionIconDetail onClick={onClick} showText={showText} />)
+}
+export const ActionToolbar = ({ actions, showText = false }) => {
     if (actions)
         return (
             <div className="float-end btn-toolbar justify-content-md-end">
@@ -72,24 +91,28 @@ export const ActionToolbar = ({ actions }) => {
                         key={'CATItem' + index}
                         action={action}
                         onClick={actions[action]}
+                        showText={showText}
                     />)}
             </div>
         )
     else
         return (<></>)
 }
-export const ActionGroup = ({ actions }) => {
-    if (actions)
+export const ActionGroup = ({ actions, size = "", showText = false }) => {
+    if (actions) {
+        const sizeStyle = (size === "") ? "" : "btn-group-" + size
         return (
-            <div className="btn-group btn-group-sm" role="group" aria-label="">
+            <div className={"btn-group " + sizeStyle} role="group" aria-label="">
                 {Object.keys(actions).map((action, index) =>
                     <ActionToolbarItem
                         key={'CATItem' + index}
                         action={action}
                         onClick={actions[action]}
+                        showText={showText}
                     />)}
             </div>
         )
+    }
     else
         return (<></>)
 }

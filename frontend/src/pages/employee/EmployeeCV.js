@@ -6,6 +6,7 @@ import { ObjectActions } from "../../routes/AppPaths.js"
 import { useData, DATA_RESOURCES, dataStatuses } from '../../hooks/DataProvider.js'
 import { ErrorLabel } from "../../components/common/UICommon.js";
 import { ActionGroup, commonActions } from "../../components/common/Actions.js";
+import { CVStatusIcon, CVStatuses } from "../../components/shared/CV.js";
 
 
 const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
@@ -13,13 +14,16 @@ const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
     let actions = {}
     actions[commonActions.detail] = () => navigate(item.id + "/")
     actions[commonActions.copy] = () => navigate(ObjectActions.add, { state: { fromId: item.id } })
-    actions[commonActions.edit] = () => navigate(item.id + "/" + ObjectActions.edit)
-    actions[commonActions.delete] = () => onDelete(item.id)
+    if (item.status.id === CVStatuses.draft || item.status.id === CVStatuses.rejected) {
+        actions[commonActions.edit] = () => navigate(item.id + "/" + ObjectActions.edit)
+        actions[commonActions.delete] = () => onDelete(item.id)
+        actions[commonActions.publish] = () => onPublish(item.id)
+    }
 
     return (
         <tr>
             <td>{item.title}</td>
-            <td><p className="card-text">{item.status.name}</p></td>
+            <td><div className="card-text"><CVStatusIcon status={item.status} showText={true} /></div></td>
             <td><p className="card-text">{item.position}</p></td>
             <td>{new Date(item.created_at).toLocaleString()}</td>
             <td>
@@ -29,7 +33,7 @@ const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
                     <button className="btn btn-danger" onClick={() => onDelete(item.id)}>{t("CVs.actions.delete")}</button>
                     <button className="btn btn-success" onClick={() => onPublish(item.id)}>{t("CVs.actions.publish")}</button>
                 </div> */}
-                <ActionGroup actions={actions} />
+                <ActionGroup actions={actions} size="sm" />
             </td>
         </tr>
     )
@@ -74,16 +78,16 @@ const EmployeeCVsPage = () => {
     }
 
     const publishItem = (id) => {
-        // dataProvider.deleteOne(DATA_RESOURCES.cvs, id)
-        //     .then((res) => {
-        //         if (res.error) {
-        //             setError(res.error)
-        //             setStatus(dataStatuses.error)
-        //         } else {
-        //             setError("")
-        //             setStatus(dataStatuses.initial)
-        //         }
-        //     })
+        dataProvider.setStatus(DATA_RESOURCES.cvs, id, CVStatuses.pending)
+            .then((res) => {
+                if (res.error) {
+                    setError(res.error)
+                    setStatus(dataStatuses.error)
+                } else {
+                    setError("")
+                    setStatus(dataStatuses.initial)
+                }
+            })
     }
 
 

@@ -1,7 +1,37 @@
 import { useTranslation } from 'react-i18next';
 import { ActionToolbar } from '../common/Actions';
-import { HeaderText, SubHeaderText } from '../common/FormFields';
+import { SubHeaderText } from '../common/FormFields';
 import { EmployeeCVCard } from './Employee';
+
+export const CVStatuses = {
+    draft: "d",
+    pending: "p",
+    approved: "a",
+    rejected: "r"
+}
+
+export const CVStatusIcon = ({ status, showText = false }) => {
+    const { t } = useTranslation("SharedCV");
+    const statusDesc = t("statuses." + status.id) ?? status.name ?? ""
+    let iconStyle = ""
+    if (status.id === CVStatuses.draft) iconStyle = "bi-eraser"
+    if (status.id === CVStatuses.pending) iconStyle = "bi-patch-question"
+    if (status.id === CVStatuses.approved) iconStyle = "bi-patch-check"
+    if (status.id === CVStatuses.rejected) iconStyle = "bi-patch-exclamation"
+    if (showText)
+        return (
+            <span>
+                {/* <h4 className={"badge bg-info"}> */}
+                <i className={"me-3 bi " + iconStyle} /> {statusDesc}
+            </span>
+        )
+    else
+        return (
+            <i
+                className={" p-1 me-3 bi " + iconStyle}
+                data-toggle="tooltip" data-placement="right" title={statusDesc} />
+        )
+}
 
 export const CVExperienceCard = ({ item, cityName = "", actions = {} }) => {
     const { t } = useTranslation("SharedCV");
