@@ -38,6 +38,7 @@ Prepare dev or test
 backend:
 poetry run python manage.py usergroups -m create
 poetry run python manage.py testusers -m create
+poetry run python manage.py loaddata recrutingapp/fixtures/genders.json recrutingapp/fixtures/regions.json recrutingapp/fixtures/cities.json
 poetry run python manage.py test
 
 ================================================

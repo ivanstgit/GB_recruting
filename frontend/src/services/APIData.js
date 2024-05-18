@@ -16,6 +16,10 @@ export const API_LIST = {
     publicNews: "/v1.0/public/news/",
     staffNewsPosts: "/v1.0/staff/news/posts/",
     staffNewsTags: "/v1.0/staff/news/tags/",
+    commonGenders: "/v1.0/common/genders/",
+    commonCities: "/v1.0/common/cities/",
+    employeeProfile: "/v1.0/employee/profile/",
+    cvs: "/v1.0/cvs/",
 }
 
 function getHeader(token) {
@@ -61,5 +65,12 @@ export function dataDeleteOne(api, token, id) {
     let url = urlPrefix + API_LIST[api] + id + "/"
 
     return API.delete(url, { headers })
+}
+
+export function dataSetStatus(api, token, id, status, info) {
+    let headers = getHeader(token)
+    let url = urlPrefix + API_LIST[api] + id + "/status/"
+
+    return API.patch(url, { "status": status, "info": info }, { headers })
 }
 

@@ -3,13 +3,13 @@ import { Navigate, useLocation } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
 
-import { accountCreate, useAuth, userRoles } from '../hooks/AuthProvider';
+import { accountCreate, useAuth, userRoles } from '../../hooks/AuthProvider.js';
 
 import {
     FormContainer, HeaderText, InputEmail, InputPassword,
     InputRadioButtonGroup, InputText, SubmitButton, formStatuses
-} from "../components/FormFields.js"
-import { ErrorLabel } from './CommonUI.js';
+} from "../../components/common/FormFields.js"
+import { ErrorLabel } from '../../components/common/UICommon.js';
 
 const AccountSignUpForm = (props) => {
     const location = useLocation();

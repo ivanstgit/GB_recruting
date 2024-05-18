@@ -1,0 +1,1 @@
+[{"model": "recrutingapp.city", "pk": 1, "fields": {"name": "Москва", "region": 1}}, {"model": "recrutingapp.city", "pk": 2, "fields": {"name": "Химки", "region": 3}}, {"model": "recrutingapp.city", "pk": 3, "fields": {"name": "Санкт-Петербург", "region": 2}}, {"model": "recrutingapp.city", "pk": 4, "fields": {"name": "Воронеж", "region": 4}}]

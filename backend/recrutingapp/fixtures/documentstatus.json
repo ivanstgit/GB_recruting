@@ -1,0 +1,1 @@
+[{"model": "recrutingapp.documentstatus", "pk": "a", "fields": {"name": "Подтверждено"}}, {"model": "recrutingapp.documentstatus", "pk": "d", "fields": {"name": "Черновик"}}, {"model": "recrutingapp.documentstatus", "pk": "p", "fields": {"name": "Отправлено"}}, {"model": "recrutingapp.documentstatus", "pk": "r", "fields": {"name": "Отклонено"}}]

@@ -4,7 +4,7 @@ import { useContext, createContext } from "react";
 
 import Cookies from 'universal-cookie';
 
-import { authConfirm, authGenerate, authRefresh, authSignIn, authSignUp } from '../services/APIAuth.js'
+import { authConfirm, authConfirmResend, authGenerate, authRefresh, authSignIn, authSignUp } from '../services/APIAuth.js'
 import AppPaths from '../routes/AppPaths.js';
 
 
@@ -29,6 +29,7 @@ export const userRoles = {
 
 const initialState = {
     isAuthenticated: false,
+    isPending: true,
     user: {
         username: "",
         firstName: "",
@@ -50,19 +51,47 @@ class AuthProvider extends React.Component {
 
     componentDidMount() {
         console.log("mounting AuthProvider")
-        this.refreshToken()
-            .then(() => this.loadUser())
-        console.log("mounted AuthProvider")
+        this.logInFromCookie()
+    }
+
+    async logInFromCookie() {
+        await this.refreshToken()
+            .then(() => {
+                console.log(this.state.isPending)
+                this.loadUser()
+                    .then(() => {
+                        this.setState(prevState => {
+                            return {
+                                ...prevState,
+                                isPending: false,
+                            }
+                        })
+                    })
+            })
+
     }
 
     async logIn(login, password) {
         // if (this._isAuthenticated) { this.logout() }
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                isPending: true,
+            }
+        })
         console.log("login step 1")
         const res = await this.generateToken(login, password) && this.loadUser()
+
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                isPending: false,
+            }
+        })
         return res
     }
 
-    async logOut() {
+    logOut() { //this
         this._tokenAccess = ""
         AuthCookies.set(authCookieName, { token: "" }, cookieSetOptions)
         AuthCookies.remove(authCookieName, cookieSetOptions)
@@ -79,11 +108,11 @@ class AuthProvider extends React.Component {
             if (this.state.user?.isValidated) {
                 const role = this.state.user?.role
                 if (role === userRoles.employee) {
-                    return AppPaths.employee.home
+                    return AppPaths.employee
                 } else if (role === userRoles.employer) {
-                    return AppPaths.employer.home
+                    return AppPaths.employer
                 } else if (role === userRoles.moderator) {
-                    return AppPaths.moderator.home
+                    return AppPaths.moderator
                 }
             }
             return AppPaths.confirm + "?username=" + this.state.user?.username
@@ -99,15 +128,18 @@ class AuthProvider extends React.Component {
 
                 if (response.data) {
                     const user = response.data[0]
-                    this.setState({
-                        isAuthenticated: true,
-                        user: {
-                            username: user?.username ?? "",
-                            firstName: user?.first_name ?? "",
-                            lastName: user?.last_name ?? "",
-                            email: user?.email ?? "",
-                            role: user?.role ?? "",
-                            isValidated: user?.is_validated ?? false
+                    this.setState(prevState => {
+                        return {
+                            ...prevState,
+                            isAuthenticated: true,
+                            user: {
+                                username: user?.username ?? "",
+                                firstName: user?.first_name ?? "",
+                                lastName: user?.last_name ?? "",
+                                email: user?.email ?? "",
+                                role: user?.role ?? "",
+                                isValidated: user?.is_validated ?? false
+                            }
                         }
                     })
                     return true
@@ -174,6 +206,9 @@ class AuthProvider extends React.Component {
     }
 
     render() {
+        if (this.state.isPending) {
+            return <></>
+        }
         return (
             <AuthContext.Provider value={{
                 isAuthenticated: this.state.isAuthenticated,
@@ -225,7 +260,27 @@ export const accountConfirm = async (username, token) => {
         }
     }
     catch (error) {
-        console.log('SignUp error', error);
+        console.log('confirmation error', error);
+        return { data: null, error: error.message }
+    }
+
+}
+
+export const accountConfirmResend = async (token) => {
+    try {
+        console.log("account confirmation resend")
+        const response = await authConfirmResend(token)
+        console.log(response)
+
+        if (response.status === 201) {
+            return { data: null, error: null }
+        } else {
+            console.log(response)
+            return { data: null, error: response.statusText }
+        }
+    }
+    catch (error) {
+        console.log('confirmation resend error', error);
         return { data: null, error: error.message }
     }
 

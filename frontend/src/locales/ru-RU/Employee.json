@@ -1,0 +1,57 @@
+{
+    "Personal": "Личный кабинет",
+    "Profile": {
+        "header": "Профиль соискателя",
+        "emptyWarning": "Заполните профиль!",
+        "actions": {
+            "create": "Создать",
+            "edit": "Редактировать",
+            "delete": "Удалить"
+        },
+        "form": {
+            "headerCreate": "Создание профиля",
+            "headerEdit": "Редактирование профиля",
+            "name": "ФИО",
+            "birthday": "Дата рождения",
+            "gender": "Пол",
+            "email": "Почта для связи",
+            "city": "Город",
+            "description": "Кратко о себе",
+            "skills": "Навыки"
+        },
+        "card": {
+            "name": "ФИО",
+            "age": "Возраст",
+            "gender": "Пол",
+            "email": "Почта для связи",
+            "city": "Город",
+            "description": "Кратко о себе",
+            "skills": "Навыки"
+        }
+    },
+    "Errors": {
+        "FieldIsRequired": "Поле обязательно для заполнения",
+        "FillAllRequiredFields": "Заполните все обязательные поля"
+    },
+    "CVs": {
+        "header": "Резюме",
+        "actions": {
+            "detail": "Посмотреть",
+            "add": "Добавить",
+            "edit": "Редактировать",
+            "delete": "Удалить",
+            "publish": "Опубликовать",
+            "reject": "Отклонить",
+            "approve": "Подтвердить"
+        },
+        "table": {
+            "header": {
+                "title": "Описание",
+                "status": "Статус",
+                "position": "Позиция",
+                "created": "Создано",
+                "actions": "Действия"
+            }
+        }
+    }
+}

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Footer(props) {
+export default function NavigationFooter(props) {
   return (
     <div className="container-fluid bg-dark text-light footer wow fadeIn">
       <div className="container">

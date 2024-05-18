@@ -1,5 +1,5 @@
 import random
-from django.core.mail import send_mail
+
 from django.core.validators import validate_email
 from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
@@ -14,6 +14,7 @@ from rest_framework.serializers import (
 from rest_framework.validators import UniqueValidator
 
 from userapp.models import UserRoles, ROLE_GROUPS, CustomUser
+from userapp.utils import send_confirmation_mail
 
 
 class SignUpSerializer(ModelSerializer):
@@ -44,13 +45,10 @@ class SignUpSerializer(ModelSerializer):
         user.is_validated = False
         user.set_password(validated_data["password"])
         user.save()
-        send_mail(
-            "E-mail confirmation",
-            "Your confirmation code is " + validation_code,
-            "noreply@example.com",
-            [user.email],
-            fail_silently=False,
-        )
+        try:
+            send_confirmation_mail(user)
+        finally:
+            pass
         return user
 
 
@@ -67,7 +65,7 @@ class EmailConfirmSerializer(Serializer):
             user = CustomUser.objects.get(username=user_name)
         validation_code = validated_data.get("token")
 
-        print(validated_data)
+        # print(validated_data)
         if (
             user
             and user.is_validated == False

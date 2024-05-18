@@ -3,11 +3,16 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import AppPaths from "../routes/AppPaths.js"
-import PublicNewsList from "./PublicNews.js"
 import { userRoles } from "../hooks/AuthProvider.js";
+import { useData } from "../hooks/DataProvider.js";
 
-const Home = () => {
+import { NewsList } from "../components/shared/News.js";
+
+const HomePage = () => {
     const { t } = useTranslation("Home");
+
+    const dataProvider = useData()
+    const news = dataProvider.publicNews.slice(0, 6) ?? []
 
     return (
         <div className="container-xxl py-1">
@@ -50,9 +55,8 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-            <PublicNewsList asCards={true} />
+            <NewsList items={news} asCards={true} linkPath={AppPaths.news} />
         </div>
-
     )
 }
-export default Home
+export default HomePage

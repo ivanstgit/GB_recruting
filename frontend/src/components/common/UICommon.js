@@ -1,3 +1,5 @@
+// import { useTranslation } from "react-i18next";
+
 export const ErrorLabel = ({ errorText }) => {
     if (errorText && errorText !== "") {
         return (
@@ -72,3 +74,43 @@ export const Paginator = ({ selectedPage, pagesCount, onPageSelect }) => {
             </ul>
         </nav>)
 }
+
+const NameValueTableItem = ({ name, value }) => {
+    return (
+        <tr>
+            <th scope="row">{name}</th>
+            <td>{value}</td>
+        </tr>
+    )
+}
+
+export const NameValueTable = ({ items, nameField = "name", valueField = "value", key = "NVT" }) => {
+    return (
+        <div className="table-responsive table-borderless">
+            <table className="table">
+                <thead>
+                </thead>
+                <tbody>
+                    {items.map((item, index) => <NameValueTableItem
+                        key={key + index}
+                        name={item?.[nameField] ?? ""}
+                        value={item?.[valueField] ?? ""}
+                    />)}
+                </tbody>
+            </table>
+        </div>
+    )
+}
+
+export const Loading = ({ text = "" }) => {
+    return (
+        <div className="container-xxl">
+            <div className="d-flex justify-content-center align-items-center align-self-center">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="sr-only" aria-hidden="true">{text}</span>
+                </div>
+            </div>
+        </div>
+    )
+}
+
