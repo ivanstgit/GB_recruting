@@ -31,6 +31,10 @@ GROUP_PERMISSIONS = {
         "view_employee",
         "add_employee",
         "change_employee",
+        "view_cv",
+        "add_cv",
+        "change_cv",
+        "delete_cv",
     ],
     UserGroups.moderators.value: [
         "view_customuser",
@@ -42,6 +46,8 @@ GROUP_PERMISSIONS = {
         "add_newstag",
         "change_newstag",
         "delete_newstag",
+        "view_cv",
+        "change_cv",
     ],
 }
 

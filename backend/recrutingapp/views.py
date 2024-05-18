@@ -176,6 +176,10 @@ class EmployeeProfileViewSet(OwnedModelMixin, LoggedModelMixin, viewsets.ModelVi
         return EmployeeSerializerExt
 
 
+class CVPagination(pagination.LimitOffsetPagination):
+    default_limit = 10
+
+
 class CVViewSet(
     OwnedModelMixin, LoggedModelMixin, DocStatusModelMixin, viewsets.ModelViewSet
 ):
@@ -187,7 +191,7 @@ class CVViewSet(
         CVPermission,
     ]
     serializer_class = CVSerializerExt
-    pagination_class = None
+    pagination_class = CVPagination
 
     def get_queryset(self):
 
@@ -206,9 +210,11 @@ class CVViewSet(
 
         # moderator -> on moderation
         elif role == UserRoles.moderator.value:
-            return CV.objects.filter(
-                status=ConstDocumentStatus.pending
-            ).prefetch_related("experience", "education")
+            return (
+                CV.objects.filter(status=ConstDocumentStatus.pending)
+                .order_by("updated_at")
+                .prefetch_related("experience", "education")
+            )
 
         return CV.objects.filter(status=ConstDocumentStatus.approved).prefetch_related(
             "experience", "education"

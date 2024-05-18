@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import { ObjectActions } from "../../routes/AppPaths.js"
 import { useData, DATA_RESOURCES, dataStatuses } from '../../hooks/DataProvider.js'
 import { ErrorLabel } from "../../components/common/UICommon.js";
-import { ActionGroup, commonActions } from "../../components/common/Actions.js";
+import { ActionButtonCreate, ActionGroup, commonActions } from "../../components/common/Actions.js";
 import { CVStatusIcon, CVStatuses } from "../../components/shared/CV.js";
 
 
@@ -23,7 +23,7 @@ const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
     return (
         <tr>
             <td>{item.title}</td>
-            <td><div className="card-text"><CVStatusIcon status={item.status} showText={true} /></div></td>
+            <td><div className="card-text"><CVStatusIcon status={item.status} showText={true} /> {item.status_info}</div></td>
             <td><p className="card-text">{item.position}</p></td>
             <td>{new Date(item.created_at).toLocaleString()}</td>
             <td>
@@ -109,7 +109,7 @@ const EmployeeCVsPage = () => {
 
             <div className="row">
                 <div className="col-6">
-                    <Link to={ObjectActions.add} className="btn btn-primary">{t("CVs.actions.add")}</Link>
+                    <ActionButtonCreate />
                 </div>
             </div>
             <div className="row">

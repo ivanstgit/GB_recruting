@@ -14,6 +14,7 @@ const AppPaths = {
 export const ObjectActions = {
     add: "new",
     edit: "edit",
+    reject: "reject"
 }
 
 export default AppPaths

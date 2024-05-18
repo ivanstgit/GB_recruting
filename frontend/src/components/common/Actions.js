@@ -1,11 +1,16 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { ObjectActions } from "../../routes/AppPaths";
 
 export const commonActions = {
     create: "create",
     edit: "edit",
     delete: "delete",
     copy: "copy",
+
     publish: "publish",
+    accept: "accept",
+    reject: "reject",
 
     back: "back",
     detail: "detail"
@@ -59,6 +64,7 @@ export const ActionIconDelete = ({ showText = false, onClick }) => {
             iconStyle="bi-trash" buttonStyle="btn-outline-danger" />
     )
 }
+
 export const ActionIconPublish = ({ showText = false, onClick }) => {
     const { t } = useTranslation("CommonActions");
     return (
@@ -66,6 +72,21 @@ export const ActionIconPublish = ({ showText = false, onClick }) => {
             iconStyle="bi-send-check" buttonStyle="btn-outline-success" />
     )
 }
+export const ActionIconAccept = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.accept")} showText={showText} onClick={onClick}
+            iconStyle="bi-check-circle" buttonStyle="btn-outline-success" />
+    )
+}
+export const ActionIconReject = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.reject")} showText={showText} onClick={onClick}
+            iconStyle="bi-send-x" buttonStyle="btn-outline-danger" />
+    )
+}
+
 export const ActionIconBack = ({ showText = false, onClick }) => {
     const { t } = useTranslation("CommonActions");
     return (
@@ -78,9 +99,13 @@ const ActionToolbarItem = ({ action, onClick, showText = false }) => {
     if (action === commonActions.edit) return (<ActionIconEdit onClick={onClick} showText={showText} />)
     if (action === commonActions.delete) return (<ActionIconDelete onClick={onClick} showText={showText} />)
     if (action === commonActions.copy) return (<ActionIconCopy onClick={onClick} showText={showText} />)
-    if (action === commonActions.publish) return (<ActionIconPublish onClick={onClick} showText={showText} />)
+
     if (action === commonActions.back) return (<ActionIconBack onClick={onClick} showText={showText} />)
     if (action === commonActions.detail) return (<ActionIconDetail onClick={onClick} showText={showText} />)
+
+    if (action === commonActions.publish) return (<ActionIconPublish onClick={onClick} showText={showText} />)
+    if (action === commonActions.accept) return (<ActionIconAccept onClick={onClick} showText={showText} />)
+    if (action === commonActions.reject) return (<ActionIconReject onClick={onClick} showText={showText} />)
 }
 export const ActionToolbar = ({ actions, showText = false }) => {
     if (actions)
@@ -115,4 +140,12 @@ export const ActionGroup = ({ actions, size = "", showText = false }) => {
     }
     else
         return (<></>)
+}
+
+export const ActionButtonCreate = ({ label = undefined, showText = true, navigateTo = ObjectActions.add }) => {
+    const { t } = useTranslation("CommonActions");
+    const linkText = label ? label : t("actions.create")
+    return (
+        <Link to={navigateTo} className="btn btn-primary">{linkText}</Link>
+    )
 }

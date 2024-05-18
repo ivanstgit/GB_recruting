@@ -1,36 +1,34 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import { ObjectActions } from "../../routes/AppPaths.js"
 import { useData, DATA_RESOURCES, dataStatuses } from '../../hooks/DataProvider.js'
 import { ErrorLabel } from "../../components/common/UICommon.js";
+import { ActionButtonCreate, ActionGroup, commonActions } from "../../components/common/Actions.js";
 
 
-const ModeratorNewsItem = ({ item, linkTextDetail, linkTextEdit, linkTextDelete, onDelete }) => {
+const ModeratorNewsItem = ({ item, onDelete }) => {
+    const navigate = useNavigate();
+    let actions = {}
+    actions[commonActions.detail] = () => navigate(item.id + "/")
+    actions[commonActions.edit] = () => navigate(item.id + "/" + ObjectActions.edit)
+    actions[commonActions.delete] = () => onDelete(item.id)
+
     return (
         <tr>
             <td>{item.title}</td>
             <td>{new Date(item.created_at).toLocaleString()}</td>
             <td><p className="card-text">{item.body}</p></td>
             <td>
-                <div className="btn-group btn-group-sm" role="group" aria-label="">
-                    <Link to={item.id + "/"} className="btn btn-link btn-secondary">{linkTextDetail}</Link>
-                    <Link to={item.id + "/" + ObjectActions.edit} className="btn btn-warning">{linkTextEdit}</Link>
-                    <button className="btn btn-danger" onClick={() => onDelete(item.id)}>{linkTextDelete}</button>
-                </div>
+                <ActionGroup actions={actions} size="sm" />
             </td>
-            {/* <Link to={AppPaths.news + item.id + "/"} className="card-link mb-0">{linkText}</Link> */}
         </tr>
     )
 }
 
 const ModeratorNewsPage = () => {
     const { t } = useTranslation("Moderator");
-    const linkTextDetail = t("News.actions.detail")
-    const linkTextAdd = t("News.actions.add")
-    const linkTextEdit = t("News.actions.edit")
-    const linkTextDelete = t("News.actions.delete")
 
     const dataProvider = useData()
     const [items, setItems] = useState([])
@@ -80,7 +78,7 @@ const ModeratorNewsPage = () => {
 
             <div className="row">
                 <div className="col-6">
-                    <Link to={ObjectActions.add} className="btn btn-primary">{linkTextAdd}</Link>
+                    <ActionButtonCreate />
                 </div>
             </div>
 
@@ -98,9 +96,6 @@ const ModeratorNewsPage = () => {
                         {items.map((item, index) => <ModeratorNewsItem
                             key={'NewsItem' + index}
                             item={item}
-                            linkTextDetail={linkTextDetail}
-                            linkTextEdit={linkTextEdit}
-                            linkTextDelete={linkTextDelete}
                             onDelete={deleteItem}
                         />)}
                     </tbody>

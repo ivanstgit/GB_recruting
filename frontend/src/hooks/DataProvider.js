@@ -367,21 +367,29 @@ const DataProvider = (props) => {
 
     const getList = async (resource, params) => {
         console.log("loading " + resource.api)
+
+        const emptyResult = { data: [], error: null, count: 0 }
+        const parseResponse = (response) => {
+            if (response.status === 200) {
+                let res = response.data.results ?? response.data ?? []
+                let cnt = response.data.count ?? res.length ?? 0
+                return { data: res, error: null, count: cnt }
+            } else {
+                console.log(response)
+                return { data: [], error: response.error, count: 0 }
+            }
+        }
+        const parseError = (error) => { return { data: [], error: error.message, count: 0 } }
+
         if (!resource.isProtected) {
             try {
                 let token = "";
                 let response = await dataGetList(resource.api, token, params)
                 console.log(response)
-                if (response.status === 200) {
-                    let res = response.data.results ?? response.data ?? []
-                    return { data: res, error: null }
-                } else {
-                    console.log(response)
-                    return { data: [], error: response.error }
-                }
+                return parseResponse(response)
             } catch (error) {
                 console.log(error)
-                return { data: [], error: error.message }
+                return parseError(error)
             }
         }
         else if (auth.isAuthenticated) {
@@ -391,19 +399,13 @@ const DataProvider = (props) => {
             try {
                 let token = auth.tokenFunc();
                 let response = await dataGetList(resource.api, token)
-                if (response.status === 200) {
-                    let res = response.data.results ?? response.data ?? []
-                    return { data: res, error: null }
-                } else {
-                    console.log(response)
-                    return { data: [], error: response.error }
-                }
+                return parseResponse(response)
             } catch (error) {
                 console.log(error)
                 if (error.response && error.response.status === 401) {
                     isTokenExpired = true;
                 } else {
-                    return { data: [], error: error.message }
+                    return parseError(error)
                 }
             }
 
@@ -412,24 +414,14 @@ const DataProvider = (props) => {
                     await auth.tokenRefreshFunc()
                     let token = auth.tokenFunc();
                     let response = await dataGetList(resource.api, token)
-                    if (response.status === 200) {
-
-                        let res = response.data.results ?? response.data ?? []
-                        return { data: res, error: null }
-                    } else {
-                        console.log(response)
-                        return { data: [], error: response.error }
-                    }
+                    return parseResponse(response)
                 }
-                catch (error) {
-                    console.log(error)
-                    return { data: [], error: error.message || "error..." }
-                }
+                catch (error) { return parseError(error) }
             }
 
-            return { data: [], error: null }
+            return emptyResult
         } else {
-            return { data: [], error: null }
+            return emptyResult
         };
     };
 
@@ -493,4 +485,9 @@ export default DataProvider;
 
 export const useData = () => {
     return useContext(DataContext);
+};
+
+export const PrivateDataContext = createContext();
+export const usePrivateData = () => {
+    return useContext(PrivateDataContext);
 };
