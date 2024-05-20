@@ -31,7 +31,7 @@ from recrutingapp.serializers import (
     NewsTagStaffSerializer,
     NewsStaffSerializer,
 )
-from recrutingapp.filters import NewsFilter
+from recrutingapp.filters import NewsFilter, CVFilter
 from userapp.models import UserRoles
 
 REQUEST_METHODS_CHANGE = ("POST", "PUT", "PATCH")
@@ -192,6 +192,8 @@ class CVViewSet(
     ]
     serializer_class = CVSerializerExt
     pagination_class = CVPagination
+
+    filterset_class = CVFilter
 
     def get_queryset(self):
 

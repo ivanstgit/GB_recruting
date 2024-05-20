@@ -149,3 +149,21 @@ export const ActionButtonCreate = ({ label = undefined, showText = true, navigat
         <Link to={navigateTo} className="btn btn-primary">{linkText}</Link>
     )
 }
+export const ActionButtonHide = ({ showText = true, isHidden = true, setIsHidden }) => {
+    const { t } = useTranslation("CommonActions");
+
+    const label = isHidden ? t("actions.unhide") : t("actions.hide")
+    const iconStyle = isHidden ? "bi-chevron-double-down" : "bi-chevron-double-up"
+
+    const handleClick = () => {
+        if (isHidden) {
+            setIsHidden(false)
+        } else {
+            setIsHidden(true)
+        }
+    }
+    return (
+        <ActionIcon label={label} showText={showText} onClick={handleClick}
+            iconStyle={iconStyle} />
+    )
+}

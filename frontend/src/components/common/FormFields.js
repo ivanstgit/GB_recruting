@@ -18,10 +18,10 @@ export const formStatuses = {
     success: "success"
 }
 
-export const FormContainer = ({ onSubmit, children }) => {
+export const FormContainer = ({ onSubmit, children, padding = 5 }) => {
     return (
         <div className="wow fadeInUp" data-wow-delay="0.5s">
-            <div className="bg-light rounded h-100 align-items-center p-5">
+            <div className={"bg-light rounded h-100 align-items-center p-" + padding}>
                 <form onSubmit={(event) => onSubmit(event)}>
                     {children}
                 </form>
@@ -51,6 +51,19 @@ export const InputText = ({ name, value, label, onChange, errorText = "", helpTe
             <label className="form-label border-0" htmlFor={id}>{label}</label>
             <input type="text" className={"form-control " + getError(errorText).style} id={id} name={name}
                 value={value} onChange={(event) => onChange(event)} />
+            <div className="invalid-feedback">{getError(errorText).error}</div>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
+        </div>
+    );
+};
+
+export const InputLogin = ({ name, value, label, onChange, errorText = "", helpText = "" }) => {
+    const id = getUID()
+    return (
+        <div className="mb-3">
+            <label className="form-label border-0" htmlFor={id}>{label}</label>
+            <input type="text" className={"form-control " + getError(errorText).style} id={id} name={name}
+                value={value} onChange={(event) => onChange(event)} autoComplete="username" />
             <div className="invalid-feedback">{getError(errorText).error}</div>
             <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>
@@ -111,13 +124,13 @@ export const InputCheckBox = ({ name, label, value, errorText = "", helpText = "
     );
 };
 
-export const InputPassword = ({ name, label, value, errorText = "", helpText = "", onChange }) => {
+export const InputPassword = ({ name, label, value, errorText = "", helpText = "", onChange, autoComplete = "current-password" }) => {
     const id = getUID()
     return (
         <div className="mb-3">
             <label className="form-label border-0" htmlFor={id}>{label}</label>
             <input type="password" className={"form-control " + getError(errorText).style} id={id} name={name}
-                value={value} onChange={(event) => onChange(event)} />
+                value={value} onChange={(event) => onChange(event)} autoComplete={autoComplete} required />
             <div className="invalid-feedback">{getError(errorText).error}</div>
             <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>

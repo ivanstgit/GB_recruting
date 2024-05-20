@@ -50,9 +50,9 @@ const NavGlobal = () => {
       pattern: AppPaths.news,
     },
     {
-      link: AppPaths.cvs,
+      link: AppPaths.cv,
       text: t("CVs"),
-      pattern: AppPaths.cvs
+      pattern: AppPaths.cv + '*'
     },
     {
       link: AppPaths.vacancies,

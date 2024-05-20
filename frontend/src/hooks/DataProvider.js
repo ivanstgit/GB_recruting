@@ -398,7 +398,7 @@ const DataProvider = (props) => {
 
             try {
                 let token = auth.tokenFunc();
-                let response = await dataGetList(resource.api, token)
+                let response = await dataGetList(resource.api, token, params)
                 return parseResponse(response)
             } catch (error) {
                 console.log(error)
@@ -413,7 +413,7 @@ const DataProvider = (props) => {
                 try {
                     await auth.tokenRefreshFunc()
                     let token = auth.tokenFunc();
-                    let response = await dataGetList(resource.api, token)
+                    let response = await dataGetList(resource.api, token, params)
                     return parseResponse(response)
                 }
                 catch (error) { return parseError(error) }

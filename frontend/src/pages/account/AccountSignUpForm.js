@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { accountCreate, useAuth, userRoles } from '../../hooks/AuthProvider.js';
 
 import {
-    FormContainer, HeaderText, InputEmail, InputPassword,
+    FormContainer, HeaderText, InputEmail, InputLogin, InputPassword,
     InputRadioButtonGroup, InputText, SubmitButton, formStatuses
 } from "../../components/common/FormFields.js"
 import { ErrorLabel } from '../../components/common/UICommon.js';
@@ -134,18 +134,20 @@ const AccountSignUpForm = (props) => {
                             label={t("SignUp.Email")} errorText={validationErrors?.email ?? ""}
                             onChange={(event) => handleChange(event)} />
 
-                        <InputText id="login" name="username" value={input.username}
+                        <InputLogin id="login" name="username" value={input.username}
                             label={t("SignUp.Login")} errorText={t(validationErrors?.username ?? "")}
                             onChange={(event) => handleChange(event)} />
 
                         <InputPassword id="password" name="password" value={input.password}
                             label={t("SignUp.Password")} errorText={validationErrors?.password ?? ""}
                             helpText={t("SignUp.PasswordHelp")}
-                            onChange={(event) => handleChange(event)} />
+                            onChange={(event) => handleChange(event)}
+                            autoComplete="new-password" />
 
                         <InputPassword id="password2" name="password2" value={input.password2}
                             label={t("SignUp.Password2")} errorText={validationErrors?.password2 ?? ""}
-                            onChange={(event) => handleChange(event)} />
+                            onChange={(event) => handleChange(event)}
+                            autoComplete="new-password" />
 
 
                         <SubmitButton label={t("SignUp.Submit")} disabled={(status === formStatuses.pending)} />
