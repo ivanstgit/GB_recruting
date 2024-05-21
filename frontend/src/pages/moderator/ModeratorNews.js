@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
@@ -35,7 +35,8 @@ const ModeratorNewsPage = () => {
     const [error, setError] = useState("")
     const [status, setStatus] = useState(dataStatuses.initial)
 
-    if (status === dataStatuses.initial) {
+    const loadItems = () => {
+
         setStatus(dataStatuses.loading)
         dataProvider.getList(DATA_RESOURCES.staffNews)
             .then((res) => {
@@ -49,6 +50,7 @@ const ModeratorNewsPage = () => {
                     setStatus(dataStatuses.success)
                 }
             })
+
     }
 
     const deleteItem = (id) => {
@@ -64,6 +66,11 @@ const ModeratorNewsPage = () => {
             })
     }
 
+    useEffect(() => {
+        if (status === dataStatuses.initial) {
+            loadItems()
+        }
+    });
 
     return (
         <div>

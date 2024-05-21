@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
@@ -50,6 +50,7 @@ const EmployeeCVsPage = () => {
     const [status, setStatus] = useState(dataStatuses.initial)
 
     const loadItems = () => {
+        setStatus(dataStatuses.loading)
         dataProvider.getList(DATA_RESOURCES.cvs)
             .then((res) => {
                 if (res.error) {
@@ -90,12 +91,11 @@ const EmployeeCVsPage = () => {
             })
     }
 
-
-    if (status === dataStatuses.initial) {
-        setStatus(dataStatuses.loading)
-        loadItems()
-    }
-
+    useEffect(() => {
+        if (status === dataStatuses.initial) {
+            loadItems()
+        }
+    });
     const headerText = t("CVs.header")
 
     return (

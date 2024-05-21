@@ -19,10 +19,47 @@ const CVDetailPage = ({ backTo }) => {
 
     // const { t } = useTranslation("SharedCV");
 
+    const refresh = () => {
+        dataProvider.getOne(DATA_RESOURCES.cvs, id)
+            .then(res => {
+                console.log(res)
+                if (res.error) {
+                    setError(res.error)
+                } else {
+                    setItem(res.data)
+                }
+            })
+    }
+
     let actions = {}
     actions[commonActions.back] = () => navigate(backTo)
 
     if (item) {
+        if (item.is_favorite) {
+            actions[commonActions.favoriteRemove] = () => {
+                dataProvider.setFavorite(DATA_RESOURCES.cvs, item.id, false)
+                    .then((res) => {
+                        if (res.error) {
+                            setError(res.error)
+                        } else {
+                            setError("")
+                            refresh()
+                        }
+                    })
+            }
+        } else {
+            actions[commonActions.favoriteAdd] = () => {
+                dataProvider.setFavorite(DATA_RESOURCES.cvs, item.id, true)
+                    .then((res) => {
+                        if (res.error) {
+                            setError(res.error)
+                        } else {
+                            setError("")
+                            refresh()
+                        }
+                    })
+            }
+        }
         return (
             <>
                 <div className="row">
@@ -40,15 +77,7 @@ const CVDetailPage = ({ backTo }) => {
             </>
         )
     } else {
-        dataProvider.getOne(DATA_RESOURCES.cvs, id)
-            .then(res => {
-                console.log(res)
-                if (res.error) {
-                    setError(res.error)
-                } else {
-                    setItem(res.data)
-                }
-            })
+        refresh()
         if (error) return (<ErrorLabel errorText={error} />)
 
         return (<Loading />)

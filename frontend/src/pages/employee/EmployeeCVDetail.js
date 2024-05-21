@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // import { useTranslation } from 'react-i18next';
@@ -51,6 +51,20 @@ const EmployeeCVDetailPage = ({ backTo }) => {
         }
     }
 
+    useEffect(() => {
+        if (!item) {
+            dataProvider.getOne(DATA_RESOURCES.cvs, id)
+                .then(res => {
+                    console.log(res)
+                    if (res.error) {
+                        setError(res.error)
+                    } else {
+                        setItem(res.data)
+                    }
+                })
+        }
+    });
+
     if (item) {
         return (
             <>
@@ -70,17 +84,8 @@ const EmployeeCVDetailPage = ({ backTo }) => {
             </>
         )
     } else {
-        dataProvider.getOne(DATA_RESOURCES.cvs, id)
-            .then(res => {
-                console.log(res)
-                if (res.error) {
-                    setError(res.error)
-                } else {
-                    setItem(res.data)
-                }
-            })
-        if (error) return (<ErrorLabel errorText={error} />)
 
+        if (error) return (<ErrorLabel errorText={error} />)
         return (<Loading />)
     }
 }

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks/AuthProvider.js';
+import AppPaths from '../../routes/AppPaths.js';
 
 import { FormContainer, HeaderText, InputLogin, InputPassword, SubmitButton, formStatuses } from "../../components/common/FormFields.js";
 import { ErrorLabel } from '../../components/common/UICommon.js';
+
 
 const initialState = { login: "", password: "", error: "" }
 
@@ -53,10 +55,6 @@ const AccountSignInForm = (props) => {
         <div className="container-xxl py-5">
             <div className="container">
                 <div className="row">
-                    {/* <div className="wow fadeInUp" data-wow-delay="0.5s">
-                        <div className="bg-light rounded h-100 align-items-center p-5">
-
-                            <form onSubmit={(event) => handleSubmit(event)}> */}
                     <FormContainer onSubmit={(event) => handleSubmit(event)}>
                         <HeaderText text={t("SignIn.header")} />
 
@@ -69,10 +67,13 @@ const AccountSignInForm = (props) => {
                         <div className="col-12">
                             <SubmitButton label={t("SignIn.Submit")} disabled={(status === formStatuses.pending)} />
                         </div>
+
+                        <Link className="mt-5 mb-2"
+                            key="Register" to={AppPaths.signup}>
+                            {t("SignUp.header")}
+                        </Link>
                         <ErrorLabel errorText={error} />
-                        {/* </form>
-                        </div>
-                    </div> */}
+
                     </FormContainer>
                 </div>
             </div>

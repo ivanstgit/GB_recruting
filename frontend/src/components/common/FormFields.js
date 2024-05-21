@@ -84,7 +84,7 @@ export const InputTextArea = ({ name, value, label, onChange, errorText = "", he
     );
 };
 
-export const InputEmail = (name, value, label, onChange, errorText = "", helpText = "") => {
+export const InputEmail = ({ name, value, label, onChange, errorText = "", helpText = "" }) => {
     const id = getUID()
     return (
         <div className="mb-3">
@@ -222,5 +222,10 @@ export const HeaderText = ({ text }) => {
 export const SubHeaderText = ({ text }) => {
     return (
         <h3 className="text-center mt-3 mb-2" > {text} </h3>
+    );
+};
+export const AdditionalHeaderText = ({ text }) => {
+    return (
+        <h5 className="text-center mt-1 mb-0" > {text} </h5>
     );
 };

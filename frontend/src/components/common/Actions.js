@@ -13,7 +13,10 @@ export const commonActions = {
     reject: "reject",
 
     back: "back",
-    detail: "detail"
+    detail: "detail",
+
+    favoriteAdd: "favadd",
+    favoriteRemove: "favremove",
 }
 
 // Action toolbars
@@ -95,6 +98,22 @@ export const ActionIconBack = ({ showText = false, onClick }) => {
     )
 }
 
+export const ActionIconFavoriteAdd = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.favoriteAdd")} showText={showText} onClick={onClick}
+            iconStyle="bi-star" />
+    )
+}
+
+export const ActionIconFavoriteRemove = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.favoriteRemove")} showText={showText} onClick={onClick}
+            iconStyle="bi-star-fill" />
+    )
+}
+
 const ActionToolbarItem = ({ action, onClick, showText = false }) => {
     if (action === commonActions.edit) return (<ActionIconEdit onClick={onClick} showText={showText} />)
     if (action === commonActions.delete) return (<ActionIconDelete onClick={onClick} showText={showText} />)
@@ -106,6 +125,9 @@ const ActionToolbarItem = ({ action, onClick, showText = false }) => {
     if (action === commonActions.publish) return (<ActionIconPublish onClick={onClick} showText={showText} />)
     if (action === commonActions.accept) return (<ActionIconAccept onClick={onClick} showText={showText} />)
     if (action === commonActions.reject) return (<ActionIconReject onClick={onClick} showText={showText} />)
+
+    if (action === commonActions.favoriteAdd) return (<ActionIconFavoriteAdd onClick={onClick} showText={showText} />)
+    if (action === commonActions.favoriteRemove) return (<ActionIconFavoriteRemove onClick={onClick} showText={showText} />)
 }
 export const ActionToolbar = ({ actions, showText = false }) => {
     if (actions)

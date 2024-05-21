@@ -338,6 +338,7 @@ class CVSerializerExt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerial
     employee = EmployeeSerializerExt()
     experience = CVExperienceSerializerExt(many=True)
     education = CVEducationSerializer(many=True)
+    is_favorite = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = CV
@@ -355,5 +356,6 @@ class CVSerializerExt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerial
             "education",
             "created_at",
             "updated_at",
+            "is_favorite",
         ]
         depth = 1

@@ -26,6 +26,7 @@ class CVFilter(filters.FilterSet):
     city = filters.CharFilter(
         field_name="employee__city__name", lookup_expr="icontains"
     )
+    is_favorite = filters.BooleanFilter()
 
     class Meta:
         model = CV

@@ -6,11 +6,13 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-
+from django.db.models import Exists, OuterRef
+from django.contrib.contenttypes.models import ContentType
 from recrutingapp.models import (
     City,
     ConstDocumentStatus,
     DocumentStatus,
+    Favorite,
     Gender,
     NewsTag,
     NewsPost,
@@ -77,6 +79,57 @@ class DocStatusModelMixin:
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class FavoriteMixin:
+    @action(
+        detail=True,
+        methods=["post", "delete"],
+        url_path="favorite",
+        permission_classes=[
+            permissions.IsAuthenticated,
+        ],
+    )
+    def favorite(self, request, version=None, pk=None):
+        instance = self.get_object()
+        content_type = ContentType.objects.get_for_model(instance)
+
+        if request.method == "POST":
+            favorite_obj, created = Favorite.objects.get_or_create(
+                user=request.user, content_type=content_type, object_id=instance.id
+            )
+            return Response(status=status.HTTP_201_CREATED)
+        elif request.method == "DELETE":
+            favorite_obj = Favorite.objects.get(
+                user=request.user, content_type=content_type, object_id=instance.id
+            )
+            if favorite_obj:
+                favorite_obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def annotate_qs_is_favorite_field(self, queryset):
+        if self.request.user.is_authenticated:
+            is_favorite_subquery = Favorite.objects.filter(
+                object_id=OuterRef("pk"),
+                user=self.request.user,
+                content_type=ContentType.objects.get_for_model(queryset.model),
+            )
+            queryset = queryset.annotate(is_favorite=Exists(is_favorite_subquery))
+        return queryset
+
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="favorites",
+        permission_classes=[
+            permissions.IsAuthenticated,
+        ],
+    )
+    def favorites(self, request, version=None):
+        queryset = self.get_queryset().filter(is_favorite=True)
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class NewsPagination(pagination.LimitOffsetPagination):
@@ -181,7 +234,11 @@ class CVPagination(pagination.LimitOffsetPagination):
 
 
 class CVViewSet(
-    OwnedModelMixin, LoggedModelMixin, DocStatusModelMixin, viewsets.ModelViewSet
+    OwnedModelMixin,
+    LoggedModelMixin,
+    DocStatusModelMixin,
+    FavoriteMixin,
+    viewsets.ModelViewSet,
 ):
     """View for CV"""
 
@@ -196,31 +253,33 @@ class CVViewSet(
     filterset_class = CVFilter
 
     def get_queryset(self):
+        role = self.request.user.role
 
         if self.request.user.is_superuser:
-            return CV.objects.all().prefetch_related(
+            qs = CV.objects.all().prefetch_related(
                 "employee", "experience", "education"
             )
 
-        role = self.request.user.role
-
         # employee -> own
-        if role == UserRoles.employee.value:
-            return CV.objects.filter(owner=self.request.user).prefetch_related(
+        elif role == UserRoles.employee.value:
+            qs = CV.objects.filter(owner=self.request.user).prefetch_related(
                 "experience", "education"
             )
 
         # moderator -> on moderation
         elif role == UserRoles.moderator.value:
-            return (
+            qs = (
                 CV.objects.filter(status=ConstDocumentStatus.pending)
                 .order_by("updated_at")
                 .prefetch_related("experience", "education")
             )
 
-        return CV.objects.filter(status=ConstDocumentStatus.approved).prefetch_related(
-            "experience", "education"
-        )
+        else:
+            qs = CV.objects.filter(
+                status=ConstDocumentStatus.approved
+            ).prefetch_related("experience", "education")
+
+        return self.annotate_qs_is_favorite_field(qs)
 
     def get_serializer_class(self):
         if self.request.method in REQUEST_METHODS_CHANGE:

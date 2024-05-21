@@ -5,6 +5,9 @@ from django.core.validators import URLValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
+
 from userapp.models import CustomUser
 
 CONTENT_TYPES = [
@@ -338,3 +341,21 @@ class CVEducation(models.Model):
     class Meta:
         verbose_name = _("education")
         verbose_name_plural = _("education")
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    class Meta:
+        verbose_name = _("favorite")
+        verbose_name_plural = _("favorites")
+        ordering = ["-id"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "object_id", "content_type"],
+                name="unique_user_content_type_object_id",
+            )
+        ]

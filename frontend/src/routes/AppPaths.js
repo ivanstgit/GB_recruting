@@ -2,6 +2,7 @@ const AppPaths = {
     home: "/",
     news: "/news/",
     cv: "/cv/",
+    vacancy: "/vacancy/",
     signin: "/signin/",
     signup: "/signup/",
     confirm: "/confirm/",

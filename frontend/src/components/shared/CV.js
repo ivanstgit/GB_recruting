@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { ActionButtonHide, ActionToolbar } from '../common/Actions';
-import { FormButton, FormContainer, InputDate, InputNumber, InputText, SubHeaderText, SubmitButton, formStatuses } from '../common/FormFields';
+import { AdditionalHeaderText, FormButton, FormContainer, InputCheckBox, InputDate, InputNumber, InputText, SubHeaderText, SubmitButton, formStatuses } from '../common/FormFields';
 import { EmployeeCVCard } from './Employee';
 import { useState } from 'react';
 import { Loading } from '../common/UICommon';
@@ -179,20 +179,48 @@ const initialStateCVSearch = {
     salary_max: "",
     published_since: ""
 }
-export const CVSearchForm = ({ onApply, onClear }) => {
+export const CVSearchForm = ({ onApply }) => {
     const [input, setInput] = useState(initialStateCVSearch);
+    const [isFavoriteOnly, setIsFavoriteOnly] = useState(false);
     const [status, setStatus] = useState(formStatuses.initial)
     const [validationErrors, setValidationErrors] = useState({});
     const [isHidden, setIsHidden] = useState(true)
 
     const { t } = useTranslation("SharedCV");
 
+    const getParamsUnion = (isFavoriteOnly, input) => {
+        const fields = Object.keys(initialStateCVSearch)
+        let params = (isFavoriteOnly ? { is_favorite: true } : {})
+
+        for (const index in fields) {
+            let field = fields[index]
+            if (input[field] !== initialStateCVSearch[field]) {
+                params[field] = input[field]
+            }
+        }
+        return params
+    }
+
     const handleChange = (e) => {
-        let { name, value } = e.target;
+        const { target } = e;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const { name } = target;
+
         setInput((prev) => ({
             ...prev,
             [name]: value,
         }));
+
+    }
+
+    const handleChangeIsFavorite = (e) => {
+        const { target } = e;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        setIsFavoriteOnly(value)
+
+        if (isHidden) {
+            onApply(getParamsUnion(value, input))
+        }
     }
 
     const validateInput = () => {
@@ -209,26 +237,18 @@ export const CVSearchForm = ({ onApply, onClear }) => {
             setValidationErrors(errors)
             setStatus(formStatuses.error)
         } else {
-            const fields = Object.keys(initialStateCVSearch)
-            let params = {}
 
-            for (const index in fields) {
-                let field = fields[index]
-                if (input[field] !== initialStateCVSearch[field]) {
-                    params[field] = input[field]
-                }
-            }
-
-            onApply(params)
+            onApply(getParamsUnion(isFavoriteOnly, input))
             setStatus(formStatuses.initial)
         }
     }
     const handleClear = (e) => {
         e.preventDefault()
-        onApply(initialStateCVSearch)
+        onApply(getParamsUnion(isFavoriteOnly, initialStateCVSearch))
         setInput(initialStateCVSearch)
         setStatus(formStatuses.initial)
     }
+
     if (status === formStatuses.pending) {
         return (<Loading />)
     }
@@ -238,7 +258,13 @@ export const CVSearchForm = ({ onApply, onClear }) => {
                 <FormContainer onSubmit={(event) => handleApply(event)} padding={1}>
                     <div className="row">
                         <div className="col">
-                            <SubHeaderText text={t("search.header")} />
+                            <div className="mt-1">
+                                <InputCheckBox id="is_favorite" name="is_favorite" value={isFavoriteOnly} label={t("search.fields.is_favorite")}
+                                    onChange={(event) => handleChangeIsFavorite(event)} />
+                            </div>
+                        </div>
+                        <div className="col-md-auto">
+                            <AdditionalHeaderText text={t("search.header")} />
                         </div>
                         <div className="col-md-auto">
                             <ActionButtonHide isHidden={isHidden} setIsHidden={setIsHidden} />

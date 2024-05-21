@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useResolvedPath, useMatch } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
-import { useAuth } from "../hooks/AuthProvider.js";
+import { useAuth, userRoles } from "../hooks/AuthProvider.js";
 import AppPaths from "../routes/AppPaths.js"
 
 const LoginArea = () => {
@@ -43,28 +43,35 @@ const NavGlobal = () => {
   const auth = useAuth()
   const personalPath = auth.personalPathFunc()
 
-  const items = [
+  let items = [
     {
       link: AppPaths.news,
       text: t("News"),
       pattern: AppPaths.news,
-    },
-    {
-      link: AppPaths.cv,
-      text: t("CVs"),
-      pattern: AppPaths.cv + '*'
-    },
-    {
+    }
+  ]
+
+  if (auth.isAuthenticated && (auth.user.role === userRoles.employee)) {
+    items.push({
       link: AppPaths.vacancies,
       text: t("Vacancies"),
       pattern: AppPaths.vacancies,
-    },
+    })
+  }
+  if (auth.isAuthenticated && (auth.user.role === userRoles.employer)) {
+    items.push({
+      link: AppPaths.cv,
+      text: t("CVs"),
+      pattern: AppPaths.cv + '*'
+    })
+  }
+
+  items.push(
     {
       link: personalPath,
       text: t("Personal"),
       pattern: personalPath + '*',
-    }
-  ]
+    })
 
   return (
     <nav className="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 wow fadeIn shadow-sm">
