@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { DATA_RESOURCES, useData } from '../../hooks/DataProvider.js'
 
 import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
@@ -20,7 +20,7 @@ const EmployeeCVDetailPage = ({ backTo }) => {
     const dataProvider = useData()
     const navigate = useNavigate();
 
-    const { t } = useTranslation("SharedCV");
+    // const { t } = useTranslation("SharedCV");
 
     let actions = {}
     actions[commonActions.back] = () => navigate(backTo)
@@ -51,6 +51,20 @@ const EmployeeCVDetailPage = ({ backTo }) => {
         }
     }
 
+    useEffect(() => {
+        if (!item) {
+            dataProvider.getOne(DATA_RESOURCES.cvs, id)
+                .then(res => {
+                    console.log(res)
+                    if (res.error) {
+                        setError(res.error)
+                    } else {
+                        setItem(res.data)
+                    }
+                })
+        }
+    });
+
     if (item) {
         return (
             <>
@@ -60,7 +74,7 @@ const EmployeeCVDetailPage = ({ backTo }) => {
                         <ActionGroup actions={actions} size="" showText={true} />
                     </div>
                     <div className="col-md-auto fs-5">
-                        <CVStatusIcon status={item.status} showText={true} />
+                        <CVStatusIcon status={item.status} showText={true} /> {item.status_info}
                     </div>
 
                 </div>
@@ -70,17 +84,8 @@ const EmployeeCVDetailPage = ({ backTo }) => {
             </>
         )
     } else {
-        dataProvider.getOne(DATA_RESOURCES.cvs, id)
-            .then(res => {
-                console.log(res)
-                if (res.error) {
-                    setError(res.error)
-                } else {
-                    setItem(res.data)
-                }
-            })
-        if (error) return (<ErrorLabel errorText={error} />)
 
+        if (error) return (<ErrorLabel errorText={error} />)
         return (<Loading />)
     }
 }

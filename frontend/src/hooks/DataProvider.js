@@ -1,7 +1,7 @@
 import { useContext, createContext, useState, useEffect } from "react";
 
 import { useAuth, userRoles } from "./AuthProvider.js";
-import { dataGetList, dataGetOne, dataPostOne, dataDeleteOne, dataPutOne, dataSetStatus } from "../services/APIData.js"
+import { dataGetList, dataGetOne, dataPostOne, dataDeleteOne, dataPutOne, dataSetStatus, dataSetFavorite } from "../services/APIData.js"
 
 export const DATA_RESOURCES = {
     publicNews: {
@@ -47,7 +47,7 @@ export const DATA_RESOURCES = {
         isProtected: true,
         isGlobal: false,
         roles: [userRoles.employee, userRoles.employer, userRoles.moderator],
-        methods: ["get", "post", "put", "delete", "patch"]
+        methods: ["get", "post", "put", "delete", "status", "favorites"]
     }
 }
 
@@ -252,7 +252,7 @@ const DataProvider = (props) => {
 
     const setStatus = async (resource, id, status, info = "") => {
         if (auth.isAuthenticated) {
-            if (resource.methods.includes("patch")) {
+            if (resource.methods.includes("status")) {
 
                 let isTokenExpired = false;
                 let token = auth.tokenFunc();
@@ -304,6 +304,56 @@ const DataProvider = (props) => {
                 return { data: null, error: JSON.stringify(error.response.data) || "Invalid input" }
             } else {
                 return { data: null, error: error.message }
+            }
+        }
+    }
+
+    const setFavorite = async (resource, id, isFavorite = true) => {
+        const successResult = { error: null }
+        const errorResult = (text) => { return { error: text } }
+        const parseResponse = (response) => {
+            if ((isFavorite && response.status === 201) || (!isFavorite && response.status === 204)) {
+                return successResult
+            } else {
+                console.log(response)
+                return { error: response.error }
+            }
+        }
+        const parseError = (error) => { return { error: error.message } }
+
+        const _setFavorite = async (resource, id, isFavorite, token) => {
+            try {
+                let response = await dataSetFavorite(resource.api, token, id, isFavorite)
+                return parseResponse(response)
+            } catch (error) {
+                console.log(error)
+                if (error.response && error.response.status === 401) {
+                    throw new TokenExpiredError("Token expired")
+                } else {
+                    return parseError(error)
+                }
+            }
+        }
+
+        if (!auth.isAuthenticated) return errorResult("not authenticated")
+        if (!resource.methods.includes("favorites")) return errorResult("method not allowed")
+
+        let isTokenExpired = false;
+        for (let step = 0; step < 2; step++) {
+            let token = auth.tokenFunc();
+            try {
+                if (isTokenExpired) {
+                    await auth.tokenRefreshFunc()
+                }
+                let res = await _setFavorite(resource, id, isFavorite, token)
+                return res
+            } catch (error) {
+                if (error instanceof TokenExpiredError) {
+                    if (isTokenExpired) return parseError(error)
+                    isTokenExpired = true;
+                } else {
+                    return parseError(error)
+                }
             }
         }
     }
@@ -367,21 +417,29 @@ const DataProvider = (props) => {
 
     const getList = async (resource, params) => {
         console.log("loading " + resource.api)
+
+        const emptyResult = { data: [], error: null, count: 0 }
+        const parseResponse = (response) => {
+            if (response.status === 200) {
+                let res = response.data.results ?? response.data ?? []
+                let cnt = response.data.count ?? res.length ?? 0
+                return { data: res, error: null, count: cnt }
+            } else {
+                console.log(response)
+                return { data: [], error: response.error, count: 0 }
+            }
+        }
+        const parseError = (error) => { return { data: [], error: error.message, count: 0 } }
+
         if (!resource.isProtected) {
             try {
                 let token = "";
                 let response = await dataGetList(resource.api, token, params)
                 console.log(response)
-                if (response.status === 200) {
-                    let res = response.data.results ?? response.data ?? []
-                    return { data: res, error: null }
-                } else {
-                    console.log(response)
-                    return { data: [], error: response.error }
-                }
+                return parseResponse(response)
             } catch (error) {
                 console.log(error)
-                return { data: [], error: error.message }
+                return parseError(error)
             }
         }
         else if (auth.isAuthenticated) {
@@ -390,20 +448,14 @@ const DataProvider = (props) => {
 
             try {
                 let token = auth.tokenFunc();
-                let response = await dataGetList(resource.api, token)
-                if (response.status === 200) {
-                    let res = response.data.results ?? response.data ?? []
-                    return { data: res, error: null }
-                } else {
-                    console.log(response)
-                    return { data: [], error: response.error }
-                }
+                let response = await dataGetList(resource.api, token, params)
+                return parseResponse(response)
             } catch (error) {
                 console.log(error)
                 if (error.response && error.response.status === 401) {
                     isTokenExpired = true;
                 } else {
-                    return { data: [], error: error.message }
+                    return parseError(error)
                 }
             }
 
@@ -411,25 +463,15 @@ const DataProvider = (props) => {
                 try {
                     await auth.tokenRefreshFunc()
                     let token = auth.tokenFunc();
-                    let response = await dataGetList(resource.api, token)
-                    if (response.status === 200) {
-
-                        let res = response.data.results ?? response.data ?? []
-                        return { data: res, error: null }
-                    } else {
-                        console.log(response)
-                        return { data: [], error: response.error }
-                    }
+                    let response = await dataGetList(resource.api, token, params)
+                    return parseResponse(response)
                 }
-                catch (error) {
-                    console.log(error)
-                    return { data: [], error: error.message || "error..." }
-                }
+                catch (error) { return parseError(error) }
             }
 
-            return { data: [], error: null }
+            return emptyResult
         } else {
-            return { data: [], error: null }
+            return emptyResult
         };
     };
 
@@ -482,7 +524,7 @@ const DataProvider = (props) => {
         // 1) for direct transfer (child component refers to context => automatic rerenders)
         // 2) for async refreshing (child component should use effect on entire dataProvider if needed)
         // getList 
-        <DataContext.Provider value={{ publicNews, employeeProfile, refreshDelayed, getList, getOne, postOne, putOne, deleteOne, setStatus }}>
+        <DataContext.Provider value={{ publicNews, employeeProfile, refreshDelayed, getList, getOne, postOne, putOne, deleteOne, setStatus, setFavorite }}>
             {props.children}
         </DataContext.Provider>
     );
@@ -493,4 +535,9 @@ export default DataProvider;
 
 export const useData = () => {
     return useContext(DataContext);
+};
+
+export const PrivateDataContext = createContext();
+export const usePrivateData = () => {
+    return useContext(PrivateDataContext);
 };

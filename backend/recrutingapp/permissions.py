@@ -53,14 +53,14 @@ class CVPermission(permissions.BasePermission):
         # moderator has read permissions on all documents, and write permissions on moderated documents
         elif role == UserRoles.moderator.value:
             if request.method in permissions.SAFE_METHODS or (
-                obj and obj.status == ConstDocumentStatus.pending
+                obj and obj.status.id == ConstDocumentStatus.pending
             ):
                 return True
 
         # employers can view all approved resume
         elif role == UserRoles.employer.value:
             if request.method in permissions.SAFE_METHODS and (
-                obj and obj.status == ConstDocumentStatus.approved
+                obj and obj.status.id == ConstDocumentStatus.approved
             ):
                 return True
 

@@ -74,3 +74,11 @@ export function dataSetStatus(api, token, id, status, info) {
     return API.patch(url, { "status": status, "info": info }, { headers })
 }
 
+export function dataSetFavorite(api, token, id, isFavorite) {
+    let headers = getHeader(token)
+    let url = urlPrefix + API_LIST[api] + id + "/favorite/"
+
+    if (isFavorite) return API.post(url, {}, { headers })
+    else return API.delete(url, { headers })
+}
+

@@ -32,6 +32,7 @@ import HomePage from './pages/Home.js';
 import NewsPage from './pages/news/News.js';
 import EmployeePage from './pages/employee/Employee.js';
 import ModeratorPage from './pages/moderator/Moderator.js';
+import CVPage from './pages/cv/CV.js';
 
 
 class App extends React.Component {
@@ -60,9 +61,17 @@ class App extends React.Component {
                   <Routes>
                     <Route index element={<HomePage />} />
                     <Route path={AppPaths.news + "*"} element={<NewsPage />} />
+
                     <Route exact path={AppPaths.signin} element={<AccountSignInForm />} />
                     <Route exact path={AppPaths.signup} element={<AccountSignUpForm />} />
                     <Route exact path={AppPaths.confirm} element={<AccountConfirmationForm />} />
+
+                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employer} />}>
+                      <Route path={AppPaths.cv + "*"} element={<CVPage />} />
+                    </Route>
+                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
+                      <Route path={AppPaths.vacancy + "*"} element={<CVPage />} />
+                    </Route>
 
                     <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
                       <Route path={AppPaths.employee + "*"} element={<EmployeePage />} />

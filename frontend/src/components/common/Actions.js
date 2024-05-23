@@ -1,14 +1,22 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { ObjectActions } from "../../routes/AppPaths";
 
 export const commonActions = {
     create: "create",
     edit: "edit",
     delete: "delete",
     copy: "copy",
+
     publish: "publish",
+    accept: "accept",
+    reject: "reject",
 
     back: "back",
-    detail: "detail"
+    detail: "detail",
+
+    favoriteAdd: "favadd",
+    favoriteRemove: "favremove",
 }
 
 // Action toolbars
@@ -59,6 +67,7 @@ export const ActionIconDelete = ({ showText = false, onClick }) => {
             iconStyle="bi-trash" buttonStyle="btn-outline-danger" />
     )
 }
+
 export const ActionIconPublish = ({ showText = false, onClick }) => {
     const { t } = useTranslation("CommonActions");
     return (
@@ -66,6 +75,21 @@ export const ActionIconPublish = ({ showText = false, onClick }) => {
             iconStyle="bi-send-check" buttonStyle="btn-outline-success" />
     )
 }
+export const ActionIconAccept = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.accept")} showText={showText} onClick={onClick}
+            iconStyle="bi-check-circle" buttonStyle="btn-outline-success" />
+    )
+}
+export const ActionIconReject = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.reject")} showText={showText} onClick={onClick}
+            iconStyle="bi-send-x" buttonStyle="btn-outline-danger" />
+    )
+}
+
 export const ActionIconBack = ({ showText = false, onClick }) => {
     const { t } = useTranslation("CommonActions");
     return (
@@ -74,13 +98,36 @@ export const ActionIconBack = ({ showText = false, onClick }) => {
     )
 }
 
+export const ActionIconFavoriteAdd = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.favoriteAdd")} showText={showText} onClick={onClick}
+            iconStyle="bi-star" />
+    )
+}
+
+export const ActionIconFavoriteRemove = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.favoriteRemove")} showText={showText} onClick={onClick}
+            iconStyle="bi-star-fill" />
+    )
+}
+
 const ActionToolbarItem = ({ action, onClick, showText = false }) => {
     if (action === commonActions.edit) return (<ActionIconEdit onClick={onClick} showText={showText} />)
     if (action === commonActions.delete) return (<ActionIconDelete onClick={onClick} showText={showText} />)
     if (action === commonActions.copy) return (<ActionIconCopy onClick={onClick} showText={showText} />)
-    if (action === commonActions.publish) return (<ActionIconPublish onClick={onClick} showText={showText} />)
+
     if (action === commonActions.back) return (<ActionIconBack onClick={onClick} showText={showText} />)
     if (action === commonActions.detail) return (<ActionIconDetail onClick={onClick} showText={showText} />)
+
+    if (action === commonActions.publish) return (<ActionIconPublish onClick={onClick} showText={showText} />)
+    if (action === commonActions.accept) return (<ActionIconAccept onClick={onClick} showText={showText} />)
+    if (action === commonActions.reject) return (<ActionIconReject onClick={onClick} showText={showText} />)
+
+    if (action === commonActions.favoriteAdd) return (<ActionIconFavoriteAdd onClick={onClick} showText={showText} />)
+    if (action === commonActions.favoriteRemove) return (<ActionIconFavoriteRemove onClick={onClick} showText={showText} />)
 }
 export const ActionToolbar = ({ actions, showText = false }) => {
     if (actions)
@@ -115,4 +162,30 @@ export const ActionGroup = ({ actions, size = "", showText = false }) => {
     }
     else
         return (<></>)
+}
+
+export const ActionButtonCreate = ({ label = undefined, showText = true, navigateTo = ObjectActions.add }) => {
+    const { t } = useTranslation("CommonActions");
+    const linkText = label ? label : t("actions.create")
+    return (
+        <Link to={navigateTo} className="btn btn-primary">{linkText}</Link>
+    )
+}
+export const ActionButtonHide = ({ showText = true, isHidden = true, setIsHidden }) => {
+    const { t } = useTranslation("CommonActions");
+
+    const label = isHidden ? t("actions.unhide") : t("actions.hide")
+    const iconStyle = isHidden ? "bi-chevron-double-down" : "bi-chevron-double-up"
+
+    const handleClick = () => {
+        if (isHidden) {
+            setIsHidden(false)
+        } else {
+            setIsHidden(true)
+        }
+    }
+    return (
+        <ActionIcon label={label} showText={showText} onClick={handleClick}
+            iconStyle={iconStyle} />
+    )
 }

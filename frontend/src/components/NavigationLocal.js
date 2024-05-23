@@ -7,7 +7,9 @@ const NavItem = ({ item, index }) => {
   const isActive = useMatch({ path: resolvedPath.pathname }) ? " active" : " link-dark"
   // console.log(resolvedPath.pathname + isActive)
 
-  return (<Link key={"NLL" + index} to={item.link} className={"nav-link" + isActive}>{item.text}</Link>)
+  return (
+    <Link key={"NLL" + index} to={item.link} className={"nav-link" + isActive}>{item.text} <span className="badge bg-secondary">{item.badge ?? ""}</span></Link>
+  )
 }
 
 const NavLocal = ({ items, label }) => {

@@ -1,6 +1,8 @@
 const AppPaths = {
     home: "/",
     news: "/news/",
+    cv: "/cv/",
+    vacancy: "/vacancy/",
     signin: "/signin/",
     signup: "/signup/",
     confirm: "/confirm/",
@@ -14,6 +16,7 @@ const AppPaths = {
 export const ObjectActions = {
     add: "new",
     edit: "edit",
+    reject: "reject"
 }
 
 export default AppPaths
