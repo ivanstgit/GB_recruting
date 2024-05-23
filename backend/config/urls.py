@@ -33,10 +33,12 @@ from recrutingapp.views import (
     CityViewSet,
     EmployeeProfileViewSet,
     CVViewSet,
+    EmployerProfileViewSet,
     GenderViewSet,
     NewsPublicViewSet,
     NewsPostStaffViewSet,
     NewsTagsStaffViewSet,
+    VacancyViewSet,
 )
 
 schema_view = get_schema_view(
@@ -62,7 +64,9 @@ router.register("common/genders", GenderViewSet, basename="common_genders")
 router.register("staff/news/tags", NewsTagsStaffViewSet, basename="staff_news_tags")
 router.register("staff/news/posts", NewsPostStaffViewSet, basename="staff_news_posts")
 router.register("employee/profile", EmployeeProfileViewSet, basename="employee")
+router.register("employers", EmployerProfileViewSet, basename="employers")
 router.register("cvs", CVViewSet, basename="cvs")
+router.register("vacancies", VacancyViewSet, basename="vacancies")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

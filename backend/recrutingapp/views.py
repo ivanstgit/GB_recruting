@@ -6,20 +6,27 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Q
 from django.contrib.contenttypes.models import ContentType
 from recrutingapp.models import (
     City,
     ConstDocumentStatus,
     DocumentStatus,
+    Employer,
     Favorite,
     Gender,
     NewsTag,
     NewsPost,
     Employee,
     CV,
+    Vacancy,
 )
-from recrutingapp.permissions import CVPermission, IsOwner
+from recrutingapp.permissions import (
+    CVPermission,
+    EmployerPermission,
+    IsOwner,
+    VacancyPermission,
+)
 from recrutingapp.serializers import (
     CitySerializer,
     DocumentStatusMixinSerializer,
@@ -27,13 +34,17 @@ from recrutingapp.serializers import (
     EmployeeSerializerInt,
     CVSerializerInt,
     CVSerializerExt,
+    EmployerSerializerExt,
+    EmployerSerializerInt,
     GenderSerializer,
     NewsPublicListSerializer,
     NewsPublicDetailSerializer,
     NewsTagStaffSerializer,
     NewsStaffSerializer,
+    VacancySerializerExt,
+    VacancySerializerInt,
 )
-from recrutingapp.filters import NewsFilter, CVFilter
+from recrutingapp.filters import NewsFilter, CVFilter, VacancyFilter
 from userapp.models import UserRoles
 
 REQUEST_METHODS_CHANGE = ("POST", "PUT", "PATCH")
@@ -229,6 +240,60 @@ class EmployeeProfileViewSet(OwnedModelMixin, LoggedModelMixin, viewsets.ModelVi
         return EmployeeSerializerExt
 
 
+class EmployerPagination(pagination.LimitOffsetPagination):
+    default_limit = 10
+
+
+class EmployerProfileViewSet(
+    OwnedModelMixin, LoggedModelMixin, DocStatusModelMixin, viewsets.ModelViewSet
+):
+    """View for employer (Company card)"""
+
+    permission_classes = [
+        EmployerPermission,
+    ]
+    serializer_class = EmployerSerializerExt
+    pagination_class = EmployerPagination
+
+    def get_queryset(self):
+        role = self.request.user.role
+
+        if self.request.user.is_superuser:
+            qs = Employer.objects.all().order_by("updated_at").prefetch_related("city")
+
+        # employer -> owned or published
+        elif role == UserRoles.employer.value:
+            qs = (
+                Employer.objects.filter(
+                    Q(status=ConstDocumentStatus.approved) | Q(owner=self.request.user)
+                )
+                .order_by("updated_at")
+                .prefetch_related("city")
+            )
+
+        # moderator -> on moderation
+        elif role == UserRoles.moderator.value:
+            qs = (
+                Employer.objects.filter(status=ConstDocumentStatus.pending)
+                .order_by("updated_at")
+                .prefetch_related("city")
+            )
+
+        else:
+            qs = (
+                Employer.objects.filter(status=ConstDocumentStatus.approved)
+                .order_by("updated_at")
+                .prefetch_related("city")
+            )
+
+        return self.annotate_qs_is_favorite_field(qs)
+
+    def get_serializer_class(self):
+        if self.request.method in REQUEST_METHODS_CHANGE:
+            return EmployerSerializerInt
+        return EmployerSerializerExt
+
+
 class CVPagination(pagination.LimitOffsetPagination):
     default_limit = 10
 
@@ -256,30 +321,24 @@ class CVViewSet(
         role = self.request.user.role
 
         if self.request.user.is_superuser:
-            qs = CV.objects.all().prefetch_related(
-                "employee", "experience", "education"
-            )
+            qs = CV.objects.all()
 
         # employee -> own
         elif role == UserRoles.employee.value:
-            qs = CV.objects.filter(owner=self.request.user).prefetch_related(
-                "experience", "education"
-            )
+            qs = CV.objects.filter(owner=self.request.user)
 
         # moderator -> on moderation
         elif role == UserRoles.moderator.value:
-            qs = (
-                CV.objects.filter(status=ConstDocumentStatus.pending)
-                .order_by("updated_at")
-                .prefetch_related("experience", "education")
-            )
+            qs = CV.objects.filter(status=ConstDocumentStatus.pending)
 
         else:
-            qs = CV.objects.filter(
-                status=ConstDocumentStatus.approved
-            ).prefetch_related("experience", "education")
+            qs = CV.objects.filter(status=ConstDocumentStatus.approved)
 
-        return self.annotate_qs_is_favorite_field(qs)
+        return (
+            self.annotate_qs_is_favorite_field(qs)
+            .order_by("updated_at")
+            .prefetch_related("employee", "experience", "education")
+        )
 
     def get_serializer_class(self):
         if self.request.method in REQUEST_METHODS_CHANGE:
@@ -290,4 +349,62 @@ class CVViewSet(
         request = serializer.context["request"]
         serializer.save(
             owner=request.user, updated_by=request.user, employee=request.user.employee
+        )
+
+
+class VacancyPagination(pagination.LimitOffsetPagination):
+    default_limit = 10
+
+
+class VacancyViewSet(
+    OwnedModelMixin,
+    LoggedModelMixin,
+    DocStatusModelMixin,
+    FavoriteMixin,
+    viewsets.ModelViewSet,
+):
+    """View for Vavancies"""
+
+    permission_classes = [
+        permissions.IsAuthenticated,
+        permissions.DjangoModelPermissions,
+        VacancyPermission,
+    ]
+    serializer_class = VacancySerializerExt
+    pagination_class = VacancyPagination
+
+    filterset_class = VacancyFilter
+
+    def get_queryset(self):
+        role = self.request.user.role
+
+        if self.request.user.is_superuser:
+            qs = Vacancy.objects.all().prefetch_related
+
+        # employer -> own
+        elif role == UserRoles.employer.value:
+            qs = Vacancy.objects.filter(owner=self.request.user)
+
+        # moderator -> on moderation
+        elif role == UserRoles.moderator.value:
+            qs = Vacancy.objects.filter(status=ConstDocumentStatus.pending)
+
+        else:
+            qs = Vacancy.objects.filter(status=ConstDocumentStatus.approved)
+
+        return (
+            self.annotate_qs_is_favorite_field(qs)
+            .prefetch_related("employer", "city")
+            .order_by("updated_at")
+        )
+
+    def get_serializer_class(self):
+        if self.request.method in REQUEST_METHODS_CHANGE:
+            return VacancySerializerInt
+        return VacancySerializerExt
+
+    def perform_create(self, serializer):
+        request = serializer.context["request"]
+        serializer.save(
+            owner=request.user, updated_by=request.user, employer=request.user.employer
         )

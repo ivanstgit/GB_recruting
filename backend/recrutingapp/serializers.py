@@ -10,9 +10,11 @@ from recrutingapp.models import (
     CV,
     CVEducation,
     CVExperience,
+    Employer,
     Gender,
     NewsTag,
     NewsPost,
+    Vacancy,
 )
 
 
@@ -196,6 +198,65 @@ class EmployeeSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
         depth = 1
 
 
+class EmployerSerializerExt(OwnedModelMixin, serializers.ModelSerializer):
+    """
+    Serializer for reading
+    """
+
+    class Meta:
+        model = Employer
+        fields = [
+            "id",
+            "owner",
+            "name",
+            "established",
+            "age",
+            "email",
+            "city",
+            "description",
+            "welcome_letter",
+            "updated_at",
+        ]
+        depth = 1
+
+
+class EmployerSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
+    """
+    Serializer internal pk
+    """
+
+    name = serializers.CharField(max_length=100)
+    established = serializers.DateField()
+    email = serializers.EmailField(required=True)
+    city = serializers.PrimaryKeyRelatedField(
+        queryset=City.objects.all(), required=True
+    )
+
+    def validate_established(self, value):
+        if (
+            isinstance(value, datetime.date)
+            and value < datetime.date.today()
+            and value > datetime.date(1910, 1, 1)
+        ):
+            return value
+        raise serializers.ValidationError("Incorrect date")
+
+    class Meta:
+        model = Employer
+        fields = [
+            "id",
+            "owner",
+            "email",
+            "name",
+            "established",
+            "city",
+            "description",
+            "welcome_letter",
+        ]
+        # user updated by name
+        depth = 1
+
+
 class CVExperienceSerializerInt(serializers.ModelSerializer):
     """
     Serializer for employee experience
@@ -273,7 +334,6 @@ class CVSerializerInt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerial
     Serializer internal pk
     """
 
-    # owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
     experience = CVExperienceSerializerInt(many=True)
     education = CVEducationSerializer(many=True)
 
@@ -333,8 +393,6 @@ class CVSerializerExt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerial
     Serializer for reading
     """
 
-    # owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
-
     employee = EmployeeSerializerExt()
     experience = CVExperienceSerializerExt(many=True)
     education = CVEducationSerializer(many=True)
@@ -354,6 +412,60 @@ class CVSerializerExt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerial
             "description",
             "experience",
             "education",
+            "created_at",
+            "updated_at",
+            "is_favorite",
+        ]
+        depth = 1
+
+
+class VacancySerializerInt(
+    OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
+):
+    """
+    Serializer internal pk
+    """
+
+    class Meta:
+        model = Vacancy
+        fields = [
+            "id",
+            "owner",
+            "employer",
+            "title",
+            "city",
+            "position",
+            "salary",
+            "description",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1
+
+
+class VacancySerializerExt(
+    OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
+):
+    """
+    Serializer for reading
+    """
+
+    employer = EmployerSerializerExt()
+    is_favorite = serializers.BooleanField(read_only=True)
+
+    class Meta:
+        model = Vacancy
+        fields = [
+            "id",
+            "owner",
+            "employer",
+            "status",
+            "status_info",
+            "title",
+            "city",
+            "position",
+            "salary",
+            "description",
             "created_at",
             "updated_at",
             "is_favorite",
