@@ -14,17 +14,15 @@ import { ErrorLabel } from '../../components/common/UICommon.js';
 
 const initialState = {
     name: "",
-    birthday: "",
-    gender: "",
+    established: "",
     email: "",
     city: "",
     description: "",
-    skills: []
+    welcome_letter: ""
 }
 
-const EmployeeProfileForm = (props) => {
+const EmployerProfileForm = (props) => {
 
-    const [genders, setGenders] = useState([]);
     const [cities, setCities] = useState([]);
 
     const [input, setInput] = useState(initialState);
@@ -32,12 +30,12 @@ const EmployeeProfileForm = (props) => {
     const [status, setStatus] = useState(formStatuses.prefill)
     const [validationErrors, setValidationErrors] = useState({});
 
-    const { t } = useTranslation("Employee");
+    const { t } = useTranslation("Employer");
 
     const auth = useAuth()
     const dataProvider = useData()
 
-    const profile = dataProvider.employeeProfile?.[0] ?? null
+    const profile = dataProvider.employerProfile?.[0] ?? null
     const isEdit = profile ? true : false
     const empty_field_error = t("Errors.FieldIsRequired")
 
@@ -45,10 +43,6 @@ const EmployeeProfileForm = (props) => {
         if (status === formStatuses.prefill) {
             // genders & cities
             setStatus(formStatuses.prefilling)
-            dataProvider.getList(DATA_RESOURCES.commonGenders)
-                .then((res) => {
-                    setGenders(res?.data ?? [])
-                })
             dataProvider.getList(DATA_RESOURCES.commonCities)
                 .then((res) => {
                     setCities(res?.data ?? [])
@@ -59,12 +53,11 @@ const EmployeeProfileForm = (props) => {
                 setInput(
                     {
                         name: profile.name,
-                        birthday: profile.birthday,
-                        gender: profile.gender.id,
+                        established: profile.established,
                         email: profile.email,
                         city: profile.city.id,
                         description: profile.description,
-                        skills: profile.skills.join("\n")
+                        welcome_letter: profile.welcome_letter
                     })
                 setError("")
 
@@ -115,9 +108,8 @@ const EmployeeProfileForm = (props) => {
             setStatus(formStatuses.error)
         } else {
             let data = input
-            data.skills = data.skills.split("\n")
             if (isEdit) {
-                dataProvider.putOne(DATA_RESOURCES.employee, profile.id, data)
+                dataProvider.putOne(DATA_RESOURCES.employer, profile.id, data)
                     .then(res => {
                         if (res.error) {
                             if (res.data) {
@@ -128,11 +120,11 @@ const EmployeeProfileForm = (props) => {
                             setStatus(formStatuses.error)
                         } else {
                             setStatus(formStatuses.success)
-                            dataProvider.refreshDelayed(DATA_RESOURCES.employee)
+                            dataProvider.refreshDelayed(DATA_RESOURCES.employer)
                         }
                     })
             } else {
-                dataProvider.postOne(DATA_RESOURCES.employee, data)
+                dataProvider.postOne(DATA_RESOURCES.employer, data)
                     .then(res => {
                         if (res.error) {
                             if (res.data) {
@@ -143,7 +135,7 @@ const EmployeeProfileForm = (props) => {
                             setStatus(formStatuses.error)
                         } else {
                             setStatus(formStatuses.success)
-                            dataProvider.refreshDelayed(DATA_RESOURCES.employee)
+                            dataProvider.refreshDelayed(DATA_RESOURCES.employer)
                         }
                     })
 
@@ -164,15 +156,9 @@ const EmployeeProfileForm = (props) => {
                         errorText={validationErrors?.name ?? ""}
                         onChange={(event) => handleChange(event)} />
 
-                    <InputDate id="birthday" name="birthday" value={input.birthday} label={t("Profile.form.birthday")}
-                        errorText={validationErrors?.birthday ?? ""}
+                    <InputDate id="established" name="established" value={input.established} label={t("Profile.form.established")}
+                        errorText={validationErrors?.established ?? ""}
                         onChange={(event) => handleChange(event)} />
-
-                    <InputSelect id="gender" name="gender" value={input.gender}
-                        label={t("Profile.form.gender")} errorText={validationErrors?.gender ?? ""}
-                        onChange={(event) => handleChange(event)}
-                        options={genders}
-                    />
 
                     <InputEmail id="email" name="email" value={input.email} label={t("Profile.form.email")}
                         errorText={validationErrors?.email ?? ""}
@@ -188,8 +174,8 @@ const EmployeeProfileForm = (props) => {
                         errorText={validationErrors?.description ?? ""}
                         onChange={(event) => handleChange(event)} rows="5" />
 
-                    <InputTextArea id="skills" name="skills" value={input.skills} label={t("Profile.form.skills")}
-                        errorText={validationErrors?.skills ?? ""}
+                    <InputTextArea id="welcome_letter" name="welcome_letter" value={input.welcome_letter} label={t("Profile.form.welcome_letter")}
+                        errorText={validationErrors?.welcome_letter ?? ""}
                         onChange={(event) => handleChange(event)} rows="5" />
 
                     <div className="col-12">
@@ -204,4 +190,4 @@ const EmployeeProfileForm = (props) => {
     );
 }
 
-export default EmployeeProfileForm;
+export default EmployerProfileForm;

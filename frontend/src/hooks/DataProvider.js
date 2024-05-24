@@ -10,6 +10,12 @@ export const DATA_RESOURCES = {
         isGlobal: true,
         methods: ["get"]
     },
+    publicEmployers: {
+        api: "publicEmployers",
+        isProtected: false,
+        isGlobal: true,
+        methods: ["get"]
+    },
     accountSignUp: {
         api: "accountSignUp",
         isProtected: false,
@@ -28,12 +34,19 @@ export const DATA_RESOURCES = {
         isGlobal: false,
         methods: ["get"]
     },
-    employeeProfile: {
-        api: "employeeProfile",
+    employee: {
+        api: "employee",
         isProtected: true,
         isGlobal: true,
         roles: [userRoles.employee],
         methods: ["get", "post", "put", "delete"]
+    },
+    employer: {
+        api: "employer",
+        isProtected: true,
+        isGlobal: true,
+        roles: [userRoles.employer, userRoles.moderator],
+        methods: ["get", "post", "put", "delete", "status"]
     },
     staffNews: {
         api: "staffNewsPosts",
@@ -75,7 +88,9 @@ class TokenExpiredError extends Error {
 const DataProvider = (props) => {
     //all objects keeping in state to share between them
     const [publicNews, setPublicNews] = useState([]);
+    const [publicEmployers, setPublicEmployers] = useState([]);
     const [employeeProfile, setEmployeeProfile] = useState([]);
+    const [employerProfile, setEmployerProfile] = useState([]);
 
     const auth = useAuth()
 
@@ -475,7 +490,7 @@ const DataProvider = (props) => {
         };
     };
 
-    const refresh = (resource) => {
+    const refresh = (resource, params = {}) => {
         if (!resource.isGlobal) {
             return
         }
@@ -483,13 +498,17 @@ const DataProvider = (props) => {
         let callback = () => { }
         if (resource.api === DATA_RESOURCES.publicNews.api) {
             callback = setPublicNews
-        } else if (resource.api === DATA_RESOURCES.employeeProfile.api) {
+        } else if (resource.api === DATA_RESOURCES.publicEmployers.api) {
+            callback = setPublicEmployers
+        } else if (resource.api === DATA_RESOURCES.employee.api) {
             callback = setEmployeeProfile
+        } else if (resource.api === DATA_RESOURCES.employer.api) {
+            callback = setEmployerProfile
         }
 
         if (!resource.isProtected || (resource.isProtected && resource.roles.includes(auth.user.role))) {
 
-            getList(resource)
+            getList(resource, params)
                 .then(res => {
                     if (res.error) {
                         console.log("error refreshing" + resource + ": " + res.error)
@@ -515,7 +534,9 @@ const DataProvider = (props) => {
     useEffect(() => {
         console.log("refreshing after auth change for user " + JSON.stringify(auth.user))
         refresh(DATA_RESOURCES.publicNews)
-        refresh(DATA_RESOURCES.employeeProfile)
+        refresh(DATA_RESOURCES.publicEmployers)
+        refresh(DATA_RESOURCES.employee)
+        refresh(DATA_RESOURCES.employer)
         // eslint-disable-next-line
     }, [auth.user.username]);
 
@@ -524,7 +545,7 @@ const DataProvider = (props) => {
         // 1) for direct transfer (child component refers to context => automatic rerenders)
         // 2) for async refreshing (child component should use effect on entire dataProvider if needed)
         // getList 
-        <DataContext.Provider value={{ publicNews, employeeProfile, refreshDelayed, getList, getOne, postOne, putOne, deleteOne, setStatus, setFavorite }}>
+        <DataContext.Provider value={{ publicNews, publicEmployers, employeeProfile, employerProfile, refreshDelayed, getList, getOne, postOne, putOne, deleteOne, setStatus, setFavorite }}>
             {props.children}
         </DataContext.Provider>
     );

@@ -218,7 +218,9 @@ class CityViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     queryset = City.objects.all()
 
 
-class EmployeeProfileViewSet(OwnedModelMixin, LoggedModelMixin, viewsets.ModelViewSet):
+class EmployeeProtectedViewSet(
+    OwnedModelMixin, LoggedModelMixin, viewsets.ModelViewSet
+):
     """View for employee"""
 
     permission_classes = [
@@ -244,12 +246,33 @@ class EmployerPagination(pagination.LimitOffsetPagination):
     default_limit = 10
 
 
-class EmployerProfileViewSet(
-    OwnedModelMixin, LoggedModelMixin, DocStatusModelMixin, viewsets.ModelViewSet
+class EmployerPublicViewSet(
+    mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet
+):
+    """View for end or anonimous users"""
+
+    queryset = (
+        Employer.objects.filter(status=ConstDocumentStatus.approved)
+        .order_by("updated_at")
+        .prefetch_related("city")
+    )
+    permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
+    serializer_class = EmployerSerializerExt
+    pagination_class = EmployerPagination
+
+
+class EmployerProtectedViewSet(
+    OwnedModelMixin,
+    LoggedModelMixin,
+    DocStatusModelMixin,
+    FavoriteMixin,
+    viewsets.ModelViewSet,
 ):
     """View for employer (Company card)"""
 
     permission_classes = [
+        permissions.IsAuthenticated,
+        permissions.DjangoModelPermissions,
         EmployerPermission,
     ]
     serializer_class = EmployerSerializerExt
@@ -259,34 +282,24 @@ class EmployerProfileViewSet(
         role = self.request.user.role
 
         if self.request.user.is_superuser:
-            qs = Employer.objects.all().order_by("updated_at").prefetch_related("city")
+            qs = Employer.objects.all()
 
         # employer -> owned or published
         elif role == UserRoles.employer.value:
-            qs = (
-                Employer.objects.filter(
-                    Q(status=ConstDocumentStatus.approved) | Q(owner=self.request.user)
-                )
-                .order_by("updated_at")
-                .prefetch_related("city")
-            )
+            qs = Employer.objects.filter(owner=self.request.user)
 
         # moderator -> on moderation
         elif role == UserRoles.moderator.value:
-            qs = (
-                Employer.objects.filter(status=ConstDocumentStatus.pending)
-                .order_by("updated_at")
-                .prefetch_related("city")
-            )
+            qs = Employer.objects.filter(status=ConstDocumentStatus.pending)
 
         else:
-            qs = (
-                Employer.objects.filter(status=ConstDocumentStatus.approved)
-                .order_by("updated_at")
-                .prefetch_related("city")
-            )
+            qs = Employer.objects.filter(status=ConstDocumentStatus.approved)
 
-        return self.annotate_qs_is_favorite_field(qs)
+        return (
+            self.annotate_qs_is_favorite_field(qs)
+            .order_by("updated_at")
+            .prefetch_related("city")
+        )
 
     def get_serializer_class(self):
         if self.request.method in REQUEST_METHODS_CHANGE:

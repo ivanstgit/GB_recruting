@@ -93,7 +93,7 @@ class EmployerPermission(permissions.BasePermission):
             ):
                 return True
 
-        # all users can view all approved resume
+        # all users can view all approved companies
         else:
             if request.method in permissions.SAFE_METHODS and (
                 obj and obj.status.id == ConstDocumentStatus.approved

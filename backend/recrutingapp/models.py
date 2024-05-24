@@ -259,7 +259,7 @@ class Employee(OwnedMixin, LoggingMixin, models.Model):
         verbose_name_plural = _("employees")
 
 
-class Employer(OwnedMixin, LoggingMixin, models.Model):
+class Employer(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
     name = models.CharField(_("Name"), max_length=100)
     established = models.DateField()
     email = models.CharField(
@@ -372,8 +372,7 @@ class CVEducation(models.Model):
 
 class Vacancy(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
     employer = models.ForeignKey(
-        Employer,
-        on_delete=models.CASCADE,
+        Employer, on_delete=models.CASCADE, related_name="vacancies"
     )
 
     title = models.CharField(
