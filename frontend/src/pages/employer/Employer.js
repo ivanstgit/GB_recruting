@@ -44,7 +44,8 @@ const EmployerPage = () => {
                         <Route index element={<Navigate to={EmployerPaths.home} />} />
                         <Route exact path={EmployerPaths.home} element={<EmployerHomePage />} />
                         <Route exact path={EmployerPaths.profile} element={<EmployerProfilePage />} />
-                        <Route exact path={EmployerPaths.profile + ObjectActions.edit} element={<EmployerProfileForm />} />
+                        <Route exact path={EmployerPaths.profile + ObjectActions.edit} element={<EmployerProfileForm
+                            backTo={"../" + EmployerPaths.profile} />} />
                         {/* <Route exact path={EmployerPaths.cvs} element={<EmployerCVsPage />} />
                         <Route exact path={EmployerPaths.cvs + ":id/"} element={<EmployerCVDetailPage
                             backTo={"../" + EmployerPaths.cvs} />} />

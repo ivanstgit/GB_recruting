@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from recrutingapp.models import CV, ConstDocumentStatus, Vacancy
+from recrutingapp.models import CV, ConstDocumentStatus, Employer, Vacancy
 from userapp.models import UserRoles
 
 
@@ -72,17 +72,22 @@ class EmployerPermission(permissions.BasePermission):
     Grants permission based on role, status
     """
 
-    def has_object_permission(self, request, view, obj: Vacancy):
+    def has_object_permission(self, request, view, obj: Employer):
         role = request.user.role
 
         if request.user.is_superuser:
             return True
 
-        # employer has full permissions except changing data in pending status
+        # employer has full permissions on status change and restricted permissions on data change
         if role == UserRoles.employer.value and obj.owner == request.user:
-            if request.method in permissions.SAFE_METHODS or obj.status.id in (
-                ConstDocumentStatus.draft,
-                ConstDocumentStatus.rejected,
+            if (
+                request.method in permissions.SAFE_METHODS
+                or obj.status.id
+                in (
+                    ConstDocumentStatus.draft,
+                    ConstDocumentStatus.rejected,
+                )
+                or (view.action == "status")
             ):
                 return True
 

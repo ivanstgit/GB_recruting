@@ -33,6 +33,9 @@
         "FieldIsRequired": "Поле обязательно для заполнения",
         "FillAllRequiredFields": "Заполните все обязательные поля"
     },
+    "Warnings": {
+        "Blocked": "В данном статусе редактирование запрещено"
+    },
     "CVs": {
         "header": "Резюме",
         "actions": {

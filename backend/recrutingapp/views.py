@@ -65,27 +65,29 @@ class OwnedModelMixin:
 class DocStatusModelMixin:
     @action(detail=True, methods=["patch"])
     def status(self, request, version=None, pk=None):
-        cv = self.get_object()
+        obj = self.get_object()
         serializer = DocumentStatusMixinSerializer(data=request.data)
         if serializer.is_valid():
             new_status = serializer.validated_data["status"]
             new_status_info = serializer.validated_data["info"]
-            if cv and (
-                (
-                    cv.status.id
+            if obj and (
+                new_status == ConstDocumentStatus.draft
+                or (
+                    obj.status.id
                     in (ConstDocumentStatus.draft, ConstDocumentStatus.rejected)
                     and new_status == ConstDocumentStatus.pending
                 )
                 or (
-                    cv.status.id == ConstDocumentStatus.pending
+                    obj.status.id == ConstDocumentStatus.pending
+                    and obj.owner != request.user
                     and new_status
                     in (ConstDocumentStatus.approved, ConstDocumentStatus.rejected)
                 )
             ):
                 status_obj = DocumentStatus.objects.get(id=new_status)
-                cv.status = status_obj
-                cv.status_info = new_status_info
-                cv.save()
+                obj.status = status_obj
+                obj.status_info = new_status_info
+                obj.save()
                 return Response({"status": new_status})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

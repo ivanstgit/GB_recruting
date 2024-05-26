@@ -11,6 +11,7 @@ export const commonActions = {
     publish: "publish",
     accept: "accept",
     reject: "reject",
+    recall: "recall",
 
     back: "back",
     detail: "detail",
@@ -89,6 +90,13 @@ export const ActionIconReject = ({ showText = false, onClick }) => {
             iconStyle="bi-send-x" buttonStyle="btn-outline-danger" />
     )
 }
+export const ActionIconRecall = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.recall")} showText={showText} onClick={onClick}
+            iconStyle="bi-send-x" buttonStyle="btn-outline-danger" />
+    )
+}
 
 export const ActionIconBack = ({ showText = false, onClick }) => {
     const { t } = useTranslation("CommonActions");
@@ -125,6 +133,7 @@ const ActionToolbarItem = ({ action, onClick, showText = false }) => {
     if (action === commonActions.publish) return (<ActionIconPublish onClick={onClick} showText={showText} />)
     if (action === commonActions.accept) return (<ActionIconAccept onClick={onClick} showText={showText} />)
     if (action === commonActions.reject) return (<ActionIconReject onClick={onClick} showText={showText} />)
+    if (action === commonActions.recall) return (<ActionIconRecall onClick={onClick} showText={showText} />)
 
     if (action === commonActions.favoriteAdd) return (<ActionIconFavoriteAdd onClick={onClick} showText={showText} />)
     if (action === commonActions.favoriteRemove) return (<ActionIconFavoriteRemove onClick={onClick} showText={showText} />)

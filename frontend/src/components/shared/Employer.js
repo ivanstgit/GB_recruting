@@ -2,6 +2,39 @@ import { useTranslation } from 'react-i18next';
 
 import { NameValueTable } from '../common/UICommon';
 
+export const EmployerStatuses = {
+    draft: "d",
+    pending: "p",
+    approved: "a",
+    rejected: "r"
+}
+
+export const EmployerStatusIcon = ({ status, showText = false }) => {
+    const { t } = useTranslation("SharedEmployer");
+
+    if (!status) return <span />
+
+    const statusDesc = t("statuses." + status.id) ?? status.name ?? ""
+    let iconStyle = ""
+    if (status.id === EmployerStatuses.draft) iconStyle = "bi-eraser"
+    if (status.id === EmployerStatuses.pending) iconStyle = "bi-patch-question"
+    if (status.id === EmployerStatuses.approved) iconStyle = "bi-patch-check"
+    if (status.id === EmployerStatuses.rejected) iconStyle = "bi-patch-exclamation"
+    if (showText)
+        return (
+            <span>
+                {/* <h4 className={"badge bg-info"}> */}
+                <i className={"me-3 bi " + iconStyle} /> {statusDesc}
+            </span>
+        )
+    else
+        return (
+            <i
+                className={" p-1 me-3 bi " + iconStyle}
+                data-toggle="tooltip" data-placement="right" title={statusDesc} />
+        )
+}
+
 export const EmployerProfileCard = ({ profile }) => {
     const { t } = useTranslation("SharedEmployer");
     const items = [

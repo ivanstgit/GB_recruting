@@ -7,9 +7,10 @@ import { useData, DATA_RESOURCES } from '../../hooks/DataProvider.js'
 
 import {
     FormContainer, formStatuses,
-    HeaderText, InputText, SubmitButton, InputTextArea, InputDate, InputEmail, InputSelect
+    HeaderText, InputText, SubmitButton, InputTextArea, InputDate, InputEmail, InputSelect, FormButton
 } from "../../components/common/FormFields.js";
-import { ErrorLabel } from '../../components/common/UICommon.js';
+import { ErrorLabel, WarningLabel } from '../../components/common/UICommon.js';
+import { EmployerStatusIcon, EmployerStatuses } from '../../components/shared/Employer.js';
 
 
 const initialState = {
@@ -21,7 +22,7 @@ const initialState = {
     welcome_letter: ""
 }
 
-const EmployerProfileForm = (props) => {
+const EmployerProfileForm = ({ backTo }) => {
 
     const [cities, setCities] = useState([]);
 
@@ -37,10 +38,13 @@ const EmployerProfileForm = (props) => {
 
     const profile = dataProvider.employerProfile?.[0] ?? null
     const isEdit = profile ? true : false
+    const isBlocked = isEdit && (profile?.status?.id === EmployerStatuses.approved || profile?.status?.id === EmployerStatuses.pending)
+
     const empty_field_error = t("Errors.FieldIsRequired")
 
     useEffect(() => {
         if (status === formStatuses.prefill) {
+
             // genders & cities
             setStatus(formStatuses.prefilling)
             dataProvider.getList(DATA_RESOURCES.commonCities)
@@ -68,6 +72,7 @@ const EmployerProfileForm = (props) => {
                     email: auth.user.email ?? prev.email,
                 }));
             }
+
             setStatus(formStatuses.initial)
         }
         // eslint-disable-next-line
@@ -97,7 +102,7 @@ const EmployerProfileForm = (props) => {
         }));
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e, sendToApprove = false) => {
         e.preventDefault()
         setStatus(formStatuses.pending)
 
@@ -119,8 +124,20 @@ const EmployerProfileForm = (props) => {
                             }
                             setStatus(formStatuses.error)
                         } else {
-                            setStatus(formStatuses.success)
-                            dataProvider.refreshDelayed(DATA_RESOURCES.employer)
+                            if (sendToApprove) {
+                                dataProvider.setStatus(DATA_RESOURCES.employer, profile.id, EmployerStatuses.pending)
+                                    .then((res) => {
+                                        if (res.error) {
+                                            setError(res.error)
+                                        } else {
+                                            setStatus(formStatuses.success)
+                                            dataProvider.refreshDelayed(DATA_RESOURCES.employer)
+                                        }
+                                    })
+                            } else {
+                                setStatus(formStatuses.success)
+                                dataProvider.refreshDelayed(DATA_RESOURCES.employer)
+                            }
                         }
                     })
             } else {
@@ -134,8 +151,20 @@ const EmployerProfileForm = (props) => {
                             }
                             setStatus(formStatuses.error)
                         } else {
-                            setStatus(formStatuses.success)
-                            dataProvider.refreshDelayed(DATA_RESOURCES.employer)
+                            if (sendToApprove) {
+                                dataProvider.setStatus(DATA_RESOURCES.employer, profile.id, EmployerStatuses.pending)
+                                    .then((res) => {
+                                        if (res.error) {
+                                            setError(res.error)
+                                        } else {
+                                            setStatus(formStatuses.success)
+                                            dataProvider.refreshDelayed(DATA_RESOURCES.employer)
+                                        }
+                                    })
+                            } else {
+                                setStatus(formStatuses.success)
+                                dataProvider.refreshDelayed(DATA_RESOURCES.employer)
+                            }
                         }
                     })
 
@@ -144,13 +173,31 @@ const EmployerProfileForm = (props) => {
     }
 
     if (status === formStatuses.success) {
-        return (<Navigate to={"../"} />)
+        return (<Navigate to={backTo} />)
+    }
+    if (isBlocked) {
+        return (
+            <div className="container-xxl">
+                <div className="row mb-1">
+                    <WarningLabel text={t("Warnings.Blocked")} />
+                </div>
+            </div>
+        )
     }
     return (
         <div className="container-xxl">
             <div className="row">
                 <FormContainer onSubmit={(event) => handleSubmit(event)}>
-                    <HeaderText text={isEdit ? t("Profile.form.headerEdit") : t("Profile.form.headerCreate")} />
+
+                    <div className="row">
+                        <div className="col">
+                            <HeaderText text={isEdit ? t("Profile.form.headerEdit") : t("Profile.form.headerCreate")} />
+                        </div>
+                        <div className="col-md-auto fs-5">
+                            <EmployerStatusIcon status={profile?.status} showText={true} /> {profile?.status_info}
+                        </div>
+                    </div>
+
 
                     <InputText id="name" name="name" value={input.name} label={t("Profile.form.name")}
                         errorText={validationErrors?.name ?? ""}
@@ -178,9 +225,16 @@ const EmployerProfileForm = (props) => {
                         errorText={validationErrors?.welcome_letter ?? ""}
                         onChange={(event) => handleChange(event)} rows="5" />
 
-                    <div className="col-12">
-                        <SubmitButton label={isEdit ? t("Profile.actions.edit") : t("Profile.actions.create")}
-                            disabled={(status === formStatuses.pending || status === formStatuses.prefilling)} />
+                    <div className="row">
+                        <div className="col-6">
+                            <SubmitButton label={t("Profile.form.Save")} helpText={t("Profile.form.SaveHelp")}
+                                disabled={(status === formStatuses.pending || status === formStatuses.prefilling)} />
+                        </div>
+                        <div className="col-6">
+                            <FormButton label={t("Profile.form.SaveSend")} helpText={t("Profile.form.SaveSendHelp")}
+                                onClick={(event) => handleSubmit(event, true)}
+                                disabled={(status === formStatuses.pending || status === formStatuses.prefilling)} />
+                        </div>
                     </div>
                     <ErrorLabel errorText={error} />
                 </FormContainer>

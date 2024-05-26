@@ -216,6 +216,8 @@ class EmployerSerializerExt(OwnedModelMixin, serializers.ModelSerializer):
             "description",
             "welcome_letter",
             "updated_at",
+            "status",
+            "status_info",
         ]
         depth = 1
 

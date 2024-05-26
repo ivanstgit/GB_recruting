@@ -8,8 +8,8 @@ import {
     FormContainer, formStatuses,
     HeaderText, InputText, SubmitButton, InputTextArea, InputDate, InputSelect, SubHeaderText, InputCheckBox, FormButton, InputNumber
 } from "../../components/common/FormFields.js";
-import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
-import { CVEducationCard, CVExperienceCard } from '../../components/shared/CV.js';
+import { ErrorLabel, Loading, WarningLabel } from '../../components/common/UICommon.js';
+import { CVEducationCard, CVExperienceCard, CVStatuses } from '../../components/shared/CV.js';
 import { commonActions } from '../../components/common/Actions.js';
 
 const initialState = {
@@ -266,6 +266,7 @@ const EmployeeCVForm = ({ backTo }) => {
     const [cities, setCities] = useState([]);
 
     const [input, setInput] = useState(initialState);
+    const [isBlocked, setIsBlocked] = useState(false)
     const [error, setError] = useState("")
     const [status, setStatus] = useState(formStatuses.prefill)
     const [validationErrors, setValidationErrors] = useState({});
@@ -316,6 +317,11 @@ const EmployeeCVForm = ({ backTo }) => {
                                 education: res.data.education
                             })
                         setError("")
+                        if (res.data.status?.id === CVStatuses.approved || res.data.status?.id === CVStatuses.pending) {
+                            setIsBlocked(true)
+                        } else {
+                            setIsBlocked(false)
+                        }
                         setStatus(formStatuses.initial)
                     }
                 })
@@ -474,6 +480,15 @@ const EmployeeCVForm = ({ backTo }) => {
     }
     if (status === formStatuses.prefilling) {
         return (<Loading />)
+    }
+    if (isBlocked) {
+        return (
+            <div className="container-xxl">
+                <div className="row mb-1">
+                    <WarningLabel text={t("Warnings.Blocked")} />
+                </div>
+            </div>
+        )
     }
     const cities2 = cities
     return (
