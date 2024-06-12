@@ -34,6 +34,7 @@ import EmployeePage from './pages/employee/Employee.js';
 import ModeratorPage from './pages/moderator/Moderator.js';
 import EmployerPage from './pages/employer/Employer.js';
 import CVPage from './pages/cv/CV.js';
+import PartnersPage from './pages/partners/Partners.js';
 
 
 
@@ -63,6 +64,7 @@ class App extends React.Component {
                   <Routes>
                     <Route index element={<HomePage />} />
                     <Route path={AppPaths.news + "*"} element={<NewsPage />} />
+                    <Route path={AppPaths.partners + "*"} element={<PartnersPage />} />
 
                     <Route exact path={AppPaths.signin} element={<AccountSignInForm />} />
                     <Route exact path={AppPaths.signup} element={<AccountSignUpForm />} />

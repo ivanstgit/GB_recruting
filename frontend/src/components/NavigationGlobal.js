@@ -6,6 +6,7 @@ import { useAuth, userRoles } from "../hooks/AuthProvider.js";
 import AppPaths from "../routes/AppPaths.js"
 
 const LoginArea = () => {
+
   const auth = useAuth();
   const { t } = useTranslation("Navigation");
 
@@ -47,8 +48,13 @@ const NavGlobal = () => {
     {
       link: AppPaths.news,
       text: t("News"),
-      pattern: AppPaths.news,
-    }
+      pattern: AppPaths.news + '*',
+    },
+    {
+      link: AppPaths.partners,
+      text: t("Partners"),
+      pattern: AppPaths.partners + '*',
+    },
   ]
 
   if (auth.isAuthenticated && (auth.user.role === userRoles.employee)) {
