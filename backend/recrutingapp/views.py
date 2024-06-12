@@ -51,18 +51,33 @@ REQUEST_METHODS_CHANGE = ("POST", "PUT", "PATCH")
 
 
 class LoggedModelMixin:
+    """
+    Mixin for logging object changes.
+    Sets updated_by field from request user
+    """
+
     def perform_update(self, serializer):
         request = serializer.context["request"]
         serializer.save(updated_by=request.user)
 
 
 class OwnedModelMixin:
+    """
+    Mixin for owned objects.
+    Sets creator as owner from request user
+    """
+
     def perform_create(self, serializer):
         request = serializer.context["request"]
         serializer.save(owner=request.user, updated_by=request.user)
 
 
 class DocStatusModelMixin:
+    """
+    Mixin for objects with status.
+    Provide method for status handling
+    """
+
     @action(detail=True, methods=["patch"])
     def status(self, request, version=None, pk=None):
         obj = self.get_object()
@@ -95,6 +110,11 @@ class DocStatusModelMixin:
 
 
 class FavoriteMixin:
+    """
+    Mixin for objects could be added to/removed from favorites.
+    Provide methods for favorites handling
+    """
+
     @action(
         detail=True,
         methods=["post", "delete"],
@@ -104,6 +124,9 @@ class FavoriteMixin:
         ],
     )
     def favorite(self, request, version=None, pk=None):
+        """
+        Add to/ remove from favorites
+        """
         instance = self.get_object()
         content_type = ContentType.objects.get_for_model(instance)
 
@@ -121,6 +144,9 @@ class FavoriteMixin:
             return Response(status=status.HTTP_204_NO_CONTENT)
 
     def annotate_qs_is_favorite_field(self, queryset):
+        """
+        Internal method providing is_favorite attribute to queryset
+        """
         if self.request.user.is_authenticated:
             is_favorite_subquery = Favorite.objects.filter(
                 object_id=OuterRef("pk"),
@@ -139,6 +165,9 @@ class FavoriteMixin:
         ],
     )
     def favorites(self, request, version=None):
+        """
+        List of objects in favorites
+        """
         queryset = self.get_queryset().filter(is_favorite=True)
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(queryset, many=True)

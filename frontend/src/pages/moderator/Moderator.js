@@ -13,14 +13,18 @@ import ModeratorNewsPage from "./ModeratorNews.js"
 import ModeratorNewsForm from "./ModeratorNewsForm.js"
 import ModeratorNewsDetailPage from "./ModeratorNewsDetail.js"
 
-import ModeratorCVsPage from "./ModeratorCV.js"
+import ModeratorCVListPage from "./ModeratorCVList.js"
 import ModeratorCVDetailPage from "./ModeratorCVDetail.js"
 import ModeratorCVRejectForm from "./ModeratorCVRejectForm.js"
+import ModeratorEmployerListPage from "./ModeratorEmployerList.js"
+import ModeratorEmployerDetailPage from "./ModeratorEmployerDetail.js"
+import ModeratorEmployerRejectForm from "./ModeratorEmployerRejectForm.js"
 
 export const ModeratorPaths = {
     home: "home/",
     news: "news/",
     cvs: "cv/",
+    employers: "employers/",
 }
 
 const ModeratorPage = () => {
@@ -31,6 +35,8 @@ const ModeratorPage = () => {
     const [error, setError] = useState("")
     const [CVCount, setCVCount] = useState(0)
     const [CVList, setCVList] = useState([])
+    const [EmployerCount, setEmployerCount] = useState(0)
+    const [EmployerList, setEmployerList] = useState([])
 
     const navLocalItems = [
         {
@@ -45,6 +51,11 @@ const ModeratorPage = () => {
             link: ModeratorPaths.cvs,
             text: t("Moderator.CVs"),
             badge: (CVCount > 0) ? CVCount.toString() : ""
+        },
+        {
+            link: ModeratorPaths.employers,
+            text: t("Moderator.Employers"),
+            badge: (EmployerCount > 0) ? EmployerCount.toString() : ""
         },
     ]
 
@@ -65,15 +76,35 @@ const ModeratorPage = () => {
                 }
             })
     }
+    const refreshEmployerList = () => {
+        setStatus(dataStatuses.loading)
+        dataProvider.getList(DATA_RESOURCES.employer)
+            .then((res) => {
+                if (res.error) {
+                    setEmployerCount(0)
+                    setEmployerList([])
+                    setError(res.error)
+                    setStatus(dataStatuses.error)
+                } else {
+                    setEmployerCount(res.count)
+                    setEmployerList(res.data)
+                    setError("")
+                    setStatus(dataStatuses.success)
+                }
+            })
+    }
 
     if (status === dataStatuses.initial) {
         refreshCVList()
+        refreshEmployerList()
     }
     const privateDataContextValue = useMemo(() => ({
         CVList,
-        refreshCVList
+        refreshCVList,
+        EmployerList,
+        refreshEmployerList
         // eslint-disable-next-line
-    }), [CVList]);
+    }), [CVList, EmployerList]);
 
     return (
         <PrivateDataContext.Provider value={privateDataContextValue}>
@@ -94,11 +125,17 @@ const ModeratorPage = () => {
                             <Route exact path={ModeratorPaths.news + ":id/" + ObjectActions.edit} element={<ModeratorNewsForm
                                 backTo={"../" + ModeratorPaths.news} />} />
 
-                            <Route exact path={ModeratorPaths.cvs} element={<ModeratorCVsPage />} />
+                            <Route exact path={ModeratorPaths.cvs} element={<ModeratorCVListPage />} />
                             <Route exact path={ModeratorPaths.cvs + ":id/"} element={<ModeratorCVDetailPage
                                 backTo={"../" + ModeratorPaths.cvs} />} />
                             <Route exact path={ModeratorPaths.cvs + ":id/" + ObjectActions.reject} element={<ModeratorCVRejectForm
                                 backTo={"../" + ModeratorPaths.cvs} />} />
+
+                            <Route exact path={ModeratorPaths.employers} element={<ModeratorEmployerListPage />} />
+                            <Route exact path={ModeratorPaths.employers + ":id/"} element={<ModeratorEmployerDetailPage
+                                backTo={"../" + ModeratorPaths.employers} />} />
+                            <Route exact path={ModeratorPaths.employers + ":id/" + ObjectActions.reject} element={<ModeratorEmployerRejectForm
+                                backTo={"../" + ModeratorPaths.employers} />} />
 
                             <Route element={<Navigate to={ModeratorPaths.home} />} />
                         </Routes>

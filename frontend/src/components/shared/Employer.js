@@ -82,6 +82,9 @@ export const EmployerPublicCard = ({ item }) => {
                         </h5>
                     </div>
                     <div className="row g-3">
+                        <p className="card-text"><i className="bi bi-megaphone-fill me-3" />{item.welcome_letter}</p>
+                    </div>
+                    <div className="row g-3">
                         <div className="col-sm">
                             <p className="card-text"><i className="bi bi-geo-alt-fill me-3"></i>{item.city.name}</p>
                         </div>

@@ -50,10 +50,12 @@ class CVPermission(permissions.BasePermission):
             ):
                 return True
 
-        # moderator has read permissions on all documents, and write permissions on moderated documents
+        # moderator has read permissions on all documents, and write status permissions on moderated documents
         elif role == UserRoles.moderator.value:
             if request.method in permissions.SAFE_METHODS or (
-                obj and obj.status.id == ConstDocumentStatus.pending
+                obj
+                and obj.status.id == ConstDocumentStatus.pending
+                and view.action == "status"
             ):
                 return True
 
@@ -91,10 +93,12 @@ class EmployerPermission(permissions.BasePermission):
             ):
                 return True
 
-        # moderator has read permissions on all documents, and write permissions on moderated documents
+        # moderator has read permissions on all documents, and write status permissions on moderated documents
         elif role == UserRoles.moderator.value:
             if request.method in permissions.SAFE_METHODS or (
-                obj and obj.status.id == ConstDocumentStatus.pending
+                obj
+                and obj.status.id == ConstDocumentStatus.pending
+                and view.action == "status"
             ):
                 return True
 

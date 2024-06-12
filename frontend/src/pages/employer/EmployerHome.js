@@ -3,7 +3,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { useData } from "../../hooks/DataProvider.js";
-import { EmployerProfileCard } from "../../components/shared/Employer.js";
+import { EmployerProfileCard, EmployerStatuses } from "../../components/shared/Employer.js";
 import { WarningLabel } from "../../components/common/UICommon.js";
 
 const EmployerHomePage = () => {
@@ -13,6 +13,7 @@ const EmployerHomePage = () => {
 
     const profile = dataProvider.employerProfile?.[0] ?? null
     const emptyProfileText = profile ? "" : t("Profile.emptyWarning")
+    const rejectedProfileText = (profile?.status?.id === EmployerStatuses.rejected) ? t("Profile.rejectedWarning") : ""
 
     return (
         <div>
@@ -20,6 +21,7 @@ const EmployerHomePage = () => {
 
             <div className="row">
                 <WarningLabel text={emptyProfileText} />
+                <WarningLabel text={rejectedProfileText} />
             </div>
 
             <EmployerProfileCard profile={profile} />
