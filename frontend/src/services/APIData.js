@@ -14,11 +14,13 @@ import { API, urlPrefix } from "./config"
 
 export const API_LIST = {
     publicNews: "/v1.0/public/news/",
+    publicEmployers: "/v1.0/public/employers/",
     staffNewsPosts: "/v1.0/staff/news/posts/",
     staffNewsTags: "/v1.0/staff/news/tags/",
     commonGenders: "/v1.0/common/genders/",
     commonCities: "/v1.0/common/cities/",
-    employeeProfile: "/v1.0/employee/profile/",
+    employee: "/v1.0/employees/",
+    employer: "/v1.0/employers/",
     cvs: "/v1.0/cvs/",
 }
 

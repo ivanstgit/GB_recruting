@@ -1,7 +1,7 @@
 import django_filters.rest_framework as filters
 from django_filters.widgets import DateRangeWidget
 
-from recrutingapp.models import NewsPost, CV
+from recrutingapp.models import NewsPost, CV, Vacancy
 
 
 class NewsFilter(filters.FilterSet):
@@ -30,6 +30,26 @@ class CVFilter(filters.FilterSet):
 
     class Meta:
         model = CV
+        fields = [
+            "position",
+            "description",
+            "city",
+        ]
+
+
+class VacancyFilter(filters.FilterSet):
+    position = filters.CharFilter(lookup_expr="icontains")
+    description = filters.CharFilter(lookup_expr="icontains")
+    salary_min = filters.NumberFilter(field_name="salary", lookup_expr="gte")
+    salary_max = filters.NumberFilter(field_name="salary", lookup_expr="lte")
+    published_since = filters.IsoDateTimeFilter(
+        field_name="updated_at", lookup_expr="gte"
+    )
+    city = filters.CharFilter(field_name="city__name", lookup_expr="icontains")
+    is_favorite = filters.BooleanFilter()
+
+    class Meta:
+        model = Vacancy
         fields = [
             "position",
             "description",

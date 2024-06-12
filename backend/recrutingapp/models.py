@@ -223,12 +223,7 @@ class NewsPost(LoggingMixin, models.Model):
         verbose_name_plural = _("newsposts")
 
 
-class Employee(LoggingMixin, models.Model):
-    owner = models.OneToOneField(
-        CustomUser,
-        help_text=_("Owner"),
-        on_delete=models.PROTECT,
-    )
+class Employee(OwnedMixin, LoggingMixin, models.Model):
     name = models.CharField(_("Name"), max_length=100)
     birthday = models.DateField()
     gender = models.ForeignKey(
@@ -262,6 +257,38 @@ class Employee(LoggingMixin, models.Model):
     class Meta:
         verbose_name = _("employee")
         verbose_name_plural = _("employees")
+
+
+class Employer(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+    name = models.CharField(_("Name"), max_length=100)
+    established = models.DateField()
+    email = models.CharField(
+        _("email address"),
+        max_length=256,
+        unique=True,
+        error_messages={
+            "unique": _("An employer with that email address already exists."),
+        },
+    )
+    city = models.ForeignKey(
+        City,
+        on_delete=models.PROTECT,
+    )
+    description = models.CharField(max_length=250, default="")
+    welcome_letter = models.TextField(max_length=1000, default="")
+
+    @property
+    def age(self):
+        if self.established:
+            return relativedelta(datetime.date.today(), self.established).years
+        return 0
+
+    def __str__(self):
+        return "Employer " + str(self.name)
+
+    class Meta:
+        verbose_name = _("employer")
+        verbose_name_plural = _("employers")
 
 
 class CV(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
@@ -341,6 +368,36 @@ class CVEducation(models.Model):
     class Meta:
         verbose_name = _("education")
         verbose_name_plural = _("education")
+
+
+class Vacancy(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+    employer = models.ForeignKey(
+        Employer, on_delete=models.CASCADE, related_name="vacancies"
+    )
+
+    title = models.CharField(
+        max_length=60,
+        help_text=_("Title"),
+        error_messages={},
+    )
+
+    city = models.ForeignKey(
+        City,
+        on_delete=models.PROTECT,
+    )
+
+    position = models.CharField(
+        _("Position"),
+        max_length=100,
+    )
+
+    salary = models.DecimalField(decimal_places=0, max_digits=10)
+
+    description = models.TextField()
+
+    class Meta:
+        verbose_name = _("vacancy")
+        verbose_name_plural = _("vacancies")
 
 
 class Favorite(models.Model):

@@ -15,7 +15,8 @@ export const formStatuses = {
     initial: "input",
     pending: "pending",
     error: "error",
-    success: "success"
+    success: "success",
+    blocked: "blocked",
 }
 
 export const FormContainer = ({ onSubmit, children, padding = 5 }) => {
@@ -189,18 +190,20 @@ export const InputSelect = ({ name, label, options, value, errorText = "", helpT
     );
 };
 
-export const SubmitButton = ({ label, disabled = false }) => {
+export const SubmitButton = ({ label, disabled = false, helpText }) => {
     return (
         <div className="mt-3">
             <button className="btn btn-primary py-3 w-100 mt-3" type="submit" disabled={disabled}>{label}</button>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>
     );
 };
 
-export const FormButton = ({ label, disabled = false, onClick }) => {
+export const FormButton = ({ label, disabled = false, onClick, helpText }) => {
     return (
         <div className="mt-3">
             <button className="btn btn-primary py-3 w-100 mt-3" onClick={(e) => onClick(e)} disabled={disabled}>{label}</button>
+            <small id={getUID()} className="form-text text-muted">{helpText}</small>
         </div>
     );
 };

@@ -48,6 +48,8 @@ GROUP_PERMISSIONS = {
         "delete_newstag",
         "view_cv",
         "change_cv",
+        "view_employer",
+        "change_employer",
     ],
 }
 

@@ -28,7 +28,7 @@ const ModeratorCVListItem = ({ item, onAccept }) => {
     )
 }
 
-const ModeratorCVsPage = () => {
+const ModeratorCVListPage = () => {
     const privateData = useContext(PrivateDataContext)
     const { t } = useTranslation("Moderator");
 
@@ -86,4 +86,4 @@ const ModeratorCVsPage = () => {
     )
 }
 
-export default ModeratorCVsPage
+export default ModeratorCVListPage

@@ -1,6 +1,6 @@
 from rest_framework import permissions
 
-from recrutingapp.models import CV, ConstDocumentStatus
+from recrutingapp.models import CV, ConstDocumentStatus, Employer, Vacancy
 from userapp.models import UserRoles
 
 
@@ -50,6 +50,87 @@ class CVPermission(permissions.BasePermission):
             ):
                 return True
 
+        # moderator has read permissions on all documents, and write status permissions on moderated documents
+        elif role == UserRoles.moderator.value:
+            if request.method in permissions.SAFE_METHODS or (
+                obj
+                and obj.status.id == ConstDocumentStatus.pending
+                and view.action == "status"
+            ):
+                return True
+
+        # employers can view all approved resume
+        elif role == UserRoles.employer.value:
+            if request.method in permissions.SAFE_METHODS and (
+                obj and obj.status.id == ConstDocumentStatus.approved
+            ):
+                return True
+
+        return False
+
+
+class EmployerPermission(permissions.BasePermission):
+    """
+    Grants permission based on role, status
+    """
+
+    def has_object_permission(self, request, view, obj: Employer):
+        role = request.user.role
+
+        if request.user.is_superuser:
+            return True
+
+        # employer has full permissions on status change and restricted permissions on data change
+        if role == UserRoles.employer.value and obj.owner == request.user:
+            if (
+                request.method in permissions.SAFE_METHODS
+                or obj.status.id
+                in (
+                    ConstDocumentStatus.draft,
+                    ConstDocumentStatus.rejected,
+                )
+                or (view.action == "status")
+            ):
+                return True
+
+        # moderator has read permissions on all documents, and write status permissions on moderated documents
+        elif role == UserRoles.moderator.value:
+            if request.method in permissions.SAFE_METHODS or (
+                obj
+                and obj.status.id == ConstDocumentStatus.pending
+                and view.action == "status"
+            ):
+                return True
+
+        # all users can view all approved companies
+        else:
+            if request.method in permissions.SAFE_METHODS and (
+                obj and obj.status.id == ConstDocumentStatus.approved
+            ):
+                return True
+
+        return False
+
+
+class VacancyPermission(permissions.BasePermission):
+    """
+    Grants permission based on role, status
+    """
+
+    def has_object_permission(self, request, view, obj: Vacancy):
+        role = request.user.role
+
+        if request.user.is_superuser:
+            return True
+
+        # employer has full permissions except changing data in pending status
+        if role == UserRoles.employer.value and obj.owner == request.user:
+            if request.method in permissions.SAFE_METHODS or obj.status.id in (
+                ConstDocumentStatus.draft,
+                ConstDocumentStatus.rejected,
+            ):
+                return True
+
         # moderator has read permissions on all documents, and write permissions on moderated documents
         elif role == UserRoles.moderator.value:
             if request.method in permissions.SAFE_METHODS or (
@@ -57,8 +138,8 @@ class CVPermission(permissions.BasePermission):
             ):
                 return True
 
-        # employers can view all approved resume
-        elif role == UserRoles.employer.value:
+        # employees can view all approved resume
+        elif role == UserRoles.employee.value:
             if request.method in permissions.SAFE_METHODS and (
                 obj and obj.status.id == ConstDocumentStatus.approved
             ):

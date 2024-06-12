@@ -27,12 +27,15 @@ import NotFound404 from './components/NotFound404.js';
 import AccountSignInForm from './pages/account/AccountSignInForm.js';
 import AccountSignUpForm from './pages/account/AccountSignUpForm.js';
 import AccountConfirmationForm from './pages/account/AccountConfirmationForm.js';
-import EmployerHome from './pages/employer/EmployerHome.js';
+
 import HomePage from './pages/Home.js';
 import NewsPage from './pages/news/News.js';
 import EmployeePage from './pages/employee/Employee.js';
 import ModeratorPage from './pages/moderator/Moderator.js';
+import EmployerPage from './pages/employer/Employer.js';
 import CVPage from './pages/cv/CV.js';
+import PartnersPage from './pages/partners/Partners.js';
+
 
 
 class App extends React.Component {
@@ -61,6 +64,7 @@ class App extends React.Component {
                   <Routes>
                     <Route index element={<HomePage />} />
                     <Route path={AppPaths.news + "*"} element={<NewsPage />} />
+                    <Route path={AppPaths.partners + "*"} element={<PartnersPage />} />
 
                     <Route exact path={AppPaths.signin} element={<AccountSignInForm />} />
                     <Route exact path={AppPaths.signup} element={<AccountSignUpForm />} />
@@ -78,7 +82,7 @@ class App extends React.Component {
                     </Route>
 
                     <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employer} />}>
-                      <Route exact path={AppPaths.employer + "*"} element={<EmployerHome />} />
+                      <Route exact path={AppPaths.employer + "*"} element={<EmployerPage />} />
                     </Route>
 
                     <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.moderator} />}>
