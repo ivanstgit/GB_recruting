@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
@@ -94,10 +94,12 @@ const ModeratorPage = () => {
             })
     }
 
-    if (status === dataStatuses.initial) {
-        refreshCVList()
-        refreshEmployerList()
-    }
+    useEffect(() => {
+        if (status === dataStatuses.initial) {
+            refreshCVList()
+            refreshEmployerList()
+        }
+    });
     const privateDataContextValue = useMemo(() => ({
         CVList,
         refreshCVList,

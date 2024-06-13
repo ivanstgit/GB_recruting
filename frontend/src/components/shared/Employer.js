@@ -82,7 +82,13 @@ export const EmployerPublicCard = ({ item }) => {
                         </h5>
                     </div>
                     <div className="row g-3 mt-1">
-                        <p className="card-subtitle text-muted"><i className="bi bi-megaphone-fill me-3" />{item.welcome_letter}</p>
+                        <div className="col-auto">
+                            <p className="card-subtitle text-muted"><i className="bi bi-megaphone-fill me-1" /></p>
+                        </div>
+                        <div className="col p-0">
+                            <p className="card-subtitle text-muted text-ws-pre">{item.welcome_letter}</p>
+                        </div>
+                        {/* <p className="card-subtitle text-muted"><i className="bi bi-megaphone-fill me-3" />{item.welcome_letter}</p> */}
                     </div>
                     <div className="row g-3">
                         <div className="col-sm">
@@ -93,7 +99,13 @@ export const EmployerPublicCard = ({ item }) => {
                         </div>
                     </div>
                     <div className="row g-3">
-                        <p className="card-text"><i className="bi bi-card-text me-3" />{item.description}</p>
+
+                        <div className="col-auto">
+                            <p className="card-text mt-1"><i className="bi bi-card-text me-1" /></p>
+                        </div>
+                        <div className="col p-0">
+                            <p className="card-text mt-1 text-ws-pre">{item.description}</p>
+                        </div>
                     </div>
                     <div className="row g-3">
                         <p className="card-text"><i className="bi bi-envelope-at me-3"></i>{item.email}</p>

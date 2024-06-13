@@ -223,7 +223,16 @@ class NewsPost(LoggingMixin, models.Model):
         verbose_name_plural = _("newsposts")
 
 
-class Employee(OwnedMixin, LoggingMixin, models.Model):
+class Employee(LoggingMixin, models.Model):
+
+    # one-to-one!!!
+    owner = models.OneToOneField(
+        CustomUser,
+        help_text=_("Owner"),
+        on_delete=models.PROTECT,
+        related_name="employee",
+    )
+
     name = models.CharField(_("Name"), max_length=100)
     birthday = models.DateField()
     gender = models.ForeignKey(
@@ -260,6 +269,15 @@ class Employee(OwnedMixin, LoggingMixin, models.Model):
 
 
 class Employer(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+
+    # one-to-one!!!
+    owner = models.OneToOneField(
+        CustomUser,
+        help_text=_("Owner"),
+        on_delete=models.PROTECT,
+        related_name="employer",
+    )
+
     name = models.CharField(_("Name"), max_length=100)
     established = models.DateField()
     email = models.CharField(

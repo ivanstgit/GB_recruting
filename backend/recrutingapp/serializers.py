@@ -428,6 +428,8 @@ class VacancySerializerInt(
     Serializer internal pk
     """
 
+    city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
+
     class Meta:
         model = Vacancy
         fields = [
