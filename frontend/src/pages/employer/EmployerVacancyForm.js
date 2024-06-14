@@ -70,7 +70,10 @@ const EmployerVacancyForm = ({ backTo }) => {
                                     description: res.data.description,
                                 })
                             setError("")
-                            if (res.data.status?.id === VacancyStatuses.approved || res.data.status?.id === VacancyStatuses.pending) {
+                            if (isEdit && (
+                                res.data.status?.id === VacancyStatuses.approved ||
+                                res.data.status?.id === VacancyStatuses.pending)
+                            ) {
                                 setIsBlocked(true)
                             } else {
                                 setIsBlocked(false)
@@ -164,7 +167,7 @@ const EmployerVacancyForm = ({ backTo }) => {
         return (
             <div className="container-xxl">
                 <div className="row mb-1">
-                    <WarningLabel text={t("Warnings.Blocked")} />
+                    <WarningLabel text={t("form.Warnings.Blocked")} />
                 </div>
             </div>
         )

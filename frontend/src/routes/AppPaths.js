@@ -3,7 +3,7 @@ const AppPaths = {
     news: "/news/",
     partners: "/partners/",
     cv: "/cvs/",
-    vacancy: "/vacancies/",
+    vacancies: "/vacancies/",
     signin: "/signin/",
     signup: "/signup/",
     confirm: "/confirm/",

@@ -94,7 +94,7 @@ export const VacancyCard = ({ item, actions }) => {
     )
 }
 
-const initialStateCVSearch = {
+const initialStateVacancySearch = {
     position: "",
     description: "",
     city: "",
@@ -102,22 +102,22 @@ const initialStateCVSearch = {
     salary_max: "",
     published_since: ""
 }
-export const CVSearchForm = ({ onApply }) => {
-    const [input, setInput] = useState(initialStateCVSearch);
+export const VacancySearchForm = ({ onApply }) => {
+    const [input, setInput] = useState(initialStateVacancySearch);
     const [isFavoriteOnly, setIsFavoriteOnly] = useState(false);
     const [status, setStatus] = useState(formStatuses.initial)
     const [validationErrors, setValidationErrors] = useState({});
     const [isHidden, setIsHidden] = useState(true)
 
-    const { t } = useTranslation("SharedCV");
+    const { t } = useTranslation("SharedVacancy");
 
     const getParamsUnion = (isFavoriteOnly, input) => {
-        const fields = Object.keys(initialStateCVSearch)
+        const fields = Object.keys(initialStateVacancySearch)
         let params = (isFavoriteOnly ? { is_favorite: true } : {})
 
         for (const index in fields) {
             let field = fields[index]
-            if (input[field] !== initialStateCVSearch[field]) {
+            if (input[field] !== initialStateVacancySearch[field]) {
                 params[field] = input[field]
             }
         }
@@ -167,8 +167,8 @@ export const CVSearchForm = ({ onApply }) => {
     }
     const handleClear = (e) => {
         e.preventDefault()
-        onApply(getParamsUnion(isFavoriteOnly, initialStateCVSearch))
-        setInput(initialStateCVSearch)
+        onApply(getParamsUnion(isFavoriteOnly, initialStateVacancySearch))
+        setInput(initialStateVacancySearch)
         setStatus(formStatuses.initial)
     }
 

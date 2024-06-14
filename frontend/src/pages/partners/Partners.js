@@ -18,14 +18,14 @@ const PartnersPage = () => {
                     </div>
                 </div>
                 <div className="row g-3">
-                    <ParntersList items={dataProvider.publicEmployers} />
+                    <PartnerList items={dataProvider.publicEmployers} />
                 </div>
             </div>
         </div>
     )
 }
 
-const ParntersList = ({ items }) => {
+const PartnerList = ({ items }) => {
     if (items) {
         return <div>
             {items.map((item, index) =>

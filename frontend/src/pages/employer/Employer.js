@@ -15,6 +15,7 @@ import { ErrorLabel } from "../../components/common/UICommon.js"
 import EmployerVacancyPage from "./EmployerVacancy.js"
 import EmployerVacancyDetailPage from "./EmployerVacancyDetail.js"
 import EmployerVacancyForm from "./EmployerVacancyForm.js"
+import { VacancyStatuses } from "../../components/shared/Vacancy.js"
 
 export const EmployerPaths = {
     home: "home/",
@@ -29,7 +30,10 @@ const EmployerPage = () => {
     const [status, setStatus] = useState(dataStatuses.initial)
     const [error, setError] = useState("")
     const [vacancyCount, setVacancyCount] = useState(0)
+    const [vacancyRejectedCount, setVacancyRejectedCount] = useState(0)
     const [vacancyList, setVacancyList] = useState([])
+
+    const refreshTimeout = 5000
 
     const profile = dataProvider.employerProfile?.[0] ?? null
 
@@ -46,6 +50,7 @@ const EmployerPage = () => {
         {
             link: EmployerPaths.vacancies,
             text: t("Employer.Vacancies"),
+            badge: ((vacancyRejectedCount > 0)) ? "!" : ""
         },
     ]
     const refreshVacancyList = async () => {
@@ -54,11 +59,13 @@ const EmployerPage = () => {
             .then((res) => {
                 if (res.error) {
                     setVacancyCount(0)
+                    setVacancyRejectedCount(0)
                     setVacancyList([])
                     setError(res.error)
                     setStatus(dataStatuses.error)
                 } else {
                     setVacancyCount(res.count)
+                    setVacancyRejectedCount(res.data.filter(v => (v?.status?.id === VacancyStatuses.rejected)).length)
                     setVacancyList(res.data)
                     setError("")
                     setStatus(dataStatuses.success)
@@ -68,6 +75,7 @@ const EmployerPage = () => {
     const privateDataContextValue = useMemo(() => ({
         vacancyList,
         vacancyCount,
+        vacancyRejectedCount,
         refreshVacancyList,
         // eslint-disable-next-line
     }), [vacancyList]);
@@ -76,6 +84,12 @@ const EmployerPage = () => {
         if (status === dataStatuses.initial) {
             refreshVacancyList()
         }
+        let timer = setTimeout(() => {
+            refreshVacancyList()
+        }, refreshTimeout);
+        return () => {
+            clearTimeout(timer);
+        };
     });
 
     return (

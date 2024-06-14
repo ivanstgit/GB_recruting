@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import { ObjectActions } from "../../routes/AppPaths.js"
-import { useData, DATA_RESOURCES, dataStatuses } from '../../hooks/DataProvider.js'
+import { useData, DATA_RESOURCES, dataStatuses, PrivateDataContext } from '../../hooks/DataProvider.js'
 import { ErrorLabel } from "../../components/common/UICommon.js";
 import { ActionButtonCreate, ActionGroup, commonActions } from "../../components/common/Actions.js";
 import { CVStatusIcon, CVStatuses } from "../../components/shared/CV.js";
@@ -27,12 +27,6 @@ const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
             <td><p className="card-text">{item.position}</p></td>
             <td>{new Date(item.created_at).toLocaleString()}</td>
             <td>
-                {/* <div className="btn-group btn-group-sm" role="group" aria-label="">
-                    <Link to={item.id + "/"} className="btn btn-link btn-secondary">{t("CVs.actions.detail")}</Link>
-                    <Link to={item.id + "/" + ObjectActions.edit} className="btn btn-warning">{t("CVs.actions.edit")}</Link>
-                    <button className="btn btn-danger" onClick={() => onDelete(item.id)}>{t("CVs.actions.delete")}</button>
-                    <button className="btn btn-success" onClick={() => onPublish(item.id)}>{t("CVs.actions.publish")}</button>
-                </div> */}
                 <ActionGroup actions={actions} size="sm" />
             </td>
         </tr>
@@ -44,59 +38,44 @@ const EmployeeCVsPage = () => {
     const { t } = useTranslation("Employee");
 
     const dataProvider = useData()
+    const privateData = useContext(PrivateDataContext)
 
-    const [items, setItems] = useState([])
     const [error, setError] = useState("")
     const [status, setStatus] = useState(dataStatuses.initial)
 
-    const loadItems = () => {
-        setStatus(dataStatuses.loading)
-        dataProvider.getList(DATA_RESOURCES.cvs)
-            .then((res) => {
-                if (res.error) {
-                    setItems([])
-                    setError(res.error)
-                    setStatus(dataStatuses.error)
-                } else {
-                    setItems(res.data)
-                    setError("")
-                    setStatus(dataStatuses.success)
-                }
-            })
-    }
 
     const deleteItem = (id) => {
-        dataProvider.deleteOne(DATA_RESOURCES.cvs, id)
-            .then((res) => {
-                if (res.error) {
-                    setError(res.error)
-                    setStatus(dataStatuses.error)
-                } else {
-                    setError("")
-                    setStatus(dataStatuses.initial)
-                }
-            })
+        if (status !== dataStatuses.loading) {
+            dataProvider.deleteOne(DATA_RESOURCES.cvs, id)
+                .then((res) => {
+                    if (res.error) {
+                        setError(res.error)
+                        setStatus(dataStatuses.error)
+                    } else {
+                        setError("")
+                        privateData.refreshCVList().then(setStatus(dataStatuses.initial))
+                    }
+                })
+        }
     }
 
     const publishItem = (id) => {
-        dataProvider.setStatus(DATA_RESOURCES.cvs, id, CVStatuses.pending)
-            .then((res) => {
-                if (res.error) {
-                    setError(res.error)
-                    setStatus(dataStatuses.error)
-                } else {
-                    setError("")
-                    setStatus(dataStatuses.initial)
-                }
-            })
+        if (status !== dataStatuses.loading) {
+            dataProvider.setStatus(DATA_RESOURCES.cvs, id, CVStatuses.pending)
+                .then((res) => {
+                    if (res.error) {
+                        setError(res.error)
+                        setStatus(dataStatuses.error)
+                    } else {
+                        setError("")
+                        privateData.refreshCVList().then(setStatus(dataStatuses.initial))
+                    }
+                })
+        }
     }
 
-    useEffect(() => {
-        if (status === dataStatuses.initial) {
-            loadItems()
-        }
-    });
     const headerText = t("CVs.header")
+    const items = privateData.CVList
 
     return (
         <div>

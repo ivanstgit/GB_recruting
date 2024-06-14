@@ -6,10 +6,10 @@ import { ObjectActions } from "../../routes/AppPaths.js"
 import { useData, DATA_RESOURCES, PrivateDataContext } from '../../hooks/DataProvider.js'
 import { ErrorLabel } from "../../components/common/UICommon.js";
 import { ActionGroup, commonActions } from "../../components/common/Actions.js";
-import { EmployerStatuses } from "../../components/shared/Employer.js";
+import { VacancyStatuses } from "../../components/shared/Vacancy.js";
 
 
-const ModeratorEmployerListItem = ({ item, onAccept }) => {
+const ModeratorVacancyListItem = ({ item, onAccept }) => {
     const navigate = useNavigate();
     let actions = {}
     actions[commonActions.detail] = () => navigate(item.id + "/")
@@ -19,7 +19,8 @@ const ModeratorEmployerListItem = ({ item, onAccept }) => {
     return (
         <tr>
             <td>{item.owner}</td>
-            <td><p className="card-text">{item.name}</p></td>
+            <td>{item.employer.name}</td>
+            <td><p className="card-text">{item.position}</p></td>
             <td>{new Date(item.updated_at).toLocaleString()}</td>
             <td>
                 <ActionGroup actions={actions} size="sm" />
@@ -28,7 +29,7 @@ const ModeratorEmployerListItem = ({ item, onAccept }) => {
     )
 }
 
-const ModeratorEmployerListPage = () => {
+const ModeratorVacancyListPage = () => {
     const privateData = useContext(PrivateDataContext)
     const { t } = useTranslation("Moderator");
 
@@ -37,19 +38,19 @@ const ModeratorEmployerListPage = () => {
     const dataProvider = useData()
 
     const acceptItem = (id) => {
-        dataProvider.setStatus(DATA_RESOURCES.employer, id, EmployerStatuses.approved)
+        dataProvider.setStatus(DATA_RESOURCES.vacancies, id, VacancyStatuses.approved)
             .then((res) => {
                 if (res.error) {
                     setError(res.error)
                 } else {
                     setError("")
-                    privateData.refreshEmployerList()
+                    privateData.refreshVacancyList()
                 }
             })
     }
-    const items = privateData.employerList
+    const items = privateData.vacancyList
 
-    const headerText = t("Employers.header")
+    const headerText = t("Vacancies.header")
 
     return (
         <div>
@@ -65,16 +66,17 @@ const ModeratorEmployerListPage = () => {
                     <table className="table">
                         <thead>
                             <tr>
-                                <th scope="col">{t("Employers.table.header.owner")}</th>
-                                <th scope="col">{t("Employers.table.header.name")}</th>
-                                <th scope="col">{t("Employers.table.header.updated")}</th>
-                                <th scope="col">{t("Employers.table.header.actions")}</th>
+                                <th scope="col">{t("Vacancies.table.header.owner")}</th>
+                                <th scope="col">{t("Vacancies.table.header.name")}</th>
+                                <th scope="col">{t("Vacancies.table.header.position")}</th>
+                                <th scope="col">{t("Vacancies.table.header.updated")}</th>
+                                <th scope="col">{t("Vacancies.table.header.actions")}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {items.map((item, index) =>
-                                <ModeratorEmployerListItem
-                                    key={'EmployersListItem' + index}
+                                <ModeratorVacancyListItem
+                                    key={'VacancyListItem' + index}
                                     item={item}
                                     onAccept={acceptItem}
                                 />)}
@@ -86,4 +88,4 @@ const ModeratorEmployerListPage = () => {
     )
 }
 
-export default ModeratorEmployerListPage
+export default ModeratorVacancyListPage

@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // import { useTranslation } from 'react-i18next';
-import { DATA_RESOURCES, useData } from '../../hooks/DataProvider.js'
+import { DATA_RESOURCES, PrivateDataContext, useData } from '../../hooks/DataProvider.js'
 
 import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
 import { CVDetail, CVStatusIcon, CVStatuses } from '../../components/shared/CV.js';
@@ -18,6 +18,7 @@ const EmployeeCVDetailPage = ({ backTo }) => {
 
     const { id } = useParams();
     const dataProvider = useData()
+    const privateData = useContext(PrivateDataContext);
     const navigate = useNavigate();
 
     // const { t } = useTranslation("SharedCV");
@@ -34,7 +35,7 @@ const EmployeeCVDetailPage = ({ backTo }) => {
                         setError(res.error)
                     } else {
                         setError("")
-                        navigate(backTo)
+                        privateData.refreshCVList().then(navigate(backTo))
                     }
                 })
         }
@@ -45,7 +46,7 @@ const EmployeeCVDetailPage = ({ backTo }) => {
                         setError(res.error)
                     } else {
                         setError("")
-                        navigate(backTo)
+                        privateData.refreshCVList().then(navigate(backTo))
                     }
                 })
         }
