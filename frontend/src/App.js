@@ -30,11 +30,14 @@ import AccountConfirmationForm from './pages/account/AccountConfirmationForm.js'
 
 import HomePage from './pages/Home.js';
 import NewsPage from './pages/news/News.js';
+import PartnersPage from './pages/partners/Partners.js';
+
 import EmployeePage from './pages/employee/Employee.js';
 import ModeratorPage from './pages/moderator/Moderator.js';
 import EmployerPage from './pages/employer/Employer.js';
+
 import CVPage from './pages/cv/CV.js';
-import PartnersPage from './pages/partners/Partners.js';
+import VacanciesPage from './pages/vacancies/Vacancies.js';
 
 
 
@@ -74,7 +77,7 @@ class App extends React.Component {
                       <Route path={AppPaths.cv + "*"} element={<CVPage />} />
                     </Route>
                     <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
-                      <Route path={AppPaths.vacancy + "*"} element={<CVPage />} />
+                      <Route path={AppPaths.vacancies + "*"} element={<VacanciesPage />} />
                     </Route>
 
                     <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>

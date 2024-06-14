@@ -29,7 +29,7 @@ const LoginArea = () => {
 
 }
 const NavItem = ({ index, item }) => {
-  const resolvedPath = useResolvedPath(item.link)
+  const resolvedPath = useResolvedPath(item.link + "*")
   const isActive = useMatch({ path: resolvedPath.pathname }) ? " active" : ""
   // const isActive = useMatch({ path: resolvedPath.pathname, pattern: item.pattern }) ? " active" : ""
   // console.log(resolvedPath.pathname + isActive)
@@ -61,7 +61,7 @@ const NavGlobal = () => {
     items.push({
       link: AppPaths.vacancies,
       text: t("Vacancies"),
-      pattern: AppPaths.vacancies,
+      pattern: AppPaths.vacancies + '*',
     })
   }
   if (auth.isAuthenticated && (auth.user.role === userRoles.employer)) {

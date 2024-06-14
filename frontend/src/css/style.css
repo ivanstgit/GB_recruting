@@ -25,6 +25,10 @@
     z-index: 99;
 }
 
+.text-ws-pre {
+    white-space: pre-line;
+}
+
 
 /*** Spinner ***/
 #spinner {
@@ -305,6 +309,7 @@
 
 
 /*** Team ***/
+/* 
 .team-item img {
     position: relative;
     top: 0;
@@ -345,7 +350,7 @@
 .team-item .team-social .btn:hover {
     color: #FFFFFF;
     background: var(--primary);
-}
+} */
 
 
 /*** Appointment ***/
@@ -377,6 +382,7 @@
 
 
 /*** Testimonial ***/
+/* 
 .testimonial-carousel::before {
     position: absolute;
     content: "";
@@ -468,7 +474,7 @@
 .testimonial-carousel .owl-nav .owl-prev:hover,
 .testimonial-carousel .owl-nav .owl-next:hover {
     color: var(--dark);
-}
+} */
 
 
 /*** Footer ***/

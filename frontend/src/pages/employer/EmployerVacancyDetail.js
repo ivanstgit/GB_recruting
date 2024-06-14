@@ -5,48 +5,46 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { DATA_RESOURCES, PrivateDataContext, useData } from '../../hooks/DataProvider.js'
 
 import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
-import { CVDetail, CVStatusIcon, CVStatuses } from '../../components/shared/CV.js';
+import { VacancyDetail, VacancyStatusIcon, VacancyStatuses } from '../../components/shared/Vacancy.js';
 import { ActionGroup, commonActions } from '../../components/common/Actions.js';
 import { ObjectActions } from '../../routes/AppPaths.js';
 
 
 
-const EmployeeCVDetailPage = ({ backTo }) => {
+const EmployerVacancyDetailPage = ({ backTo }) => {
 
     const [item, setItem] = useState();
     const [error, setError] = useState();
 
     const { id } = useParams();
-    const dataProvider = useData()
+    const dataProvider = useData();
     const privateData = useContext(PrivateDataContext);
     const navigate = useNavigate();
-
-    // const { t } = useTranslation("SharedCV");
 
     let actions = {}
     actions[commonActions.back] = () => navigate(backTo)
     actions[commonActions.copy] = () => navigate(backTo + ObjectActions.add, { state: { fromId: item.id } })
-    if (item?.status?.id === CVStatuses.draft || item?.status?.id === CVStatuses.rejected) {
+    if (item?.status?.id === VacancyStatuses.draft || item?.status?.id === VacancyStatuses.rejected) {
         actions[commonActions.edit] = () => navigate(ObjectActions.edit)
         actions[commonActions.delete] = () => {
-            dataProvider.deleteOne(DATA_RESOURCES.cvs, id)
+            dataProvider.deleteOne(DATA_RESOURCES.vacancies, id)
                 .then((res) => {
                     if (res.error) {
                         setError(res.error)
                     } else {
                         setError("")
-                        privateData.refreshCVList().then(navigate(backTo))
+                        privateData.refreshVacancyList().then(navigate(backTo))
                     }
                 })
         }
         actions[commonActions.publish] = () => {
-            dataProvider.setStatus(DATA_RESOURCES.cvs, id, CVStatuses.pending)
+            dataProvider.setStatus(DATA_RESOURCES.vacancies, id, VacancyStatuses.pending)
                 .then((res) => {
                     if (res.error) {
                         setError(res.error)
                     } else {
                         setError("")
-                        privateData.refreshCVList().then(navigate(backTo))
+                        privateData.refreshVacancyList().then(navigate(backTo))
                     }
                 })
         }
@@ -54,7 +52,7 @@ const EmployeeCVDetailPage = ({ backTo }) => {
 
     useEffect(() => {
         if (!item) {
-            dataProvider.getOne(DATA_RESOURCES.cvs, id)
+            dataProvider.getOne(DATA_RESOURCES.vacancies, id)
                 .then(res => {
                     console.log(res)
                     if (res.error) {
@@ -75,12 +73,12 @@ const EmployeeCVDetailPage = ({ backTo }) => {
                         <ActionGroup actions={actions} size="" showText={true} />
                     </div>
                     <div className="col-md-auto fs-5">
-                        <CVStatusIcon status={item.status} showText={true} /> {item.status_info}
+                        <VacancyStatusIcon status={item.status} showText={true} /> {item.status_info}
                     </div>
 
                 </div>
                 <div className="row">
-                    <CVDetail item={item} />
+                    <VacancyDetail item={item} />
                 </div>
             </>
         )
@@ -91,4 +89,4 @@ const EmployeeCVDetailPage = ({ backTo }) => {
     }
 }
 
-export default EmployeeCVDetailPage
+export default EmployerVacancyDetailPage

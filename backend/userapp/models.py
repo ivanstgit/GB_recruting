@@ -26,7 +26,16 @@ ROLE_GROUPS = {
 
 
 GROUP_PERMISSIONS = {
-    UserGroups.employers.value: [],
+    UserGroups.employers.value: [
+        "view_employer",
+        "add_employer",
+        "change_employer",
+        "view_vacancy",
+        "add_vacancy",
+        "change_vacancy",
+        "delete_vacancy",
+        "view_cv",
+    ],
     UserGroups.employees.value: [
         "view_employee",
         "add_employee",
@@ -35,6 +44,7 @@ GROUP_PERMISSIONS = {
         "add_cv",
         "change_cv",
         "delete_cv",
+        "view_vacancy",
     ],
     UserGroups.moderators.value: [
         "view_customuser",
@@ -50,6 +60,8 @@ GROUP_PERMISSIONS = {
         "change_cv",
         "view_employer",
         "change_employer",
+        "view_vacancy",
+        "change_vacancy",
     ],
 }
 

@@ -131,14 +131,16 @@ class VacancyPermission(permissions.BasePermission):
             ):
                 return True
 
-        # moderator has read permissions on all documents, and write permissions on moderated documents
+        # moderator has read permissions on all documents, and write status permissions on moderated documents
         elif role == UserRoles.moderator.value:
             if request.method in permissions.SAFE_METHODS or (
-                obj and obj.status.id == ConstDocumentStatus.pending
+                obj
+                and obj.status.id == ConstDocumentStatus.pending
+                and view.action == "status"
             ):
                 return True
 
-        # employees can view all approved resume
+        # employees can view all approved vacancies
         elif role == UserRoles.employee.value:
             if request.method in permissions.SAFE_METHODS and (
                 obj and obj.status.id == ConstDocumentStatus.approved

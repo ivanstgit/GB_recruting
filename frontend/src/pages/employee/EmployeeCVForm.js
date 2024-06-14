@@ -485,7 +485,7 @@ const EmployeeCVForm = ({ backTo }) => {
         return (
             <div className="container-xxl">
                 <div className="row mb-1">
-                    <WarningLabel text={t("Warnings.Blocked")} />
+                    <WarningLabel text={t("form.Warnings.Blocked")} />
                 </div>
             </div>
         )

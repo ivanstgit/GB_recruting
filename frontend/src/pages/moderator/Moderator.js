@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Navigate, Route, Routes } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
@@ -19,12 +19,16 @@ import ModeratorCVRejectForm from "./ModeratorCVRejectForm.js"
 import ModeratorEmployerListPage from "./ModeratorEmployerList.js"
 import ModeratorEmployerDetailPage from "./ModeratorEmployerDetail.js"
 import ModeratorEmployerRejectForm from "./ModeratorEmployerRejectForm.js"
+import ModeratorVacancyListPage from "./ModeratorVacancyList.js"
+import ModeratorVacancyDetailPage from "./ModeratorVacancyDetail.js"
+import ModeratorVacancyRejectForm from "./ModeratorVacancyRejectForm.js"
 
 export const ModeratorPaths = {
     home: "home/",
     news: "news/",
     cvs: "cv/",
     employers: "employers/",
+    vacancies: "vacancies/",
 }
 
 const ModeratorPage = () => {
@@ -35,8 +39,12 @@ const ModeratorPage = () => {
     const [error, setError] = useState("")
     const [CVCount, setCVCount] = useState(0)
     const [CVList, setCVList] = useState([])
-    const [EmployerCount, setEmployerCount] = useState(0)
-    const [EmployerList, setEmployerList] = useState([])
+    const [employerCount, setEmployerCount] = useState(0)
+    const [employerList, setEmployerList] = useState([])
+    const [vacancyCount, setVacancyCount] = useState(0)
+    const [vacancyList, setVacancyList] = useState([])
+
+    const refreshTimeout = 5000
 
     const navLocalItems = [
         {
@@ -55,7 +63,12 @@ const ModeratorPage = () => {
         {
             link: ModeratorPaths.employers,
             text: t("Moderator.Employers"),
-            badge: (EmployerCount > 0) ? EmployerCount.toString() : ""
+            badge: (employerCount > 0) ? employerCount.toString() : ""
+        },
+        {
+            link: ModeratorPaths.vacancies,
+            text: t("Moderator.Vacancies"),
+            badge: (vacancyCount > 0) ? vacancyCount.toString() : ""
         },
     ]
 
@@ -93,18 +106,49 @@ const ModeratorPage = () => {
                 }
             })
     }
-
-    if (status === dataStatuses.initial) {
-        refreshCVList()
-        refreshEmployerList()
+    const refreshVacancyList = () => {
+        setStatus(dataStatuses.loading)
+        dataProvider.getList(DATA_RESOURCES.vacancies)
+            .then((res) => {
+                if (res.error) {
+                    setVacancyCount(0)
+                    setVacancyList([])
+                    setError(res.error)
+                    setStatus(dataStatuses.error)
+                } else {
+                    setVacancyCount(res.count)
+                    setVacancyList(res.data)
+                    setError("")
+                    setStatus(dataStatuses.success)
+                }
+            })
     }
+
+    useEffect(() => {
+        if (status === dataStatuses.initial) {
+            refreshCVList()
+            refreshEmployerList()
+            refreshVacancyList()
+        }
+
+        let timer = setTimeout(() => {
+            refreshCVList()
+            refreshEmployerList()
+            refreshVacancyList()
+        }, refreshTimeout);
+        return () => {
+            clearTimeout(timer);
+        };
+    });
     const privateDataContextValue = useMemo(() => ({
         CVList,
         refreshCVList,
-        EmployerList,
-        refreshEmployerList
+        employerList,
+        refreshEmployerList,
+        vacancyList,
+        refreshVacancyList,
         // eslint-disable-next-line
-    }), [CVList, EmployerList]);
+    }), [CVList, employerList, vacancyList]);
 
     return (
         <PrivateDataContext.Provider value={privateDataContextValue}>
@@ -136,6 +180,12 @@ const ModeratorPage = () => {
                                 backTo={"../" + ModeratorPaths.employers} />} />
                             <Route exact path={ModeratorPaths.employers + ":id/" + ObjectActions.reject} element={<ModeratorEmployerRejectForm
                                 backTo={"../" + ModeratorPaths.employers} />} />
+
+                            <Route exact path={ModeratorPaths.vacancies} element={<ModeratorVacancyListPage />} />
+                            <Route exact path={ModeratorPaths.vacancies + ":id/"} element={<ModeratorVacancyDetailPage
+                                backTo={"../" + ModeratorPaths.vacancies} />} />
+                            <Route exact path={ModeratorPaths.vacancies + ":id/" + ObjectActions.reject} element={<ModeratorVacancyRejectForm
+                                backTo={"../" + ModeratorPaths.vacancies} />} />
 
                             <Route element={<Navigate to={ModeratorPaths.home} />} />
                         </Routes>
