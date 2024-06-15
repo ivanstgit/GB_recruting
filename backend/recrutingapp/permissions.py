@@ -1,6 +1,13 @@
 from rest_framework import permissions
 
-from recrutingapp.models import CV, ConstDocumentStatus, Employer, Vacancy
+from recrutingapp.models import (
+    CV,
+    CVResponse,
+    ConstDocumentStatus,
+    Employer,
+    Vacancy,
+    VacancyResponse,
+)
 from userapp.models import UserRoles
 
 
@@ -144,6 +151,74 @@ class VacancyPermission(permissions.BasePermission):
         elif role == UserRoles.employee.value:
             if request.method in permissions.SAFE_METHODS and (
                 obj and obj.status.id == ConstDocumentStatus.approved
+            ):
+                return True
+
+        return False
+
+
+class CVResponsePermission(permissions.BasePermission):
+    """
+    Grants permission based on role, status
+    """
+
+    def has_object_permission(self, request, view, obj: CVResponse):
+        role = request.user.role
+
+        if request.user.is_superuser:
+            return True
+
+        # employer has full permissions on own job offers
+        if role == UserRoles.employer.value and obj.owner == request.user:
+            return True
+
+        # employees can view only response on their CV, not draft and change status while pending
+        elif role == UserRoles.employee.value:
+            if (
+                obj
+                and obj.cv.owner == request.user
+                and obj.status.id != ConstDocumentStatus.draft
+            ) and (
+                request.method in permissions.SAFE_METHODS
+                or (
+                    obj
+                    and obj.status.id == ConstDocumentStatus.pending
+                    and view.action == "status"
+                )
+            ):
+                return True
+
+        return False
+
+
+class VacancyResponsePermission(permissions.BasePermission):
+    """
+    Grants permission based on role, status
+    """
+
+    def has_object_permission(self, request, view, obj: VacancyResponse):
+        role = request.user.role
+
+        if request.user.is_superuser:
+            return True
+
+        # employee has full permissions on own job requests
+        if role == UserRoles.employee.value and obj.owner == request.user:
+            return True
+
+        # employees can view only not draft response on their Vacancies and change status while pending
+        elif role == UserRoles.employee.value:
+            if (
+                obj
+                and obj.vacancy.owner == request.user
+                and obj.status.id != ConstDocumentStatus.draft
+            ) and (
+                request.method in permissions.SAFE_METHODS
+                or (
+                    obj
+                    and obj.status.id == ConstDocumentStatus.pending
+                    and view.action == "status"
+                )
             ):
                 return True
 

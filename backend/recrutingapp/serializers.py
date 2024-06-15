@@ -3,7 +3,9 @@ from rest_framework import serializers
 
 from recrutingapp.models import (
     DOCUMENT_STATUSES,
+    CVResponse,
     City,
+    ConstDocumentStatus,
     DocStatusMixin,
     DocumentStatus,
     Employee,
@@ -15,6 +17,7 @@ from recrutingapp.models import (
     NewsTag,
     NewsPost,
     Vacancy,
+    VacancyResponse,
 )
 
 
@@ -475,3 +478,138 @@ class VacancySerializerExt(
             "is_favorite",
         ]
         depth = 1
+
+
+class CVResponseSerializerInt(
+    OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
+):
+    """
+    Serializer internal pk
+    """
+
+    cv = serializers.PrimaryKeyRelatedField(queryset=CV.objects.all())
+    vacancy = serializers.PrimaryKeyRelatedField(queryset=Vacancy.objects.all())
+
+    def validate_cv(self, value):
+        cv_obj = CV.objects.get(pk=value)
+        if cv_obj and cv_obj.status.id == ConstDocumentStatus.approved:
+            return value
+        raise serializers.ValidationError("Approved CV required")
+
+    def validate_vacancy(self, value):
+        request = self.context["request"]
+        vacancy_obj = Vacancy.objects.get(pk=value)
+        if (
+            vacancy_obj
+            and vacancy_obj.owner == request.user
+            and vacancy_obj.status.id == ConstDocumentStatus.approved
+        ):
+            return value
+        raise serializers.ValidationError("Own approved Vacancy required")
+
+    class Meta:
+        model = CVResponse
+        fields = [
+            "id",
+            "owner",
+            "cv",
+            "vacancy",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1
+
+
+class CVResponseSerializerExt(
+    OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
+):
+    """
+    Serializer for reading
+    """
+
+    cv = CVSerializerExt()
+    vacancy = VacancySerializerExt()
+
+    class Meta:
+        model = CVResponse
+        fields = [
+            "id",
+            "owner",
+            "cv",
+            "vacancy",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1
+
+
+class VacancyResponseSerializerInt(
+    OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
+):
+    """
+    Serializer internal pk
+    """
+
+    cv = serializers.PrimaryKeyRelatedField(queryset=CV.objects.all())
+    vacancy = serializers.PrimaryKeyRelatedField(queryset=Vacancy.objects.all())
+
+    def validate_cv(self, value):
+        request = self.context["request"]
+        cv_obj = CV.objects.get(pk=value)
+        if (
+            cv_obj
+            and cv_obj.owner == request.user
+            and cv_obj.status.id == ConstDocumentStatus.approved
+        ):
+            return value
+        raise serializers.ValidationError("Own approved CV required")
+
+    def validate_vacancy(self, value):
+        vacancy_obj = Vacancy.objects.get(pk=value)
+        if vacancy_obj and vacancy_obj.status.id == ConstDocumentStatus.approved:
+            return value
+        raise serializers.ValidationError("Approved vacancy required")
+
+    class Meta:
+        model = VacancyResponse
+        fields = [
+            "id",
+            "owner",
+            "cv",
+            "vacancy",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1
+
+
+class VacancyResponseSerializerExt(
+    OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
+):
+    """
+    Serializer for reading
+    """
+
+    cv = CVSerializerExt()
+    vacancy = VacancySerializerExt()
+
+    class Meta:
+        model = VacancyResponse
+        fields = [
+            "id",
+            "owner",
+            "cv",
+            "vacancy",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1
+
+
+class DocumentMessageSerializer(serializers.Serializer):
+    sender = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    content = serializers.CharField(max_length=1024)
+    created_at = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        fields = ["sender", "content", "created_at"]

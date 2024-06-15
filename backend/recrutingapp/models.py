@@ -418,6 +418,48 @@ class Vacancy(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
         verbose_name_plural = _("vacancies")
 
 
+class CVResponse(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+    cv = models.ForeignKey(
+        CV,
+        on_delete=models.CASCADE,
+    )
+    vacancy = models.ForeignKey(
+        Vacancy,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        verbose_name = _("cv_response")
+        verbose_name_plural = _("cv_responses")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["cv", "vacancy"],
+                name="unique_cv_vacancy",
+            )
+        ]
+
+
+class VacancyResponse(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+    vacancy = models.ForeignKey(
+        Vacancy,
+        on_delete=models.CASCADE,
+    )
+    cv = models.ForeignKey(
+        CV,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        verbose_name = _("vacancy_response")
+        verbose_name_plural = _("vacancy_responses")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["vacancy", "cv"],
+                name="unique_vacancy_cv",
+            )
+        ]
+
+
 class Favorite(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -434,3 +476,20 @@ class Favorite(models.Model):
                 name="unique_user_content_type_object_id",
             )
         ]
+
+
+class DocumentMessage(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    content = models.TextField(
+        help_text=_("Content"),
+        max_length=1024,
+    )
+
+    class Meta:
+        verbose_name = _("message")
+        verbose_name_plural = _("messages")
