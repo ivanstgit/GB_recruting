@@ -36,11 +36,6 @@ import EmployeePage from './pages/employee/Employee.js';
 import ModeratorPage from './pages/moderator/Moderator.js';
 import EmployerPage from './pages/employer/Employer.js';
 
-import CVPage from './pages/cv/CV.js';
-import VacanciesPage from './pages/vacancies/Vacancies.js';
-
-
-
 class App extends React.Component {
 
   constructor(props) {
@@ -72,13 +67,6 @@ class App extends React.Component {
                     <Route exact path={AppPaths.signin} element={<AccountSignInForm />} />
                     <Route exact path={AppPaths.signup} element={<AccountSignUpForm />} />
                     <Route exact path={AppPaths.confirm} element={<AccountConfirmationForm />} />
-
-                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employer} />}>
-                      <Route path={AppPaths.cv + "*"} element={<CVPage />} />
-                    </Route>
-                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
-                      <Route path={AppPaths.vacancies + "*"} element={<VacanciesPage />} />
-                    </Route>
 
                     <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
                       <Route path={AppPaths.employee + "*"} element={<EmployeePage />} />

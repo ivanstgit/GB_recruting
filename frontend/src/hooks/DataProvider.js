@@ -62,13 +62,27 @@ export const DATA_RESOURCES = {
         roles: [userRoles.employee, userRoles.employer, userRoles.moderator],
         methods: ["get", "post", "put", "delete", "status", "favorites"]
     },
+    cvResponses: {
+        api: "cvResponses",
+        isProtected: true,
+        isGlobal: false,
+        roles: [userRoles.employee, userRoles.employer],
+        methods: ["get", "post", "delete", "status"]
+    },
     vacancies: {
         api: "vacancies",
         isProtected: true,
         isGlobal: false,
         roles: [userRoles.employee, userRoles.employer, userRoles.moderator],
         methods: ["get", "post", "put", "delete", "status", "favorites"]
-    }
+    },
+    vacancyResponses: {
+        api: "vacancyResponses",
+        isProtected: true,
+        isGlobal: false,
+        roles: [userRoles.employee, userRoles.employer],
+        methods: ["get", "post", "delete", "status"]
+    },
 }
 
 export const dataStatuses = {
@@ -196,7 +210,7 @@ const DataProvider = (props) => {
         try {
             let response = await dataPostOne(resource.api, token, data)
             if (response.status === 201) {
-                return { data: response.data.results, error: null }
+                return { data: response.data, error: null }
             } else {
                 console.log(response)
                 return { data: null, error: response.error }

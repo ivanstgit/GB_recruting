@@ -71,10 +71,8 @@ router.register("employees", EmployeeProtectedViewSet, basename="employees")
 router.register("employers", EmployerProtectedViewSet, basename="employers")
 router.register("cvs", CVViewSet, basename="cvs")
 router.register("vacancies", VacancyViewSet, basename="vacancies")
-router.register("cvs/response", CVResponseViewSet, basename="cv_response")
-router.register(
-    "vacancies/response", VacancyResponseViewSet, basename="vacancy_response"
-)
+router.register("cvresponse", CVResponseViewSet, basename="cv_response")
+router.register("vacancyresponse", VacancyResponseViewSet, basename="vacancy_response")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

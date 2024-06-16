@@ -9,8 +9,9 @@ import { commonActions } from "../../components/common/Actions.js";
 import { ErrorLabel } from "../../components/common/UICommon.js";
 
 
-const CVListPage = () => {
+const EmployerCVListPage = ({ respondTo }) => {
     const { t } = useTranslation("SharedCV");
+    const navigate = useNavigate();
     const dataProvider = useData();
 
     const [status, setStatus] = useState(dataStatuses.initial)
@@ -63,6 +64,10 @@ const CVListPage = () => {
             })
     }
 
+    const handleRespond = (id) => {
+        navigate(respondTo, { state: { CVId: id } })
+    }
+
     useEffect(() => {
         if (status === dataStatuses.initial) {
             refreshData()
@@ -78,16 +83,18 @@ const CVListPage = () => {
             </div>
 
             <div className="row g-3"><CVSearchForm onApply={handleSearchParamsChanged} /></div>
-            <div className="row g-3 mt-1"><CVList items={items}
-                onFavoriteAdd={handleFavoriteAdd} onFavoriteRemove={handleFavoriteRemove} /></div>
+            <div className="row g-3 mt-1"><EmployerCVList items={items} respondTo={respondTo}
+                onFavoriteAdd={handleFavoriteAdd} onFavoriteRemove={handleFavoriteRemove}
+                onRespond={handleRespond} />
+            </div>
         </div>
     )
 }
-export default CVListPage
+export default EmployerCVListPage
 
 
 
-const CVListItem = ({ item, onFavoriteAdd, onFavoriteRemove }) => {
+const EmployerCVListItem = ({ item, onFavoriteAdd, onFavoriteRemove, onRespond }) => {
     const navigate = useNavigate()
 
     let actions = {}
@@ -98,21 +105,24 @@ const CVListItem = ({ item, onFavoriteAdd, onFavoriteRemove }) => {
     } else {
         actions[commonActions.favoriteAdd] = () => onFavoriteAdd(item.id)
     }
+    actions[commonActions.respond] = () => onRespond(item.id)
+
 
     return (
         <CVCard item={item} actions={actions} />
     )
 }
 
-const CVList = ({ items, onFavoriteAdd, onFavoriteRemove }) => {
+const EmployerCVList = ({ items, onFavoriteAdd, onFavoriteRemove, onRespond }) => {
+
 
     // const { t } = useTranslation("SharedCV");
 
     return (
         <div>
             <div className="row g-3">
-                {items.map((item, index) => <CVListItem key={'CVLI' + index} item={item}
-                    onFavoriteAdd={onFavoriteAdd} onFavoriteRemove={onFavoriteRemove} />)}
+                {items.map((item, index) => <EmployerCVListItem key={'CVLI' + index} item={item}
+                    onFavoriteAdd={onFavoriteAdd} onFavoriteRemove={onFavoriteRemove} onRespond={onRespond} />)}
             </div>
         </div>
     )

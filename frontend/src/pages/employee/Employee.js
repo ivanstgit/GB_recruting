@@ -9,7 +9,7 @@ import { DATA_RESOURCES, PrivateDataContext, dataStatuses, useData } from "../..
 import EmployeeHomePage from "./EmployeeHome.js"
 import EmployeeProfileForm from "./EmployeeProfileForm.js"
 import EmployeeProfilePage from "./EmployeeProfile.js"
-import EmployeeCVsPage from "./EmployeeCV.js"
+import EmployeeCVListPage from "./EmployeeCVList.js"
 import EmployeeCVForm from "./EmployeeCVForm.js"
 import EmployeeCVDetailPage from "./EmployeeCVDetail.js"
 import { CVStatuses } from "../../components/shared/CV.js"
@@ -103,7 +103,7 @@ const EmployeePage = () => {
                             <Route exact path={EmployeePaths.home} element={<EmployeeHomePage />} />
                             <Route exact path={EmployeePaths.profile} element={<EmployeeProfilePage />} />
                             <Route exact path={EmployeePaths.profile + ObjectActions.edit} element={<EmployeeProfileForm />} />
-                            <Route exact path={EmployeePaths.cvs} element={<EmployeeCVsPage />} />
+                            <Route exact path={EmployeePaths.cvs} element={<EmployeeCVListPage />} />
                             <Route exact path={EmployeePaths.cvs + ":id/"} element={<EmployeeCVDetailPage
                                 backTo={"../" + EmployeePaths.cvs} />} />
                             <Route exact path={EmployeePaths.cvs + ObjectActions.add} element={<EmployeeCVForm

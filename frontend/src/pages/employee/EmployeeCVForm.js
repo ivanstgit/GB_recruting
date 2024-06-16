@@ -67,7 +67,7 @@ const CVExperienceBlock = ({ index, item, cities, onSubmit }) => {
 
     const { t } = useTranslation("SharedCV");
 
-    const empty_field_error = t("form.fieldIsRequired")
+    const emptyFieldError = t("form.fieldIsRequired")
 
     const isEdit = (index >= 0)
 
@@ -90,10 +90,10 @@ const CVExperienceBlock = ({ index, item, cities, onSubmit }) => {
             if (input[field] === initialStateExperience[field]) {
                 if (field === "is_current" || field === "dateto") {
                     if ((input.dateto === "") && (input.is_current === false)) {
-                        res[field] = empty_field_error
+                        res[field] = emptyFieldError
                     }
                 } else {
-                    res[field] = empty_field_error
+                    res[field] = emptyFieldError
                 }
             }
         }
@@ -185,7 +185,7 @@ const CVEducationBlock = ({ index, item, isSelected, onSubmit }) => {
 
     const { t } = useTranslation("SharedCV");
 
-    const empty_field_error = t("form.fieldIsRequired")
+    const emptyFieldError = t("form.fieldIsRequired")
 
     const isEdit = (index >= 0)
 
@@ -206,7 +206,7 @@ const CVEducationBlock = ({ index, item, isSelected, onSubmit }) => {
             let field = fields[index]
 
             if (input[field] === initialStateEducation[field]) {
-                res[field] = empty_field_error
+                res[field] = emptyFieldError
             }
         }
         return res
@@ -284,7 +284,7 @@ const EmployeeCVForm = ({ backTo }) => {
     const isEdit = id ? true : false
     const isCopy = fromId ? true : false
 
-    const empty_field_error = t("form.fieldIsRequired")
+    const emptyFieldError = t("form.fieldIsRequired")
 
     if (status === formStatuses.prefill) {
         // cities
@@ -341,7 +341,7 @@ const EmployeeCVForm = ({ backTo }) => {
             let field = fields[index]
 
             if ((input[field] === initialState[field]) && reqiredFields.includes(field)) {
-                res[field] = empty_field_error
+                res[field] = emptyFieldError
             }
         }
         return res

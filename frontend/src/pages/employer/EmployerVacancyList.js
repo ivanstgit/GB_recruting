@@ -9,7 +9,7 @@ import { ActionButtonCreate, ActionGroup, commonActions } from "../../components
 import { VacancyStatusIcon, VacancyStatuses } from "../../components/shared/Vacancy.js";
 
 
-const EmployerVacancyPage = () => {
+const EmployerVacancyListPage = () => {
     const { t } = useTranslation("Employer");
 
     const dataProvider = useData()
@@ -95,7 +95,7 @@ const EmployerVacancyPage = () => {
     )
 }
 
-export default EmployerVacancyPage
+export default EmployerVacancyListPage
 
 const EmployerVacancyListItem = ({ item, onDelete, onPublish }) => {
     const navigate = useNavigate();

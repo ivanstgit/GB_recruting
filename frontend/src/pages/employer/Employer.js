@@ -12,15 +12,22 @@ import { DATA_RESOURCES, PrivateDataContext, dataStatuses, useData } from "../..
 import { useEffect, useMemo, useState } from "react"
 import { EmployerStatuses } from "../../components/shared/Employer.js"
 import { ErrorLabel } from "../../components/common/UICommon.js"
-import EmployerVacancyPage from "./EmployerVacancy.js"
+import EmployerVacancyListPage from "./EmployerVacancyList.js"
 import EmployerVacancyDetailPage from "./EmployerVacancyDetail.js"
 import EmployerVacancyForm from "./EmployerVacancyForm.js"
 import { VacancyStatuses } from "../../components/shared/Vacancy.js"
+import EmployerCVResponseDetailPage from "./EmployerCVResponseDetail.js"
+import EmployerCVResponseForm from "./EmployerCVResponseForm.js"
+import EmployerCVResponseListPage from "./EmployerCVResponseList.js"
+import EmployerCVListPage from "./EmployerCVList.js"
+import EmployerCVDetailPage from "./EmployerCVDetail.js"
 
 export const EmployerPaths = {
     home: "home/",
     profile: "profile/",
     vacancies: "vacancies/",
+    CVs: "cvbase/",
+    CVResponses: "cvresponses/",
 }
 
 const EmployerPage = () => {
@@ -32,8 +39,10 @@ const EmployerPage = () => {
     const [vacancyCount, setVacancyCount] = useState(0)
     const [vacancyRejectedCount, setVacancyRejectedCount] = useState(0)
     const [vacancyList, setVacancyList] = useState([])
+    const [CVResponseCount, setCVResponseCount] = useState(0)
+    const [CVResponseList, setCVResponseList] = useState([])
 
-    const refreshTimeout = 5000
+    const refreshTimeout = 60000
 
     const profile = dataProvider.employerProfile?.[0] ?? null
 
@@ -51,6 +60,14 @@ const EmployerPage = () => {
             link: EmployerPaths.vacancies,
             text: t("Employer.Vacancies"),
             badge: ((vacancyRejectedCount > 0)) ? "!" : ""
+        },
+        {
+            link: EmployerPaths.CVs,
+            text: t("Employer.CVs"),
+        },
+        {
+            link: EmployerPaths.CVResponses,
+            text: t("Employer.CVResponses"),
         },
     ]
     const refreshVacancyList = async () => {
@@ -72,20 +89,43 @@ const EmployerPage = () => {
                 }
             })
     }
+    const refreshCVResponseList = async () => {
+        setStatus(dataStatuses.loading)
+        dataProvider.getList(DATA_RESOURCES.cvResponses)
+            .then((res) => {
+                if (res.error) {
+                    setCVResponseCount(0)
+                    setCVResponseList([])
+                    setError(res.error)
+                    setStatus(dataStatuses.error)
+                } else {
+                    setCVResponseCount(res.count)
+                    setCVResponseList(res.data)
+                    setError("")
+                    setStatus(dataStatuses.success)
+                }
+            })
+    }
+
     const privateDataContextValue = useMemo(() => ({
         vacancyList,
         vacancyCount,
         vacancyRejectedCount,
         refreshVacancyList,
+        CVResponseList,
+        CVResponseCount,
+        refreshCVResponseList
         // eslint-disable-next-line
-    }), [vacancyList]);
+    }), [vacancyList, CVResponseList]);
 
     useEffect(() => {
         if (status === dataStatuses.initial) {
             refreshVacancyList()
+            refreshCVResponseList()
         }
         let timer = setTimeout(() => {
             refreshVacancyList()
+            refreshCVResponseList()
         }, refreshTimeout);
         return () => {
             clearTimeout(timer);
@@ -107,13 +147,26 @@ const EmployerPage = () => {
                             <Route exact path={EmployerPaths.profile + ObjectActions.edit} element={<EmployerProfileForm
                                 backTo={"../" + EmployerPaths.profile} />} />
 
-                            <Route exact path={EmployerPaths.vacancies} element={<EmployerVacancyPage />} />
+                            <Route exact path={EmployerPaths.vacancies} element={<EmployerVacancyListPage />} />
                             <Route exact path={EmployerPaths.vacancies + ":id/"} element={<EmployerVacancyDetailPage
                                 backTo={"../" + EmployerPaths.vacancies} />} />
                             <Route exact path={EmployerPaths.vacancies + ObjectActions.add} element={<EmployerVacancyForm
                                 backTo={"../" + EmployerPaths.vacancies} />} />
                             <Route exact path={EmployerPaths.vacancies + ":id/" + ObjectActions.edit} element={<EmployerVacancyForm
                                 backTo={"../" + EmployerPaths.vacancies} />} />
+
+                            <Route exact path={EmployerPaths.CVs} element={<EmployerCVListPage
+                                respondTo={"../" + EmployerPaths.CVResponses + ObjectActions.add} />} />
+                            <Route exact path={EmployerPaths.CVs + ":id/"} element={<EmployerCVDetailPage
+                                backTo={"../" + EmployerPaths.CVs} respondTo={"../" + EmployerPaths.CVResponses + ObjectActions.add} />} />
+
+                            <Route exact path={EmployerPaths.CVResponses} element={<EmployerCVResponseListPage
+                                CVTo={"../" + EmployerPaths.CVs} vacancyTo={"../" + EmployerPaths.vacancies} />} />
+                            <Route exact path={EmployerPaths.CVResponses + ":id/"} element={<EmployerCVResponseDetailPage
+                                backTo={"../" + EmployerPaths.CVResponses}
+                                CVTo={"../" + EmployerPaths.CVs} vacancyTo={"../" + EmployerPaths.vacancies} />} />
+                            <Route exact path={EmployerPaths.CVResponses + ObjectActions.add} element={<EmployerCVResponseForm
+                                backTo={"../" + EmployerPaths.CVResponses} />} />
 
                             <Route element={<EmployerHomePage />} />
                         </Routes>

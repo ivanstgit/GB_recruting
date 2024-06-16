@@ -78,13 +78,13 @@ export const VacancyCard = ({ item, actions }) => {
                 <div className="row g-3">
                     <div className="col-6 col-lg-4">
                         <h5 className="card-title">
-                            {item.position}
+                            {item.employer.name}
                         </h5>
                         <p className="card-subtitle text-muted"><i className="bi bi-geo-alt-fill me-3"></i>{item.city.name}</p>
                     </div>
                     <div className="col-sm-6 col-lg-8">
 
-                        <h5 className="card-title">{item.employer.name}</h5>
+                        <h5 className="card-title">{item.position}</h5>
                         <h6 className="card-subtitle text-muted"><i className="bi bi-cash-stack me-3"></i>{t("position.salary")}: {item.salary}</h6>
                         <p className="card-text">{t("internal.updated")}: {date.toLocaleDateString()}</p>
                     </div>

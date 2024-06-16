@@ -23,6 +23,8 @@ export const API_LIST = {
     employer: "/v1.0/employers/",
     cvs: "/v1.0/cvs/",
     vacancies: "/v1.0/vacancies/",
+    cvResponses: "/v1.0/cvresponse/",
+    vacancyResponses: "/v1.0/vacancyresponse/"
 }
 
 function getHeader(token) {

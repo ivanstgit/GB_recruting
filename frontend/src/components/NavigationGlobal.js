@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useResolvedPath, useMatch } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
-import { useAuth, userRoles } from "../hooks/AuthProvider.js";
+import { useAuth } from "../hooks/AuthProvider.js";
 import AppPaths from "../routes/AppPaths.js"
 
 const LoginArea = () => {
@@ -56,21 +56,6 @@ const NavGlobal = () => {
       pattern: AppPaths.partners + '*',
     },
   ]
-
-  if (auth.isAuthenticated && (auth.user.role === userRoles.employee)) {
-    items.push({
-      link: AppPaths.vacancies,
-      text: t("Vacancies"),
-      pattern: AppPaths.vacancies + '*',
-    })
-  }
-  if (auth.isAuthenticated && (auth.user.role === userRoles.employer)) {
-    items.push({
-      link: AppPaths.cv,
-      text: t("CVs"),
-      pattern: AppPaths.cv + '*'
-    })
-  }
 
   items.push(
     {

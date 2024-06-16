@@ -1,5 +1,5 @@
 import datetime
-from rest_framework import serializers
+from rest_framework import serializers, validators
 
 from recrutingapp.models import (
     DOCUMENT_STATUSES,
@@ -491,14 +491,14 @@ class CVResponseSerializerInt(
     vacancy = serializers.PrimaryKeyRelatedField(queryset=Vacancy.objects.all())
 
     def validate_cv(self, value):
-        cv_obj = CV.objects.get(pk=value)
+        cv_obj = value
         if cv_obj and cv_obj.status.id == ConstDocumentStatus.approved:
             return value
         raise serializers.ValidationError("Approved CV required")
 
     def validate_vacancy(self, value):
         request = self.context["request"]
-        vacancy_obj = Vacancy.objects.get(pk=value)
+        vacancy_obj = value
         if (
             vacancy_obj
             and vacancy_obj.owner == request.user
@@ -518,6 +518,15 @@ class CVResponseSerializerInt(
             "updated_at",
         ]
         depth = 1
+        validators = [
+            validators.UniqueTogetherValidator(
+                queryset=CVResponse.objects.all(),
+                fields=[
+                    "cv",
+                    "vacancy",
+                ],
+            )
+        ]
 
 
 class CVResponseSerializerExt(
@@ -539,6 +548,8 @@ class CVResponseSerializerExt(
             "vacancy",
             "created_at",
             "updated_at",
+            "status",
+            "status_info",
         ]
         depth = 1
 
@@ -555,7 +566,7 @@ class VacancyResponseSerializerInt(
 
     def validate_cv(self, value):
         request = self.context["request"]
-        cv_obj = CV.objects.get(pk=value)
+        cv_obj = value  # CV.objects.get(pk=value)
         if (
             cv_obj
             and cv_obj.owner == request.user
@@ -565,7 +576,7 @@ class VacancyResponseSerializerInt(
         raise serializers.ValidationError("Own approved CV required")
 
     def validate_vacancy(self, value):
-        vacancy_obj = Vacancy.objects.get(pk=value)
+        vacancy_obj = value  # Vacancy.objects.get(pk=value)
         if vacancy_obj and vacancy_obj.status.id == ConstDocumentStatus.approved:
             return value
         raise serializers.ValidationError("Approved vacancy required")
@@ -581,6 +592,15 @@ class VacancyResponseSerializerInt(
             "updated_at",
         ]
         depth = 1
+        validators = [
+            validators.UniqueTogetherValidator(
+                queryset=VacancyResponse.objects.all(),
+                fields=[
+                    "cv",
+                    "vacancy",
+                ],
+            )
+        ]
 
 
 class VacancyResponseSerializerExt(
@@ -602,6 +622,8 @@ class VacancyResponseSerializerExt(
             "vacancy",
             "created_at",
             "updated_at",
+            "status",
+            "status_info",
         ]
         depth = 1
 
