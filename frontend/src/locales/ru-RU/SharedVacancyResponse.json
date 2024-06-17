@@ -1,5 +1,5 @@
 {
-    "CVResponses": {
+    "VacancyResponses": {
         "header": "Отклики на резюме"
     },
     "actions": {
@@ -14,18 +14,18 @@
         "r": "Отклонен"
     },
     "form": {
-        "headerCreate": "Отклик на резюме",
+        "headerCreate": "Отклик на вакансию",
         "fieldIsRequired": "Поле обязательно для заполнения",
         "Save": "Сохранить",
         "SaveSend": "Отправить",
         "SaveHelp": "Сохранить документ в статусе 'Черновик'",
         "SaveSendHelp": "Сохранить документ и отправить соискателю",
-        "errorInvalidCV": "Резюме не найдено!",
-        "errorAlreadyResponded": "Вы уже отправили выбранную вакансию как отклик на резюме!"
+        "errorInvalidVacancy": "Вакансия не найдена!",
+        "errorAlreadyResponded": "Вы уже отправили выбранное резюме как отклик на вакансию!"
     },
     "fields": {
-        "vacancy": "Вакансия",
         "CV": "Резюме",
+        "vacancy": "Вакансия",
         "updated": "Обновлено"
     }
 }

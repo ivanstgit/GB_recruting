@@ -1,20 +1,24 @@
 import React from "react";
-import { Link, useResolvedPath, useMatch } from "react-router-dom";
+import { Link, useResolvedPath, useMatch, useNavigate } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
 import { useAuth } from "../hooks/AuthProvider.js";
 import AppPaths from "../routes/AppPaths.js"
 
 const LoginArea = () => {
-
+  const navigate = useNavigate()
   const auth = useAuth();
   const { t } = useTranslation("Navigation");
+
+  const logOut = () => {
+    auth.logOutFunc().then(() => navigate(AppPaths.home))
+  }
 
   if (auth.isAuthenticated) {
     return (
       <div>
         <button className="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block"
-          onClick={auth.logOutFunc} >{auth.user.username} <u>{t("SignOut")}</u>
+          onClick={logOut} >{auth.user.username} <u>{t("SignOut")}</u>
         </button>
       </div>
     )

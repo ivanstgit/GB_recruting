@@ -83,7 +83,7 @@ const EmployerCVListPage = ({ respondTo }) => {
             </div>
 
             <div className="row g-3"><CVSearchForm onApply={handleSearchParamsChanged} /></div>
-            <div className="row g-3 mt-1"><EmployerCVList items={items} respondTo={respondTo}
+            <div className="row g-3 mt-1"><EmployerCVList items={items}
                 onFavoriteAdd={handleFavoriteAdd} onFavoriteRemove={handleFavoriteRemove}
                 onRespond={handleRespond} />
             </div>

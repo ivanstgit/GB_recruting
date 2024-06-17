@@ -91,7 +91,7 @@ class AuthProvider extends React.Component {
         return res
     }
 
-    logOut() { //this
+    async logOut() { //this
         this._tokenAccess = ""
         AuthCookies.set(authCookieName, { token: "" }, cookieSetOptions)
         AuthCookies.remove(authCookieName, cookieSetOptions)

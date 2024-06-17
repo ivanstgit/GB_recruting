@@ -521,7 +521,7 @@ class VacancyResponseViewSet(
 
         # employer -> own vacancy
         elif role == UserRoles.employer.value:
-            qs = VacancyResponse.objects.filter(vacancy_owner=self.request.user)
+            qs = VacancyResponse.objects.filter(vacancy__owner=self.request.user)
 
         # employee -> own CV
         elif role == UserRoles.employee.value:
