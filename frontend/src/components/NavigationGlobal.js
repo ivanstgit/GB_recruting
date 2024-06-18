@@ -6,12 +6,15 @@ import { useAuth } from "../hooks/AuthProvider.js";
 import AppPaths from "../routes/AppPaths.js"
 
 const LoginArea = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const auth = useAuth();
   const { t } = useTranslation("Navigation");
 
   const logOut = () => {
-    auth.logOutFunc().then(() => navigate(AppPaths.home))
+    auth.logOutFunc().then(() => {
+      navigate(AppPaths.home);
+      window.location.reload();
+    })
   }
 
   if (auth.isAuthenticated) {

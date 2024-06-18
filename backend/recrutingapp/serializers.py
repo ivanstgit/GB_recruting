@@ -1,5 +1,6 @@
 import datetime
 from rest_framework import serializers, validators
+from django.contrib.contenttypes.models import ContentType
 
 from recrutingapp.models import (
     DOCUMENT_STATUSES,
@@ -7,6 +8,7 @@ from recrutingapp.models import (
     City,
     ConstDocumentStatus,
     DocStatusMixin,
+    DocumentMessage,
     DocumentStatus,
     Employee,
     CV,
@@ -58,6 +60,22 @@ class DocumentStatusMixinSerializer(serializers.Serializer):
 
     class Meta:
         fields = ["status", "info"]
+
+
+class DocumentMessageSerializer(serializers.Serializer):
+    # sender = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    sender = serializers.SlugRelatedField(read_only=True, slug_field="role")
+    content = serializers.CharField(max_length=1024)
+    created_at = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = DocumentMessage
+        fields = ["sender", "content", "created_at"]
+
+
+class DocumentMessagesField(serializers.RelatedField):
+    def to_representation(self, value):
+        return DocumentMessageSerializer(value).data
 
 
 class NewsPublicListSerializer(serializers.ModelSerializer):
@@ -530,7 +548,9 @@ class CVResponseSerializerInt(
 
 
 class CVResponseSerializerExt(
-    OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
+    OwnedModelMixin,
+    LoggedModelMixin,
+    serializers.ModelSerializer,
 ):
     """
     Serializer for reading
@@ -538,6 +558,7 @@ class CVResponseSerializerExt(
 
     cv = CVSerializerExt()
     vacancy = VacancySerializerExt()
+    messages = DocumentMessagesField(read_only=True, many=True)
 
     class Meta:
         model = CVResponse
@@ -550,6 +571,7 @@ class CVResponseSerializerExt(
             "updated_at",
             "status",
             "status_info",
+            "messages",
         ]
         depth = 1
 
@@ -604,7 +626,9 @@ class VacancyResponseSerializerInt(
 
 
 class VacancyResponseSerializerExt(
-    OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
+    OwnedModelMixin,
+    LoggedModelMixin,
+    serializers.ModelSerializer,
 ):
     """
     Serializer for reading
@@ -612,6 +636,7 @@ class VacancyResponseSerializerExt(
 
     cv = CVSerializerExt()
     vacancy = VacancySerializerExt()
+    messages = DocumentMessagesField(read_only=True, many=True)
 
     class Meta:
         model = VacancyResponse
@@ -624,14 +649,6 @@ class VacancyResponseSerializerExt(
             "updated_at",
             "status",
             "status_info",
+            "messages",
         ]
         depth = 1
-
-
-class DocumentMessageSerializer(serializers.Serializer):
-    sender = serializers.SlugRelatedField(read_only=True, slug_field="username")
-    content = serializers.CharField(max_length=1024)
-    created_at = serializers.DateTimeField(read_only=True)
-
-    class Meta:
-        fields = ["sender", "content", "created_at"]

@@ -3,6 +3,7 @@ from rest_framework import pagination
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework import status
+from rest_framework import relations
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -12,6 +13,7 @@ from recrutingapp.models import (
     CVResponse,
     City,
     ConstDocumentStatus,
+    DocumentMessage,
     DocumentStatus,
     Employer,
     Favorite,
@@ -35,6 +37,7 @@ from recrutingapp.serializers import (
     CVResponseSerializerExt,
     CVResponseSerializerInt,
     CitySerializer,
+    DocumentMessageSerializer,
     DocumentStatusMixinSerializer,
     EmployeeSerializerExt,
     EmployeeSerializerInt,
@@ -180,6 +183,45 @@ class FavoriteMixin:
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MessagesMixin:
+    """
+    Mixin for objects with chat/feedback.
+    Provide methods for message handling
+    """
+
+    @action(
+        detail=True,
+        methods=["post"],
+        url_path="messages",
+        permission_classes=[
+            permissions.IsAuthenticated,
+        ],
+    )
+    def messages(self, request, version=None, pk=None):
+        """
+        Add message
+        """
+        instance = self.get_object()
+        content_type = ContentType.objects.get_for_model(instance)
+
+        if request.method == "POST":
+            serializer_in = DocumentMessageSerializer(data=request.data)
+            if serializer_in.is_valid():
+                message_content = serializer_in.validated_data["content"]
+                message_obj = DocumentMessage.objects.create(
+                    sender=request.user,
+                    content_type=content_type,
+                    object_id=instance.id,
+                    content=message_content,
+                )
+                message_obj.save()
+                serializer_out = DocumentMessageSerializer(message_obj)
+                return Response(
+                    data=serializer_out.data, status=status.HTTP_201_CREATED
+                )
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class NewsPagination(pagination.LimitOffsetPagination):
@@ -463,7 +505,11 @@ class VacancyViewSet(
 
 
 class CVResponseViewSet(
-    OwnedModelMixin, LoggedModelMixin, DocStatusModelMixin, viewsets.ModelViewSet
+    OwnedModelMixin,
+    LoggedModelMixin,
+    DocStatusModelMixin,
+    MessagesMixin,
+    viewsets.ModelViewSet,
 ):
     """View for CV response"""
 
@@ -501,7 +547,11 @@ class CVResponseViewSet(
 
 
 class VacancyResponseViewSet(
-    OwnedModelMixin, LoggedModelMixin, DocStatusModelMixin, viewsets.ModelViewSet
+    OwnedModelMixin,
+    LoggedModelMixin,
+    DocStatusModelMixin,
+    MessagesMixin,
+    viewsets.ModelViewSet,
 ):
     """View for Vacancy response"""
 

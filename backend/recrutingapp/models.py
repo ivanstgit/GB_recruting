@@ -5,7 +5,7 @@ from django.core.validators import URLValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 
 from userapp.models import CustomUser
@@ -63,6 +63,30 @@ class DocStatusMixin(models.Model):
     status_info = models.CharField(
         max_length=150, help_text=_("Status info"), default=""
     )
+
+    class Meta:
+        abstract = True
+
+
+class DocumentMessage(models.Model):
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    content = models.TextField(
+        help_text=_("Content"),
+        max_length=1024,
+    )
+
+    class Meta:
+        verbose_name = _("message")
+        verbose_name_plural = _("messages")
+
+
+class DocMessagesMixin(models.Model):
+    messages = GenericRelation(DocumentMessage)
 
     class Meta:
         abstract = True
@@ -439,7 +463,9 @@ class CVResponse(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
         ]
 
 
-class VacancyResponse(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+class VacancyResponse(
+    OwnedMixin, LoggingMixin, DocStatusMixin, DocMessagesMixin, models.Model
+):
     vacancy = models.ForeignKey(
         Vacancy,
         on_delete=models.CASCADE,
@@ -476,20 +502,3 @@ class Favorite(models.Model):
                 name="unique_user_content_type_object_id",
             )
         ]
-
-
-class DocumentMessage(models.Model):
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.PositiveIntegerField()
-    content_object = GenericForeignKey("content_type", "object_id")
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    content = models.TextField(
-        help_text=_("Content"),
-        max_length=1024,
-    )
-
-    class Meta:
-        verbose_name = _("message")
-        verbose_name_plural = _("messages")

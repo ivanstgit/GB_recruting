@@ -185,6 +185,11 @@ class CVResponsePermission(permissions.BasePermission):
                     and obj.status.id == ConstDocumentStatus.pending
                     and view.action == "status"
                 )
+                or (
+                    obj
+                    and obj.status.id == ConstDocumentStatus.approved
+                    and view.action == "messages"
+                )
             ):
                 return True
 
@@ -218,6 +223,11 @@ class VacancyResponsePermission(permissions.BasePermission):
                     obj
                     and obj.status.id == ConstDocumentStatus.pending
                     and view.action == "status"
+                )
+                or (
+                    obj
+                    and obj.status.id == ConstDocumentStatus.approved
+                    and view.action == "messages"
                 )
             ):
                 return True
