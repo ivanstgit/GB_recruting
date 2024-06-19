@@ -17,9 +17,9 @@ export const CVStatusIcon = ({ status, showText = false }) => {
     const statusDesc = t("statuses." + status.id) ?? status.name ?? ""
     let iconStyle = ""
     if (status.id === CVStatuses.draft) iconStyle = "bi-eraser"
-    if (status.id === CVStatuses.pending) iconStyle = "bi-patch-question"
-    if (status.id === CVStatuses.approved) iconStyle = "bi-patch-check"
-    if (status.id === CVStatuses.rejected) iconStyle = "bi-patch-exclamation"
+    if (status.id === CVStatuses.pending) iconStyle = "bi-patch-question text-warning"
+    if (status.id === CVStatuses.approved) iconStyle = "bi-patch-check text-success"
+    if (status.id === CVStatuses.rejected) iconStyle = "bi-patch-exclamation text-danger"
     if (showText)
         return (
             <span>

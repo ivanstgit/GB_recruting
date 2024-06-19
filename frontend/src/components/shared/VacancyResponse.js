@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { SubHeaderText } from '../common/FormFields';
 import { CVCard } from './CV';
+import { MessageForm } from './Messages';
 import { VacancyCard } from './Vacancy';
 
 export const VacancyResponseStatuses = {
@@ -15,9 +16,9 @@ export const VacancyResponseStatusIcon = ({ status, showText = false }) => {
     const statusDesc = t("statuses." + status.id) ?? status.name ?? ""
     let iconStyle = ""
     if (status.id === VacancyResponseStatuses.draft) iconStyle = "bi-eraser"
-    if (status.id === VacancyResponseStatuses.pending) iconStyle = "bi-patch-question"
-    if (status.id === VacancyResponseStatuses.approved) iconStyle = "bi-patch-check"
-    if (status.id === VacancyResponseStatuses.rejected) iconStyle = "bi-patch-exclamation"
+    if (status.id === VacancyResponseStatuses.pending) iconStyle = "bi-patch-question text-warning"
+    if (status.id === VacancyResponseStatuses.approved) iconStyle = "bi-patch-check text-success"
+    if (status.id === VacancyResponseStatuses.rejected) iconStyle = "bi-patch-exclamation text-danger"
     if (showText)
         return (
             <span>
@@ -44,4 +45,21 @@ export const VacancyResponseDetail = ({ item, CVActions = {}, vacancyActions = {
             <CVCard item={item.cv} actions={CVActions} />
         </div>
     )
+}
+
+export const VacancyResponseChat = ({ item, onMessageSubmit }) => {
+    const { t } = useTranslation("SharedVacancyResponse");
+
+    if (item?.status?.id === VacancyResponseStatuses.approved) {
+        return (
+            <div>
+                <SubHeaderText text={t("chat.header")} />
+                <MessageForm messageList={item.messages} onSubmit={onMessageSubmit} />
+            </div>
+        )
+    } else {
+        return (
+            <div />
+        )
+    }
 }

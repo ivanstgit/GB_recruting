@@ -1,5 +1,8 @@
-import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
+import { AdditionalHeaderText, FormContainer, InputTextArea, SubmitButton, formStatuses } from "../common/FormFields";
+import { ErrorLabel } from "../common/UICommon";
+import { useState } from "react";
+import { useAuth } from "../../hooks/AuthProvider";
 
 export const MessageCard = ({ item }) => {
 
@@ -13,50 +16,34 @@ export const MessageCard = ({ item }) => {
         year: 'numeric',
     };
 
-    const date = new Date(item.created_at)
-    const sender = t("roles." + item.sender)
+    const date = new Date(item.created_at);
+    const sender = t("roles." + item.sender);
 
     return (
         <div className="card">
-            <div className="p-3 card-body">
+            <div className="p-2 card-body">
                 {/* <ActionToolbar actions={actions} /> */}
-                <div className="row g-3">
-                    <p className="card-text text-muted">{sender}, {date.toLocaleDateString(undefined, dateFormatOptions)}</p>
-                    <p className="card-text text-ws-pre">{item.content} </p>
-                </div>
+                <h6 className="card-subtitle text-muted">{sender}, {date.toLocaleDateString(undefined, dateFormatOptions)}</h6>
+                <p className="card-text text-ws-pre">{item.content} </p>
             </div>
         </div>
     )
 }
 
 const MessageListItem = ({ item, role }) => {
-    if (item?.role === role) return (
-        <div className="row g-3">
-            <div className="col-4">nbsp;</div>
-            <div className="col-8"><MessageCard item={item} /></div>
-        </div>
-    )
+    const offset = (item?.sender === role) ? "offset-md-4" : ""
+
     return (
-        <div className="row g-3">
-            <div className="col-8"><MessageCard item={item} /></div>
-            <div className="col-4">nbsp;</div>
+        <div className="row mt-1">
+            <div className={"col-md-8 " + offset}><MessageCard item={item} /></div>
         </div>
     )
 }
 
-export const MessageList = ({ items, role }) => {
-
-    const { t } = useTranslation("SharedMessages");
-
+const MessageList = ({ items, role }) => {
     return (
         <div className="">
-            <div className="row g-3 mt-1">
-                <div className="text-center mx-auto mb-1 wow fadeInUp" data-wow-delay="0.1s">
-                    <h2>{t("list.header")}</h2>
-                </div>
-            </div>
-
-            <div className="row g-3">
+            <div className="row mt-1">
                 {items.map((item, index) => <MessageListItem key={'Msg' + index} item={item} role={role} />)}
             </div>
         </div>
@@ -67,12 +54,13 @@ const initialState = {
     content: ""
 }
 
-export const MessageAddForm = ({ onSubmit }) => {
+export const MessageForm = ({ messageList = [], onSubmit }) => {
     const [input, setInput] = useState(initialState);
     const [error, setError] = useState("")
     const [status, setStatus] = useState(formStatuses.initial)
     const [validationErrors, setValidationErrors] = useState({});
 
+    const auth = useAuth()
     const { t } = useTranslation("SharedMessages");
 
     const handleChange = (e) => {
@@ -92,7 +80,7 @@ export const MessageAddForm = ({ onSubmit }) => {
             let field = fields[index]
 
             if (input[field] === initialState[field]) {
-                res[field] = t("errors.fieldIsRequired")
+                res[field] = t("form.errors.fieldIsRequired")
             }
         }
 
@@ -107,8 +95,9 @@ export const MessageAddForm = ({ onSubmit }) => {
             setValidationErrors(errors)
             setStatus(formStatuses.error)
         } else {
+            setValidationErrors(errors)
             setStatus(formStatuses.pending)
-            onSubmit(input)
+            onSubmit(input.content)
                 .then((res) => {
                     if (res.error) {
                         setError(res.error)
@@ -125,10 +114,13 @@ export const MessageAddForm = ({ onSubmit }) => {
     return (
         <div>
             <div className="row">
-                <FormContainer onSubmit={(event) => handleSubmit(event)}>
-                    <HeaderText text={t("form.header")} />
+                <FormContainer onSubmit={(event) => handleSubmit(event)} padding={3}>
 
-                    <InputText id="content" name="content" value={input.info} label={""}
+                    <AdditionalHeaderText text={t("list.header")} />
+                    <MessageList items={messageList ?? []} role={auth.user.role} />
+
+                    <AdditionalHeaderText text={t("form.header")} />
+                    <InputTextArea id="content" name="content" value={input.content} label={""}
                         errorText={validationErrors?.content ?? ""}
                         onChange={(event) => handleChange(event)} />
 

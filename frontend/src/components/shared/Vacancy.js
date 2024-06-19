@@ -18,9 +18,9 @@ export const VacancyStatusIcon = ({ status, showText = false }) => {
     const statusDesc = t("statuses." + status.id) ?? status.name ?? ""
     let iconStyle = ""
     if (status.id === VacancyStatuses.draft) iconStyle = "bi-eraser"
-    if (status.id === VacancyStatuses.pending) iconStyle = "bi-patch-question"
-    if (status.id === VacancyStatuses.approved) iconStyle = "bi-patch-check"
-    if (status.id === VacancyStatuses.rejected) iconStyle = "bi-patch-exclamation"
+    if (status.id === VacancyStatuses.pending) iconStyle = "bi-patch-question text-warning"
+    if (status.id === VacancyStatuses.approved) iconStyle = "bi-patch-check text-success"
+    if (status.id === VacancyStatuses.rejected) iconStyle = "bi-patch-exclamation text-danger"
     if (showText)
         return (
             <span>

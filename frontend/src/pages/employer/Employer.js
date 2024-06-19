@@ -23,6 +23,7 @@ import EmployerCVListPage from "./EmployerCVList.js"
 import EmployerCVDetailPage from "./EmployerCVDetail.js"
 import EmployerVacancyResponseListPage from "./EmployerVacancyResponseList.js"
 import EmployerVacancyResponseDetailPage from "./EmployerVacancyResponseDetail.js"
+import { VacancyResponseStatuses } from "../../components/shared/VacancyResponse.js"
 
 export const EmployerPaths = {
     home: "home/",
@@ -45,6 +46,7 @@ const EmployerPage = () => {
     const [CVResponseCount, setCVResponseCount] = useState(0)
     const [CVResponseList, setCVResponseList] = useState([])
     const [vacancyResponseCount, setVacancyResponseCount] = useState(0)
+    const [vacancyResponsePendingCount, setVacancyResponsePendingCount] = useState(0)
     const [vacancyResponseList, setVacancyResponseList] = useState([])
 
     const refreshTimeout = 60000
@@ -69,6 +71,7 @@ const EmployerPage = () => {
         {
             link: EmployerPaths.vacancyResponses,
             text: t("Employer.VacancyResponses"),
+            badge: ((vacancyResponsePendingCount > 0)) ? "!" : ""
         },
         {
             link: EmployerPaths.CVs,
@@ -121,11 +124,13 @@ const EmployerPage = () => {
             .then((res) => {
                 if (res.error) {
                     setVacancyResponseCount(0)
+                    setVacancyResponsePendingCount(0)
                     setVacancyResponseList([])
                     setError(res.error)
                     setStatus(dataStatuses.error)
                 } else {
                     setVacancyResponseCount(res.count)
+                    setVacancyResponsePendingCount(res.data.filter(v => (v?.status?.id === VacancyResponseStatuses.pending)).length)
                     setVacancyResponseList(res.data)
                     setError("")
                     setStatus(dataStatuses.success)
@@ -140,6 +145,7 @@ const EmployerPage = () => {
         refreshVacancyList,
         vacancyResponseList,
         vacancyResponseCount,
+        vacancyResponsePendingCount,
         refreshVacancyResponseList,
         CVResponseList,
         CVResponseCount,

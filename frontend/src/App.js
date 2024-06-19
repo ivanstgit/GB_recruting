@@ -74,7 +74,7 @@ const App = (props) => {
                 </Routes>
               </Suspense>
             </div>
-            <NavigationFooter note="Footer Note" />
+            <NavigationFooter />
 
           </DataProvider>
         </AuthProvider>

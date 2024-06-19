@@ -91,5 +91,5 @@ export function dataAddMessage(api, token, id, msgText) {
     let headers = getHeader(token)
     let url = urlPrefix + API_LIST[api] + id + "/messages/"
 
-    return API.post(url, { "content": msgText }, { headers })
+    return API.patch(url, { "content": msgText }, { headers })
 }

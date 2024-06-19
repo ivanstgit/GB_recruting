@@ -21,6 +21,7 @@ import EmployeeCVResponseDetailPage from "./EmployeeCVResponseDetail.js"
 import EmployeeVacancyResponseListPage from "./EmployeeVacancyResponseList.js"
 import EmployeeVacancyResponseDetailPage from "./EmployeeVacancyResponseDetail.js"
 import EmployeeVacancyResponseForm from "./EmployeeVacancyResponseForm.js"
+import { CVResponseStatuses } from "../../components/shared/CVResponse.js"
 
 
 export const EmployeePaths = {
@@ -43,6 +44,7 @@ const EmployeePage = () => {
     const [CVRejectedCount, setCVRejectedCount] = useState(0)
     const [CVList, setCVList] = useState([])
     const [CVResponseCount, setCVResponseCount] = useState(0)
+    const [CVResponsePendingCount, setCVResponsePendingCount] = useState(0)
     const [CVResponseList, setCVResponseList] = useState([])
     const [vacancyResponseCount, setVacancyResponseCount] = useState(0)
     const [vacancyResponseList, setVacancyResponseList] = useState([])
@@ -66,6 +68,7 @@ const EmployeePage = () => {
         {
             link: EmployeePaths.CVResponses,
             text: t("Employee.CVResponses"),
+            badge: ((CVResponsePendingCount > 0)) ? "!" : ""
         },
         {
             link: EmployeePaths.vacancies,
@@ -102,11 +105,13 @@ const EmployeePage = () => {
             .then((res) => {
                 if (res.error) {
                     setCVResponseCount(0)
+                    setCVResponsePendingCount(0)
                     setCVResponseList([])
                     setError(res.error)
                     setStatus(dataStatuses.error)
                 } else {
                     setCVResponseCount(res.count)
+                    setCVResponsePendingCount(res.data.filter(v => (v?.status?.id === CVResponseStatuses.pending)).length)
                     setCVResponseList(res.data)
                     setError("")
                     setStatus(dataStatuses.success)
@@ -138,6 +143,7 @@ const EmployeePage = () => {
         refreshCVList,
         CVResponseList,
         CVResponseCount,
+        CVResponsePendingCount,
         refreshCVResponseList,
         vacancyResponseList,
         vacancyResponseCount,

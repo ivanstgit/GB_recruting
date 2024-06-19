@@ -63,6 +63,7 @@ const EmployerProfilePage = () => {
             }
         }
         setActions(newActions)
+        // eslint-disable-next-line
     }, [profile]);
 
     return (

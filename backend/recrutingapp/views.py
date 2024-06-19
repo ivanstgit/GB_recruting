@@ -193,11 +193,8 @@ class MessagesMixin:
 
     @action(
         detail=True,
-        methods=["post"],
+        methods=["patch"],
         url_path="messages",
-        permission_classes=[
-            permissions.IsAuthenticated,
-        ],
     )
     def messages(self, request, version=None, pk=None):
         """
@@ -206,21 +203,18 @@ class MessagesMixin:
         instance = self.get_object()
         content_type = ContentType.objects.get_for_model(instance)
 
-        if request.method == "POST":
-            serializer_in = DocumentMessageSerializer(data=request.data)
-            if serializer_in.is_valid():
-                message_content = serializer_in.validated_data["content"]
-                message_obj = DocumentMessage.objects.create(
-                    sender=request.user,
-                    content_type=content_type,
-                    object_id=instance.id,
-                    content=message_content,
-                )
-                message_obj.save()
-                serializer_out = DocumentMessageSerializer(message_obj)
-                return Response(
-                    data=serializer_out.data, status=status.HTTP_201_CREATED
-                )
+        serializer_in = DocumentMessageSerializer(data=request.data)
+        if serializer_in.is_valid():
+            message_content = serializer_in.validated_data["content"]
+            message_obj = DocumentMessage.objects.create(
+                sender=request.user,
+                content_type=content_type,
+                object_id=instance.id,
+                content=message_content,
+            )
+            message_obj.save()
+            serializer_out = DocumentMessageSerializer(message_obj)
+            return Response(data=serializer_out.data, status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -334,7 +328,7 @@ class EmployerPublicViewSet(
 
     queryset = (
         Employer.objects.filter(status=ConstDocumentStatus.approved)
-        .order_by("updated_at")
+        .order_by("-updated_at")
         .prefetch_related("city")
     )
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
@@ -378,7 +372,7 @@ class EmployerProtectedViewSet(
 
         return (
             self.annotate_qs_is_favorite_field(qs)
-            .order_by("updated_at")
+            .order_by("-updated_at")
             .prefetch_related("city")
         )
 
@@ -430,7 +424,7 @@ class CVViewSet(
 
         return (
             self.annotate_qs_is_favorite_field(qs)
-            .order_by("updated_at")
+            .order_by("-updated_at")
             .prefetch_related("employee", "experience", "education")
         )
 
@@ -489,7 +483,7 @@ class VacancyViewSet(
         return (
             self.annotate_qs_is_favorite_field(qs)
             .prefetch_related("employer", "city")
-            .order_by("updated_at")
+            .order_by("-updated_at")
         )
 
     def get_serializer_class(self):
@@ -538,7 +532,7 @@ class CVResponseViewSet(
         else:
             qs = CVResponse.objects.none()
 
-        return qs.prefetch_related("cv", "vacancy").order_by("updated_at")
+        return qs.prefetch_related("cv", "vacancy").order_by("-updated_at")
 
     def get_serializer_class(self):
         if self.request.method in REQUEST_METHODS_CHANGE:
@@ -580,7 +574,7 @@ class VacancyResponseViewSet(
         else:
             qs = VacancyResponse.objects.none()
 
-        return qs.prefetch_related("cv", "vacancy").order_by("updated_at")
+        return qs.prefetch_related("cv", "vacancy").order_by("-updated_at")
 
     def get_serializer_class(self):
         if self.request.method in REQUEST_METHODS_CHANGE:

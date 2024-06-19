@@ -42,6 +42,18 @@ export const SuccessLabel = ({ text }) => {
     }
 };
 
+export const SuccessIcon = ({ isSuccess = true }) => {
+    if (isSuccess) {
+        return (
+            <span>
+                <i className="bi bi-check-circle-fill text-success" />
+            </span>
+        );
+    } else {
+        return <span />
+    }
+};
+
 const PaginatorItem = ({ key, item, onClick }) => {
     const isActiveStyle = item.isActive ? " active" : ""
 

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { DATA_RESOURCES, PrivateDataContext, useData } from '../../hooks/DataProvider.js'
 
 import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
-import { VacancyResponseDetail, VacancyResponseStatusIcon, VacancyResponseStatuses } from '../../components/shared/VacancyResponse.js';
+import { VacancyResponseChat, VacancyResponseDetail, VacancyResponseStatusIcon, VacancyResponseStatuses } from '../../components/shared/VacancyResponse.js';
 import { ActionGroup, commonActions } from '../../components/common/Actions.js';
 
 
@@ -46,22 +46,34 @@ const EmployerVacancyResponseDetailPage = ({ backTo, CVTo, vacancyTo }) => {
                 })
         }
     }
-    let CVActions = {}
-    CVActions[commonActions.detail] = () => navigate(CVTo + item?.cv?.id)
-    let vacancyActions = {}
-    vacancyActions[commonActions.detail] = () => navigate(vacancyTo + item?.vacancy?.id)
+    let CVActions = {};
+    CVActions[commonActions.detail] = () => navigate(CVTo + item?.cv?.id);
+    let vacancyActions = {};
+    vacancyActions[commonActions.detail] = () => navigate(vacancyTo + item?.vacancy?.id);
+
+    const refreshItem = () => {
+        dataProvider.getOne(DATA_RESOURCES.vacancyResponses, id)
+            .then(res => {
+                console.log(res)
+                if (res.error) {
+                    setError(res.error)
+                } else {
+                    setItem(res.data)
+                }
+            })
+    }
+
+    const addMessage = async (msgText) => {
+        const res = await dataProvider.addMessage(DATA_RESOURCES.vacancyResponses, id, msgText)
+        if (!res.error) {
+            refreshItem()
+        }
+        return res
+    }
 
     useEffect(() => {
         if (!item) {
-            dataProvider.getOne(DATA_RESOURCES.vacancyResponses, id)
-                .then(res => {
-                    console.log(res)
-                    if (res.error) {
-                        setError(res.error)
-                    } else {
-                        setItem(res.data)
-                    }
-                })
+            refreshItem();
         }
     });
 
@@ -80,6 +92,9 @@ const EmployerVacancyResponseDetailPage = ({ backTo, CVTo, vacancyTo }) => {
                 </div>
                 <div className="row">
                     <VacancyResponseDetail item={item} CVActions={CVActions} vacancyActions={vacancyActions} />
+                </div>
+                <div className="row">
+                    <VacancyResponseChat item={item} onMessageSubmit={addMessage} />
                 </div>
             </>
         )

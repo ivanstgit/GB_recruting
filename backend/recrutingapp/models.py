@@ -442,7 +442,9 @@ class Vacancy(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
         verbose_name_plural = _("vacancies")
 
 
-class CVResponse(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+class CVResponse(
+    OwnedMixin, LoggingMixin, DocStatusMixin, DocMessagesMixin, models.Model
+):
     cv = models.ForeignKey(
         CV,
         on_delete=models.CASCADE,

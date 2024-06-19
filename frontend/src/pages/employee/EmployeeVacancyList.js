@@ -10,7 +10,7 @@ import { ErrorLabel } from "../../components/common/UICommon.js";
 
 
 const EmployeeVacancyListPage = ({ respondTo }) => {
-    const { t } = useTranslation("SharedVacancy");
+    const { t } = useTranslation("Employee");
     const navigate = useNavigate();
     const dataProvider = useData();
 
@@ -76,8 +76,8 @@ const EmployeeVacancyListPage = ({ respondTo }) => {
     return (
 
         <div className="">
-            <div className="row g-3 mt-1">
-                <div className="text-center mx-auto mb-1 wow fadeInUp" data-wow-delay="0.1s">
+            <div className="row g-1 mt-1">
+                <div className="mb-1 wow fadeInUp" data-wow-delay="0.1s">
                     <h2>{t("Vacancies.header")}</h2>
                 </div>
                 <ErrorLabel errorText={error} />

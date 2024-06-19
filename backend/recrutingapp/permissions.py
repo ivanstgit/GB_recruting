@@ -211,8 +211,8 @@ class VacancyResponsePermission(permissions.BasePermission):
         if role == UserRoles.employee.value and obj.owner == request.user:
             return True
 
-        # employees can view only not draft response on their Vacancies and change status while pending
-        elif role == UserRoles.employee.value:
+        # employers can view only not draft response on their Vacancies and change status while pending
+        elif role == UserRoles.employer.value:
             if (
                 obj
                 and obj.vacancy.owner == request.user
