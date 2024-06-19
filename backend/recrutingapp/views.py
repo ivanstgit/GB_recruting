@@ -3,14 +3,17 @@ from rest_framework import pagination
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework import status
+from rest_framework import relations
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from django.db.models import Exists, OuterRef, Q
 from django.contrib.contenttypes.models import ContentType
 from recrutingapp.models import (
+    CVResponse,
     City,
     ConstDocumentStatus,
+    DocumentMessage,
     DocumentStatus,
     Employer,
     Favorite,
@@ -20,15 +23,21 @@ from recrutingapp.models import (
     Employee,
     CV,
     Vacancy,
+    VacancyResponse,
 )
 from recrutingapp.permissions import (
     CVPermission,
+    CVResponsePermission,
     EmployerPermission,
     IsOwner,
     VacancyPermission,
+    VacancyResponsePermission,
 )
 from recrutingapp.serializers import (
+    CVResponseSerializerExt,
+    CVResponseSerializerInt,
     CitySerializer,
+    DocumentMessageSerializer,
     DocumentStatusMixinSerializer,
     EmployeeSerializerExt,
     EmployeeSerializerInt,
@@ -41,6 +50,8 @@ from recrutingapp.serializers import (
     NewsPublicDetailSerializer,
     NewsTagStaffSerializer,
     NewsStaffSerializer,
+    VacancyResponseSerializerExt,
+    VacancyResponseSerializerInt,
     VacancySerializerExt,
     VacancySerializerInt,
 )
@@ -174,6 +185,39 @@ class FavoriteMixin:
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class MessagesMixin:
+    """
+    Mixin for objects with chat/feedback.
+    Provide methods for message handling
+    """
+
+    @action(
+        detail=True,
+        methods=["patch"],
+        url_path="messages",
+    )
+    def messages(self, request, version=None, pk=None):
+        """
+        Add message
+        """
+        instance = self.get_object()
+        content_type = ContentType.objects.get_for_model(instance)
+
+        serializer_in = DocumentMessageSerializer(data=request.data)
+        if serializer_in.is_valid():
+            message_content = serializer_in.validated_data["content"]
+            message_obj = DocumentMessage.objects.create(
+                sender=request.user,
+                content_type=content_type,
+                object_id=instance.id,
+                content=message_content,
+            )
+            message_obj.save()
+            serializer_out = DocumentMessageSerializer(message_obj)
+            return Response(data=serializer_out.data, status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 class NewsPagination(pagination.LimitOffsetPagination):
     default_limit = 10
 
@@ -284,7 +328,7 @@ class EmployerPublicViewSet(
 
     queryset = (
         Employer.objects.filter(status=ConstDocumentStatus.approved)
-        .order_by("updated_at")
+        .order_by("-updated_at")
         .prefetch_related("city")
     )
     permission_classes = [permissions.DjangoModelPermissionsOrAnonReadOnly]
@@ -328,7 +372,7 @@ class EmployerProtectedViewSet(
 
         return (
             self.annotate_qs_is_favorite_field(qs)
-            .order_by("updated_at")
+            .order_by("-updated_at")
             .prefetch_related("city")
         )
 
@@ -380,7 +424,7 @@ class CVViewSet(
 
         return (
             self.annotate_qs_is_favorite_field(qs)
-            .order_by("updated_at")
+            .order_by("-updated_at")
             .prefetch_related("employee", "experience", "education")
         )
 
@@ -407,7 +451,7 @@ class VacancyViewSet(
     FavoriteMixin,
     viewsets.ModelViewSet,
 ):
-    """View for Vavancies"""
+    """View for Vacancies"""
 
     permission_classes = [
         permissions.IsAuthenticated,
@@ -439,7 +483,7 @@ class VacancyViewSet(
         return (
             self.annotate_qs_is_favorite_field(qs)
             .prefetch_related("employer", "city")
-            .order_by("updated_at")
+            .order_by("-updated_at")
         )
 
     def get_serializer_class(self):
@@ -452,3 +496,87 @@ class VacancyViewSet(
         serializer.save(
             owner=request.user, updated_by=request.user, employer=request.user.employer
         )
+
+
+class CVResponseViewSet(
+    OwnedModelMixin,
+    LoggedModelMixin,
+    DocStatusModelMixin,
+    MessagesMixin,
+    viewsets.ModelViewSet,
+):
+    """View for CV response"""
+
+    permission_classes = [
+        permissions.IsAuthenticated,
+        permissions.DjangoModelPermissions,
+        CVResponsePermission,
+    ]
+    serializer_class = CVResponseSerializerExt
+    pagination_class = None
+
+    def get_queryset(self):
+        role = self.request.user.role
+
+        if self.request.user.is_superuser:
+            qs = CVResponse.objects.all()
+
+        # employer -> own vacancy
+        elif role == UserRoles.employer.value:
+            qs = CVResponse.objects.filter(owner=self.request.user)
+
+        # employee -> own CV
+        elif role == UserRoles.employee.value:
+            qs = CVResponse.objects.filter(cv__owner=self.request.user)
+
+        else:
+            qs = CVResponse.objects.none()
+
+        return qs.prefetch_related("cv", "vacancy").order_by("-updated_at")
+
+    def get_serializer_class(self):
+        if self.request.method in REQUEST_METHODS_CHANGE:
+            return CVResponseSerializerInt
+        return CVResponseSerializerExt
+
+
+class VacancyResponseViewSet(
+    OwnedModelMixin,
+    LoggedModelMixin,
+    DocStatusModelMixin,
+    MessagesMixin,
+    viewsets.ModelViewSet,
+):
+    """View for Vacancy response"""
+
+    permission_classes = [
+        permissions.IsAuthenticated,
+        permissions.DjangoModelPermissions,
+        VacancyResponsePermission,
+    ]
+    serializer_class = VacancyResponseSerializerExt
+    pagination_class = None
+
+    def get_queryset(self):
+        role = self.request.user.role
+
+        if self.request.user.is_superuser:
+            qs = VacancyResponse.objects.all()
+
+        # employer -> own vacancy
+        elif role == UserRoles.employer.value:
+            qs = VacancyResponse.objects.filter(vacancy__owner=self.request.user)
+
+        # employee -> own CV
+        elif role == UserRoles.employee.value:
+            qs = VacancyResponse.objects.filter(owner=self.request.user)
+
+        else:
+            qs = VacancyResponse.objects.none()
+
+        return qs.prefetch_related("cv", "vacancy").order_by("-updated_at")
+
+    def get_serializer_class(self):
+        if self.request.method in REQUEST_METHODS_CHANGE:
+            return VacancyResponseSerializerInt
+        return VacancyResponseSerializerExt

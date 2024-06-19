@@ -8,7 +8,7 @@ import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
 import { CVDetail } from '../../components/shared/CV.js';
 import { ActionGroup, commonActions } from '../../components/common/Actions.js';
 
-const CVDetailPage = ({ backTo }) => {
+const EmployerCVDetailPage = ({ backTo, respondTo }) => {
 
     const [item, setItem] = useState();
     const [error, setError] = useState();
@@ -60,6 +60,8 @@ const CVDetailPage = ({ backTo }) => {
                     })
             }
         }
+        actions[commonActions.respond] = () => navigate(respondTo, { state: { CVId: item.id } })
+
         return (
             <>
                 <div className="row">
@@ -84,4 +86,4 @@ const CVDetailPage = ({ backTo }) => {
     }
 }
 
-export default CVDetailPage
+export default EmployerCVDetailPage

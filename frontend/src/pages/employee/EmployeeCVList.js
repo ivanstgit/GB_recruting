@@ -9,31 +9,7 @@ import { ActionButtonCreate, ActionGroup, commonActions } from "../../components
 import { CVStatusIcon, CVStatuses } from "../../components/shared/CV.js";
 
 
-const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
-    const navigate = useNavigate();
-    let actions = {}
-    actions[commonActions.detail] = () => navigate(item.id + "/")
-    actions[commonActions.copy] = () => navigate(ObjectActions.add, { state: { fromId: item.id } })
-    if (item.status.id === CVStatuses.draft || item.status.id === CVStatuses.rejected) {
-        actions[commonActions.edit] = () => navigate(item.id + "/" + ObjectActions.edit)
-        actions[commonActions.delete] = () => onDelete(item.id)
-        actions[commonActions.publish] = () => onPublish(item.id)
-    }
-
-    return (
-        <tr>
-            <td>{item.title}</td>
-            <td><div className="card-text"><CVStatusIcon status={item.status} showText={true} /> {item.status_info}</div></td>
-            <td><p className="card-text">{item.position}</p></td>
-            <td>{new Date(item.created_at).toLocaleString()}</td>
-            <td>
-                <ActionGroup actions={actions} size="sm" />
-            </td>
-        </tr>
-    )
-}
-
-const EmployeeCVsPage = () => {
+const EmployeeCVListPage = () => {
     // const { tEmployee } = useTranslation("Employee");
     const { t } = useTranslation("Employee");
 
@@ -119,4 +95,28 @@ const EmployeeCVsPage = () => {
     )
 }
 
-export default EmployeeCVsPage
+export default EmployeeCVListPage
+
+const EmployeeCVListItem = ({ item, onDelete, onPublish }) => {
+    const navigate = useNavigate();
+    let actions = {}
+    actions[commonActions.detail] = () => navigate(item.id + "/")
+    actions[commonActions.copy] = () => navigate(ObjectActions.add, { state: { fromId: item.id } })
+    if (item.status.id === CVStatuses.draft || item.status.id === CVStatuses.rejected) {
+        actions[commonActions.edit] = () => navigate(item.id + "/" + ObjectActions.edit)
+        actions[commonActions.delete] = () => onDelete(item.id)
+        actions[commonActions.publish] = () => onPublish(item.id)
+    }
+
+    return (
+        <tr>
+            <td>{item.title}</td>
+            <td><div className="card-text"><CVStatusIcon status={item.status} showText={true} /> {item.status_info}</div></td>
+            <td><p className="card-text">{item.position}</p></td>
+            <td>{new Date(item.created_at).toLocaleString()}</td>
+            <td>
+                <ActionGroup actions={actions} size="sm" />
+            </td>
+        </tr>
+    )
+}

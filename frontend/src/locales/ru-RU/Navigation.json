@@ -2,8 +2,6 @@
     "Recruting": "Рекрутинг",
     "News": "Новости",
     "Partners": "Компании-партнеры",
-    "CVs": "Резюме",
-    "Vacancies": "Вакансии",
     "Personal": "Личный кабинет",
     "Sign In": "Войти",
     "SignOut": "Выйти",
@@ -17,11 +15,21 @@
     "Employee": {
         "Home": "Домашняя",
         "Profile": "Профиль",
-        "CVs": "Резюме"
+        "CVs": "Резюме",
+        "CVResponses": "Отклики на резюме",
+        "Vacancies": "База вакансий",
+        "VacancyResponses": "Отклики на вакансии"
     },
     "Employer": {
         "Home": "Домашняя",
         "Profile": "Профиль",
-        "Vacancies": "Вакансии"
+        "Vacancies": "Вакансии",
+        "VacancyResponses": "Отклики на вакансии",
+        "CVs": "База резюме",
+        "CVResponses": "Отклики на резюме"
+    },
+    "Footer": {
+        "Note": "Итоговый проект",
+        "DesignedBy": "Дизайн от"
     }
 }

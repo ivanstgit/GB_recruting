@@ -18,6 +18,8 @@ export const commonActions = {
 
     favoriteAdd: "favadd",
     favoriteRemove: "favremove",
+
+    respond: "respond",
 }
 
 // Action toolbars
@@ -122,6 +124,14 @@ export const ActionIconFavoriteRemove = ({ showText = false, onClick }) => {
     )
 }
 
+export const ActionIconRespond = ({ showText = false, onClick }) => {
+    const { t } = useTranslation("CommonActions");
+    return (
+        <ActionIcon label={t("actions.respond")} showText={showText} onClick={onClick}
+            iconStyle="bi-reply-fill" />
+    )
+}
+
 const ActionToolbarItem = ({ action, onClick, showText = false }) => {
     if (action === commonActions.edit) return (<ActionIconEdit onClick={onClick} showText={showText} />)
     if (action === commonActions.delete) return (<ActionIconDelete onClick={onClick} showText={showText} />)
@@ -137,6 +147,8 @@ const ActionToolbarItem = ({ action, onClick, showText = false }) => {
 
     if (action === commonActions.favoriteAdd) return (<ActionIconFavoriteAdd onClick={onClick} showText={showText} />)
     if (action === commonActions.favoriteRemove) return (<ActionIconFavoriteRemove onClick={onClick} showText={showText} />)
+
+    if (action === commonActions.respond) return (<ActionIconRespond onClick={onClick} showText={showText} />)
 }
 export const ActionToolbar = ({ actions, showText = false }) => {
     if (actions)

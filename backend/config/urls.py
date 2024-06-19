@@ -30,6 +30,7 @@ from drf_yasg import openapi
 
 from userapp.views import SignUpViewSet, EmailConfirmViewSet, SignInViewSet
 from recrutingapp.views import (
+    CVResponseViewSet,
     NewsPublicViewSet,
     EmployerPublicViewSet,
     CityViewSet,
@@ -39,6 +40,7 @@ from recrutingapp.views import (
     NewsPostStaffViewSet,
     NewsTagsStaffViewSet,
     CVViewSet,
+    VacancyResponseViewSet,
     VacancyViewSet,
 )
 
@@ -56,19 +58,25 @@ schema_view = get_schema_view(
 
 router = DefaultRouter()
 
-router.register("public/news", NewsPublicViewSet)
-router.register("public/employers", EmployerPublicViewSet)
+
 router.register("accounts/signup", SignUpViewSet, basename="signup")
 router.register("accounts/confirm", EmailConfirmViewSet, basename="confirm")
 router.register("accounts/signin", SignInViewSet, basename="signin")
-router.register("common/cities", CityViewSet, basename="common_cities")
-router.register("common/genders", GenderViewSet, basename="common_genders")
-router.register("staff/news/tags", NewsTagsStaffViewSet, basename="staff_news_tags")
-router.register("staff/news/posts", NewsPostStaffViewSet, basename="staff_news_posts")
-router.register("employees", EmployeeProtectedViewSet, basename="employees")
-router.register("employers", EmployerProtectedViewSet, basename="employers")
-router.register("cvs", CVViewSet, basename="cvs")
-router.register("vacancies", VacancyViewSet, basename="vacancies")
+
+router.register("public/news", NewsPublicViewSet)
+router.register("public/employers", EmployerPublicViewSet)
+router.register("protected/cities", CityViewSet, basename="common_cities")
+router.register("protected/genders", GenderViewSet, basename="common_genders")
+router.register("protected/news/tags", NewsTagsStaffViewSet, basename="news_tags")
+router.register("protected/news/posts", NewsPostStaffViewSet, basename="news_posts")
+router.register("protected/employees", EmployeeProtectedViewSet, basename="employees")
+router.register("protected/employers", EmployerProtectedViewSet, basename="employers")
+router.register("protected/cvs", CVViewSet, basename="cvs")
+router.register("protected/vacancies", VacancyViewSet, basename="vacancies")
+router.register("protected/cv-responses", CVResponseViewSet, basename="cv_responses")
+router.register(
+    "protected/vacancy-responses", VacancyResponseViewSet, basename="vacancy_responses"
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

@@ -8,7 +8,7 @@ import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
 import { VacancyDetail } from '../../components/shared/Vacancy.js';
 import { ActionGroup, commonActions } from '../../components/common/Actions.js';
 
-const VacancyDetailPage = ({ backTo }) => {
+const EmployeeVacancyDetailPage = ({ backTo, respondTo }) => {
 
     const [item, setItem] = useState();
     const [error, setError] = useState();
@@ -60,6 +60,8 @@ const VacancyDetailPage = ({ backTo }) => {
                     })
             }
         }
+        actions[commonActions.respond] = () => navigate(respondTo, { state: { vacancyId: item.id } })
+
         return (
             <>
                 <div className="row">
@@ -84,4 +86,4 @@ const VacancyDetailPage = ({ backTo }) => {
     }
 }
 
-export default VacancyDetailPage
+export default EmployeeVacancyDetailPage

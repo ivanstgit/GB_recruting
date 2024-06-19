@@ -1,10 +1,14 @@
 import datetime
-from rest_framework import serializers
+from rest_framework import serializers, validators
+from django.contrib.contenttypes.models import ContentType
 
 from recrutingapp.models import (
     DOCUMENT_STATUSES,
+    CVResponse,
     City,
+    ConstDocumentStatus,
     DocStatusMixin,
+    DocumentMessage,
     DocumentStatus,
     Employee,
     CV,
@@ -15,6 +19,7 @@ from recrutingapp.models import (
     NewsTag,
     NewsPost,
     Vacancy,
+    VacancyResponse,
 )
 
 
@@ -55,6 +60,22 @@ class DocumentStatusMixinSerializer(serializers.Serializer):
 
     class Meta:
         fields = ["status", "info"]
+
+
+class DocumentMessageSerializer(serializers.Serializer):
+    # sender = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    sender = serializers.SlugRelatedField(read_only=True, slug_field="role")
+    content = serializers.CharField(max_length=1024)
+    created_at = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = DocumentMessage
+        fields = ["sender", "content", "created_at"]
+
+
+class DocumentMessagesField(serializers.RelatedField):
+    def to_representation(self, value):
+        return DocumentMessageSerializer(value).data
 
 
 class NewsPublicListSerializer(serializers.ModelSerializer):
@@ -473,5 +494,161 @@ class VacancySerializerExt(
             "created_at",
             "updated_at",
             "is_favorite",
+        ]
+        depth = 1
+
+
+class CVResponseSerializerInt(
+    OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
+):
+    """
+    Serializer internal pk
+    """
+
+    cv = serializers.PrimaryKeyRelatedField(queryset=CV.objects.all())
+    vacancy = serializers.PrimaryKeyRelatedField(queryset=Vacancy.objects.all())
+
+    def validate_cv(self, value):
+        cv_obj = value
+        if cv_obj and cv_obj.status.id == ConstDocumentStatus.approved:
+            return value
+        raise serializers.ValidationError("Approved CV required")
+
+    def validate_vacancy(self, value):
+        request = self.context["request"]
+        vacancy_obj = value
+        if (
+            vacancy_obj
+            and vacancy_obj.owner == request.user
+            and vacancy_obj.status.id == ConstDocumentStatus.approved
+        ):
+            return value
+        raise serializers.ValidationError("Own approved Vacancy required")
+
+    class Meta:
+        model = CVResponse
+        fields = [
+            "id",
+            "owner",
+            "cv",
+            "vacancy",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1
+        validators = [
+            validators.UniqueTogetherValidator(
+                queryset=CVResponse.objects.all(),
+                fields=[
+                    "cv",
+                    "vacancy",
+                ],
+            )
+        ]
+
+
+class CVResponseSerializerExt(
+    OwnedModelMixin,
+    LoggedModelMixin,
+    serializers.ModelSerializer,
+):
+    """
+    Serializer for reading
+    """
+
+    cv = CVSerializerExt()
+    vacancy = VacancySerializerExt()
+    messages = DocumentMessagesField(read_only=True, many=True)
+
+    class Meta:
+        model = CVResponse
+        fields = [
+            "id",
+            "owner",
+            "cv",
+            "vacancy",
+            "created_at",
+            "updated_at",
+            "status",
+            "status_info",
+            "messages",
+        ]
+        depth = 1
+
+
+class VacancyResponseSerializerInt(
+    OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
+):
+    """
+    Serializer internal pk
+    """
+
+    cv = serializers.PrimaryKeyRelatedField(queryset=CV.objects.all())
+    vacancy = serializers.PrimaryKeyRelatedField(queryset=Vacancy.objects.all())
+
+    def validate_cv(self, value):
+        request = self.context["request"]
+        cv_obj = value  # CV.objects.get(pk=value)
+        if (
+            cv_obj
+            and cv_obj.owner == request.user
+            and cv_obj.status.id == ConstDocumentStatus.approved
+        ):
+            return value
+        raise serializers.ValidationError("Own approved CV required")
+
+    def validate_vacancy(self, value):
+        vacancy_obj = value  # Vacancy.objects.get(pk=value)
+        if vacancy_obj and vacancy_obj.status.id == ConstDocumentStatus.approved:
+            return value
+        raise serializers.ValidationError("Approved vacancy required")
+
+    class Meta:
+        model = VacancyResponse
+        fields = [
+            "id",
+            "owner",
+            "cv",
+            "vacancy",
+            "created_at",
+            "updated_at",
+        ]
+        depth = 1
+        validators = [
+            validators.UniqueTogetherValidator(
+                queryset=VacancyResponse.objects.all(),
+                fields=[
+                    "cv",
+                    "vacancy",
+                ],
+            )
+        ]
+
+
+class VacancyResponseSerializerExt(
+    OwnedModelMixin,
+    LoggedModelMixin,
+    serializers.ModelSerializer,
+):
+    """
+    Serializer for reading
+    """
+
+    cv = CVSerializerExt()
+    vacancy = VacancySerializerExt()
+    messages = DocumentMessagesField(read_only=True, many=True)
+
+    class Meta:
+        model = VacancyResponse
+        fields = [
+            "id",
+            "owner",
+            "cv",
+            "vacancy",
+            "created_at",
+            "updated_at",
+            "status",
+            "status_info",
+            "messages",
         ]
         depth = 1

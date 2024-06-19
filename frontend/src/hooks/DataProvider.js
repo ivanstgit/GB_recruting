@@ -1,7 +1,7 @@
 import { useContext, createContext, useState, useEffect } from "react";
 
 import { useAuth, userRoles } from "./AuthProvider.js";
-import { dataGetList, dataGetOne, dataPostOne, dataDeleteOne, dataPutOne, dataSetStatus, dataSetFavorite } from "../services/APIData.js"
+import { dataGetList, dataGetOne, dataPostOne, dataDeleteOne, dataPutOne, dataSetStatus, dataSetFavorite, dataAddMessage } from "../services/APIData.js"
 
 export const DATA_RESOURCES = {
     publicNews: {
@@ -62,13 +62,27 @@ export const DATA_RESOURCES = {
         roles: [userRoles.employee, userRoles.employer, userRoles.moderator],
         methods: ["get", "post", "put", "delete", "status", "favorites"]
     },
+    cvResponses: {
+        api: "cvResponses",
+        isProtected: true,
+        isGlobal: false,
+        roles: [userRoles.employee, userRoles.employer],
+        methods: ["get", "post", "delete", "status", "messages"]
+    },
     vacancies: {
         api: "vacancies",
         isProtected: true,
         isGlobal: false,
         roles: [userRoles.employee, userRoles.employer, userRoles.moderator],
         methods: ["get", "post", "put", "delete", "status", "favorites"]
-    }
+    },
+    vacancyResponses: {
+        api: "vacancyResponses",
+        isProtected: true,
+        isGlobal: false,
+        roles: [userRoles.employee, userRoles.employer],
+        methods: ["get", "post", "delete", "status", "messages"]
+    },
 }
 
 export const dataStatuses = {
@@ -196,7 +210,7 @@ const DataProvider = (props) => {
         try {
             let response = await dataPostOne(resource.api, token, data)
             if (response.status === 201) {
-                return { data: response.data.results, error: null }
+                return { data: response.data, error: null }
             } else {
                 console.log(response)
                 return { data: null, error: response.error }
@@ -380,6 +394,56 @@ const DataProvider = (props) => {
         }
     }
 
+    const addMessage = async (resource, id, msgText) => {
+        const successResult = { error: null }
+        const errorResult = (text) => { return { error: text } }
+        const parseResponse = (response) => {
+            if (response.status === 201) {
+                return successResult
+            } else {
+                console.log(response)
+                return { error: response.error }
+            }
+        }
+        const parseError = (error) => { return { error: error.message } }
+
+        const _addMessage = async (resource, id, msgText, token) => {
+            try {
+                let response = await dataAddMessage(resource.api, token, id, msgText)
+                return parseResponse(response)
+            } catch (error) {
+                console.log(error)
+                if (error.response && error.response.status === 401) {
+                    throw new TokenExpiredError("Token expired")
+                } else {
+                    return parseError(error)
+                }
+            }
+        }
+
+        if (!auth.isAuthenticated) return errorResult("not authenticated")
+        if (!resource.methods.includes("messages")) return errorResult("method not allowed")
+
+        let isTokenExpired = false;
+        for (let step = 0; step < 2; step++) {
+            let token = auth.tokenFunc();
+            try {
+                if (isTokenExpired) {
+                    await auth.tokenRefreshFunc()
+                }
+                let res = await _addMessage(resource, id, msgText, token)
+                return res
+            } catch (error) {
+                if (error instanceof TokenExpiredError) {
+                    if (isTokenExpired) return parseError(error)
+                    isTokenExpired = true;
+                } else {
+                    return parseError(error)
+                }
+            }
+        }
+    }
+
     const deleteOne = async (resource, id) => {
         if (auth.isAuthenticated) {
             if (resource.methods.includes("delete")) {
@@ -548,11 +612,15 @@ const DataProvider = (props) => {
     }, [auth.user.username]);
 
     return (
-        // two different examples:
-        // 1) for direct transfer (child component refers to context => automatic rerenders)
-        // 2) for async refreshing (child component should use effect on entire dataProvider if needed)
-        // getList 
-        <DataContext.Provider value={{ publicNews, publicEmployers, employeeProfile, employerProfile, refreshDelayed, getList, getOne, postOne, putOne, deleteOne, setStatus, setFavorite }}>
+        // two types/groups:
+        // 1) global data (public + profiles) and refresh method
+        // 2) methods for local use in children
+        <DataContext.Provider value={
+            {
+                publicNews, publicEmployers, employeeProfile, employerProfile, refreshDelayed,
+                getList, getOne, postOne, putOne, deleteOne, setStatus, setFavorite, addMessage
+            }
+        }>
             {props.children}
         </DataContext.Provider>
     );

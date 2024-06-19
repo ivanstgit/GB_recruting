@@ -39,7 +39,7 @@ const EmployeeProfileForm = (props) => {
 
     const profile = dataProvider.employeeProfile?.[0] ?? null
     const isEdit = profile ? true : false
-    const empty_field_error = t("Errors.FieldIsRequired")
+    const emptyFieldError = t("Errors.FieldIsRequired")
 
     useEffect(() => {
         if (status === formStatuses.prefill) {
@@ -89,7 +89,7 @@ const EmployeeProfileForm = (props) => {
             let field = fields[index]
 
             if (input[field] === initialState[field]) {
-                res[field] = empty_field_error
+                res[field] = emptyFieldError
             }
         }
 

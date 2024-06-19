@@ -4,13 +4,14 @@ import { useTranslation } from "react-i18next";
 
 import { DATA_RESOURCES, dataStatuses, useData } from '../../hooks/DataProvider.js'
 
-import { VacancyCard, VacancySearchForm } from "../../components/shared/Vacancy.js";
+import { CVCard, CVSearchForm } from "../../components/shared/CV.js";
 import { commonActions } from "../../components/common/Actions.js";
 import { ErrorLabel } from "../../components/common/UICommon.js";
 
 
-const VacancyListPage = ({ backTo }) => {
-    const { t } = useTranslation("SharedVacancy");
+const EmployerCVListPage = ({ respondTo }) => {
+    const { t } = useTranslation("Employer");
+    const navigate = useNavigate();
     const dataProvider = useData();
 
     const [status, setStatus] = useState(dataStatuses.initial)
@@ -20,7 +21,7 @@ const VacancyListPage = ({ backTo }) => {
 
     const refreshData = () => {
         setStatus(dataStatuses.loading)
-        dataProvider.getList(DATA_RESOURCES.vacancies, searchParams)
+        dataProvider.getList(DATA_RESOURCES.cvs, searchParams)
             .then((res) => {
                 if (res.error) {
                     setItems([])
@@ -40,7 +41,7 @@ const VacancyListPage = ({ backTo }) => {
     }
 
     const handleFavoriteAdd = (id) => {
-        dataProvider.setFavorite(DATA_RESOURCES.vacancies, id, true)
+        dataProvider.setFavorite(DATA_RESOURCES.cvs, id, true)
             .then((res) => {
                 if (res.error) {
                     setError(res.error)
@@ -52,7 +53,7 @@ const VacancyListPage = ({ backTo }) => {
     }
 
     const handleFavoriteRemove = (id) => {
-        dataProvider.setFavorite(DATA_RESOURCES.vacancies, id, false)
+        dataProvider.setFavorite(DATA_RESOURCES.cvs, id, false)
             .then((res) => {
                 if (res.error) {
                     setError(res.error)
@@ -63,32 +64,37 @@ const VacancyListPage = ({ backTo }) => {
             })
     }
 
+    const handleRespond = (id) => {
+        navigate(respondTo, { state: { CVId: id } })
+    }
+
     useEffect(() => {
         if (status === dataStatuses.initial) {
             refreshData()
         }
     });
     return (
-
         <div className="">
-            <div className="row g-3 mt-1">
-                <div className="text-center mx-auto mb-1 wow fadeInUp" data-wow-delay="0.1s">
-                    <h2>{t("Vacancies.header")}</h2>
+            <div className="row g-1 mt-1">
+                <div className="mb-1 wow fadeInUp" data-wow-delay="0.1s">
+                    <h2>{t("CVs.header")}</h2>
                 </div>
                 <ErrorLabel errorText={error} />
             </div>
 
-            <div className="row g-3"><VacancySearchForm onApply={handleSearchParamsChanged} /></div>
-            <div className="row g-3 mt-1"><VacancyList items={items}
-                onFavoriteAdd={handleFavoriteAdd} onFavoriteRemove={handleFavoriteRemove} /></div>
+            <div className="row g-3"><CVSearchForm onApply={handleSearchParamsChanged} /></div>
+            <div className="row g-3 mt-1"><EmployerCVList items={items}
+                onFavoriteAdd={handleFavoriteAdd} onFavoriteRemove={handleFavoriteRemove}
+                onRespond={handleRespond} />
+            </div>
         </div>
     )
-
 }
-export default VacancyListPage
+export default EmployerCVListPage
 
 
-const VacancyListItem = ({ item, onFavoriteAdd, onFavoriteRemove }) => {
+
+const EmployerCVListItem = ({ item, onFavoriteAdd, onFavoriteRemove, onRespond }) => {
     const navigate = useNavigate()
 
     let actions = {}
@@ -99,21 +105,24 @@ const VacancyListItem = ({ item, onFavoriteAdd, onFavoriteRemove }) => {
     } else {
         actions[commonActions.favoriteAdd] = () => onFavoriteAdd(item.id)
     }
+    actions[commonActions.respond] = () => onRespond(item.id)
+
 
     return (
-        <VacancyCard item={item} actions={actions} />
+        <CVCard item={item} actions={actions} />
     )
 }
 
-const VacancyList = ({ items, onFavoriteAdd, onFavoriteRemove }) => {
+const EmployerCVList = ({ items, onFavoriteAdd, onFavoriteRemove, onRespond }) => {
 
-    // const { t } = useTranslation("SharedVacancy");
+
+    // const { t } = useTranslation("SharedCV");
 
     return (
         <div>
             <div className="row g-3">
-                {items.map((item, index) => <VacancyListItem key={'VacancyLI' + index} item={item}
-                    onFavoriteAdd={onFavoriteAdd} onFavoriteRemove={onFavoriteRemove} />)}
+                {items.map((item, index) => <EmployerCVListItem key={'CVLI' + index} item={item}
+                    onFavoriteAdd={onFavoriteAdd} onFavoriteRemove={onFavoriteRemove} onRespond={onRespond} />)}
             </div>
         </div>
     )

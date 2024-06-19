@@ -18,9 +18,9 @@ export const VacancyStatusIcon = ({ status, showText = false }) => {
     const statusDesc = t("statuses." + status.id) ?? status.name ?? ""
     let iconStyle = ""
     if (status.id === VacancyStatuses.draft) iconStyle = "bi-eraser"
-    if (status.id === VacancyStatuses.pending) iconStyle = "bi-patch-question"
-    if (status.id === VacancyStatuses.approved) iconStyle = "bi-patch-check"
-    if (status.id === VacancyStatuses.rejected) iconStyle = "bi-patch-exclamation"
+    if (status.id === VacancyStatuses.pending) iconStyle = "bi-patch-question text-warning"
+    if (status.id === VacancyStatuses.approved) iconStyle = "bi-patch-check text-success"
+    if (status.id === VacancyStatuses.rejected) iconStyle = "bi-patch-exclamation text-danger"
     if (showText)
         return (
             <span>
@@ -43,19 +43,19 @@ export const VacancyDetail = ({ item, actions = {} }) => {
     return (
         <div className="">
             <SubHeaderText text={t("employer.header")} />
-            <EmployerPublicCard item={item.employer} />
+            <EmployerPublicCard item={item?.employer} />
             <SubHeaderText text={t("position.header")} />
             <div className="card">
                 <div className="p-3 card-body">
 
-                    <h5 className="card-title">{item.position}</h5>
-                    <h6 className="card-subtitle text-muted"><i className="bi bi-cash-stack me-3"></i>{t("position.salary")}: {item.salary}</h6>
+                    <h5 className="card-title">{item?.position}</h5>
+                    <h6 className="card-subtitle text-muted"><i className="bi bi-cash-stack me-3"></i>{t("position.salary")}: {item?.salary}</h6>
                     <div className="row">
                         <div className="col-auto">
                             <p className="card-text mt-1"><i className="bi bi-card-text me-1" /></p>
                         </div>
                         <div className="col p-0">
-                            <p className="card-text mt-1 text-ws-pre">{item.description}</p>
+                            <p className="card-text mt-1 text-ws-pre">{item?.description}</p>
                         </div>
                     </div>
 
@@ -69,7 +69,7 @@ export const VacancyCard = ({ item, actions }) => {
 
     const { t } = useTranslation("SharedVacancy");
 
-    const date = new Date(item.updated_at)
+    const date = new Date(item?.updated_at)
 
     return (
         <div className="card">
@@ -78,14 +78,14 @@ export const VacancyCard = ({ item, actions }) => {
                 <div className="row g-3">
                     <div className="col-6 col-lg-4">
                         <h5 className="card-title">
-                            {item.position}
+                            {item?.employer?.name}
                         </h5>
-                        <p className="card-subtitle text-muted"><i className="bi bi-geo-alt-fill me-3"></i>{item.city.name}</p>
+                        <p className="card-subtitle text-muted"><i className="bi bi-geo-alt-fill me-3"></i>{item?.city?.name}</p>
                     </div>
                     <div className="col-sm-6 col-lg-8">
 
-                        <h5 className="card-title">{item.employer.name}</h5>
-                        <h6 className="card-subtitle text-muted"><i className="bi bi-cash-stack me-3"></i>{t("position.salary")}: {item.salary}</h6>
+                        <h5 className="card-title">{item?.position}</h5>
+                        <h6 className="card-subtitle text-muted"><i className="bi bi-cash-stack me-3"></i>{t("position.salary")}: {item?.salary}</h6>
                         <p className="card-text">{t("internal.updated")}: {date.toLocaleDateString()}</p>
                     </div>
                 </div>

@@ -41,7 +41,7 @@ const EmployerVacancyForm = ({ backTo }) => {
     const isEdit = id ? true : false
     const isCopy = fromId ? true : false
 
-    const empty_field_error = t("form.fieldIsRequired")
+    const emptyFieldError = t("form.fieldIsRequired")
 
     useEffect(() => {
         if (status === formStatuses.prefill) {
@@ -98,7 +98,7 @@ const EmployerVacancyForm = ({ backTo }) => {
             let field = fields[index]
 
             if ((input[field] === initialState[field]) && reqiredFields.includes(field)) {
-                res[field] = empty_field_error
+                res[field] = emptyFieldError
             }
         }
         return res

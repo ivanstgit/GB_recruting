@@ -12,7 +12,6 @@ import './css/style.css'
 import './css/all.min.css'
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-// import TranslationProvider from './hooks/TranslationProvider.js';
 import './i18n';
 
 import AuthProvider, { userRoles } from "./hooks/AuthProvider";
@@ -35,76 +34,53 @@ import PartnersPage from './pages/partners/Partners.js';
 import EmployeePage from './pages/employee/Employee.js';
 import ModeratorPage from './pages/moderator/Moderator.js';
 import EmployerPage from './pages/employer/Employer.js';
+import { useTranslation } from 'react-i18next';
 
-import CVPage from './pages/cv/CV.js';
-import VacanciesPage from './pages/vacancies/Vacancies.js';
+const App = (props) => {
+  const { t } = useTranslation("Navigation");
+  document.title = t("Recruting")
 
+  return (
+    <Router>
+      <div className="App">
+        <AuthProvider> {/* Authentification provider */}
+          <DataProvider> {/* Data provider */}
 
+            <NavGlobal />
+            <div className="container-fluid p-0 mb-0 mh-100">
+              <Suspense>
+                <Routes>
+                  <Route index element={<HomePage />} />
+                  <Route path={AppPaths.news + "*"} element={<NewsPage />} />
+                  <Route path={AppPaths.partners + "*"} element={<PartnersPage />} />
 
-class App extends React.Component {
+                  <Route exact path={AppPaths.signin} element={<AccountSignInForm />} />
+                  <Route exact path={AppPaths.signup} element={<AccountSignUpForm />} />
+                  <Route exact path={AppPaths.confirm} element={<AccountConfirmationForm />} />
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      NotFound404: 'Страница не найдена'
-    }
-  }
+                  <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
+                    <Route path={AppPaths.employee + "*"} element={<EmployeePage />} />
+                  </Route>
 
-  componentDidMount() {
+                  <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employer} />}>
+                    <Route exact path={AppPaths.employer + "*"} element={<EmployerPage />} />
+                  </Route>
 
-  }
+                  <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.moderator} />}>
+                    <Route path={AppPaths.moderator + "*"} element={<ModeratorPage />} />
+                  </Route>
 
-  render() {
-    return (
-      <Router>
-        <div className="App">
-          <AuthProvider> {/* Authentification provider */}
-            <DataProvider> {/* Data provider */}
+                  <Route element={<NotFound404 />} />
+                </Routes>
+              </Suspense>
+            </div>
+            <NavigationFooter />
 
-              <NavGlobal />
-              <div className="container-fluid p-0 mb-0 mh-100">
-                <Suspense>
-                  <Routes>
-                    <Route index element={<HomePage />} />
-                    <Route path={AppPaths.news + "*"} element={<NewsPage />} />
-                    <Route path={AppPaths.partners + "*"} element={<PartnersPage />} />
-
-                    <Route exact path={AppPaths.signin} element={<AccountSignInForm />} />
-                    <Route exact path={AppPaths.signup} element={<AccountSignUpForm />} />
-                    <Route exact path={AppPaths.confirm} element={<AccountConfirmationForm />} />
-
-                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employer} />}>
-                      <Route path={AppPaths.cv + "*"} element={<CVPage />} />
-                    </Route>
-                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
-                      <Route path={AppPaths.vacancies + "*"} element={<VacanciesPage />} />
-                    </Route>
-
-                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employee} />}>
-                      <Route path={AppPaths.employee + "*"} element={<EmployeePage />} />
-                    </Route>
-
-                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.employer} />}>
-                      <Route exact path={AppPaths.employer + "*"} element={<EmployerPage />} />
-                    </Route>
-
-                    <Route element={<AuthRequired redirectPath={AppPaths.signin} role={userRoles.moderator} />}>
-                      <Route path={AppPaths.moderator + "*"} element={<ModeratorPage />} />
-                    </Route>
-
-                    <Route element={<NotFound404 />} />
-                  </Routes>
-                </Suspense>
-              </div>
-              <NavigationFooter note="Footer Note" />
-
-            </DataProvider>
-          </AuthProvider>
-        </div>
-      </Router>
-    )
-  }
-
+          </DataProvider>
+        </AuthProvider>
+      </div>
+    </Router>
+  )
 }
 
 export default App;
