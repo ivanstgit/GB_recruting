@@ -1,24 +1,22 @@
 import random
 
 from django.core.validators import validate_email
-from django.contrib.auth.models import Group
 from django.contrib.auth.password_validation import validate_password
 
-from rest_framework.serializers import (
-    Serializer,
-    ModelSerializer,
-    EmailField,
-    CharField,
-    ValidationError,
-)
-from rest_framework.validators import UniqueValidator
+from rest_framework import serializers, validators
 
-from userapp.models import UserRoles, ROLE_GROUPS, CustomUser
-from userapp.utils import send_confirmation_mail
+from userapp.models import UserRoles, CustomUser
+from userapp.utils import UserGroupUtils, send_confirmation_mail
 
 
-class SignUpSerializer(ModelSerializer):
-    email = EmailField(validators=[UniqueValidator(queryset=CustomUser.objects.all())])
+class SignUpSerializer(serializers.ModelSerializer):
+    """
+    Creating user without group permissions and sending validation code
+    """
+
+    email = serializers.EmailField(
+        validators=[validators.UniqueValidator(queryset=CustomUser.objects.all())]
+    )
 
     class Meta:
         model = CustomUser
@@ -36,7 +34,7 @@ class SignUpSerializer(ModelSerializer):
     def validate_role(self, value):
         if value in set([UserRoles.employee.value, UserRoles.employer.value]):
             return value
-        raise ValidationError
+        raise serializers.ValidationError
 
     def create(self, validated_data):
         user = CustomUser(**validated_data)
@@ -52,12 +50,13 @@ class SignUpSerializer(ModelSerializer):
         return user
 
 
-class EmailConfirmSerializer(Serializer):
-    username = CharField()
-    token = CharField(write_only=True)
+class EmailConfirmSerializer(serializers.Serializer):
+    """
+    Validating user and assigning group permissions
+    """
 
-    def validate(self, attrs):
-        return super().validate(attrs)
+    username = serializers.CharField()
+    token = serializers.CharField(write_only=True)
 
     def create(self, validated_data: dict):
         user_name = validated_data.get("username")
@@ -65,27 +64,22 @@ class EmailConfirmSerializer(Serializer):
             user = CustomUser.objects.get(username=user_name)
         validation_code = validated_data.get("token")
 
-        # print(validated_data)
-        if (
-            user
-            and user.is_validated == False
-            and user.validation_code == validation_code
-        ):
+        if user and (not user.is_validated) and user.validation_code == validation_code:
             user.validation_code = ""
             user.is_validated = True
 
             if user.role:
-                for group_name in ROLE_GROUPS.get(user.role):
-                    group = Group.objects.get(name=group_name)
+                groups = UserGroupUtils.get_groups_for_role(user.role)
+                for group in groups:
                     user.groups.add(group)
             user.save()
 
             return user
         else:
-            raise ValidationError
+            raise serializers.ValidationError
 
 
-class UserSerializer(ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = (

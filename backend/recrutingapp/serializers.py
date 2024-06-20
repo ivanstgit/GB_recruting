@@ -1,15 +1,17 @@
+"""
+All serializers for recruting App
+"""
+
 import datetime
 from rest_framework import serializers, validators
-from django.contrib.contenttypes.models import ContentType
+from drf_spectacular.utils import extend_schema_field
 
 from recrutingapp.models import (
     DOCUMENT_STATUSES,
     CVResponse,
     City,
     ConstDocumentStatus,
-    DocStatusMixin,
     DocumentMessage,
-    DocumentStatus,
     Employee,
     CV,
     CVEducation,
@@ -23,12 +25,17 @@ from recrutingapp.models import (
 )
 
 
+# Mixins
 class OwnedModelMixin(serializers.ModelSerializer):
+    """Mixin for owned objects"""
+
     is_owned = True
     owner = serializers.SlugRelatedField(read_only=True, slug_field="username")
 
 
 class LoggedModelMixin(serializers.ModelSerializer):
+    """Mixin for objects with changes logging fields"""
+
     is_logged = True
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
@@ -36,19 +43,9 @@ class LoggedModelMixin(serializers.ModelSerializer):
     updated_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
 
 
-class GenderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Gender
-        fields = ["id", "name"]
-
-
-class CitySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = City
-        fields = ["id", "name", "region", "fullname"]
-
-
 class DocumentStatusMixinSerializer(serializers.Serializer):
+    """Mixin for objects with status ('status' action handling)"""
+
     status = serializers.CharField(max_length=1)
     info = serializers.CharField(max_length=150, allow_blank=True)
 
@@ -63,7 +60,8 @@ class DocumentStatusMixinSerializer(serializers.Serializer):
 
 
 class DocumentMessageSerializer(serializers.Serializer):
-    # sender = serializers.SlugRelatedField(read_only=True, slug_field="username")
+    """Serializer for document chat messages"""
+
     sender = serializers.SlugRelatedField(read_only=True, slug_field="role")
     content = serializers.CharField(max_length=1024)
     created_at = serializers.DateTimeField(read_only=True)
@@ -73,11 +71,34 @@ class DocumentMessageSerializer(serializers.Serializer):
         fields = ["sender", "content", "created_at"]
 
 
+@extend_schema_field(DocumentMessageSerializer())
 class DocumentMessagesField(serializers.RelatedField):
+    """
+    Helper for nested serialization
+    """
+
     def to_representation(self, value):
         return DocumentMessageSerializer(value).data
 
 
+# Common objects
+class GenderSerializer(serializers.ModelSerializer):
+    """Gender model serializer (no logic)"""
+
+    class Meta:
+        model = Gender
+        fields = ["id", "name"]
+
+
+class CitySerializer(serializers.ModelSerializer):
+    """City model serializer (no logic)"""
+
+    class Meta:
+        model = City
+        fields = ["id", "name", "region", "fullname"]
+
+
+# News
 class NewsPublicListSerializer(serializers.ModelSerializer):
     """
     Serializer for public list access
@@ -116,7 +137,7 @@ class NewsPublicDetailSerializer(serializers.ModelSerializer):
 
 class NewsTagStaffSerializer(serializers.ModelSerializer):
     """
-    Serializer for administration
+    Serializer for managimg news (staff)
     """
 
     class Meta:
@@ -126,13 +147,9 @@ class NewsTagStaffSerializer(serializers.ModelSerializer):
 
 class NewsStaffSerializer(LoggedModelMixin, serializers.ModelSerializer):
     """
-    Serializer for administration
+    Serializer for managimg news (staff)
     """
 
-    # created_at = serializers.DateTimeField(read_only=True)
-    # updated_at = serializers.DateTimeField(read_only=True)
-    # # Update users by login in view
-    # updated_by = serializers.SlugRelatedField(read_only=True, slug_field="username")
     tags = serializers.SlugRelatedField(
         many=True, slug_field="name", queryset=NewsTag.objects.all(), required=False
     )
@@ -154,6 +171,7 @@ class NewsStaffSerializer(LoggedModelMixin, serializers.ModelSerializer):
         depth = 1
 
 
+# Employee profile
 class EmployeeSerializerExt(OwnedModelMixin, serializers.ModelSerializer):
     """
     Serializer for reading
@@ -194,6 +212,7 @@ class EmployeeSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
     )
 
     def validate_birthday(self, value):
+        """birthday must be in past"""
         if (
             isinstance(value, datetime.date)
             and value < datetime.date.today()
@@ -219,9 +238,10 @@ class EmployeeSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
         depth = 1
 
 
+# Employer
 class EmployerSerializerExt(OwnedModelMixin, serializers.ModelSerializer):
     """
-    Serializer for reading
+    Serializer for employer profile reading
     """
 
     class Meta:
@@ -245,7 +265,7 @@ class EmployerSerializerExt(OwnedModelMixin, serializers.ModelSerializer):
 
 class EmployerSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
     """
-    Serializer internal pk
+    Employer profile serializer for create/update actions
     """
 
     name = serializers.CharField(max_length=100)
@@ -256,6 +276,7 @@ class EmployerSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
     )
 
     def validate_established(self, value):
+        """establishing date must be in past"""
         if (
             isinstance(value, datetime.date)
             and value < datetime.date.today()
@@ -280,9 +301,10 @@ class EmployerSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
         depth = 1
 
 
+# CV
 class CVExperienceSerializerInt(serializers.ModelSerializer):
     """
-    Serializer for employee experience
+    Serializer for employee experience (create/update)
     """
 
     datefrom = serializers.DateField(required=True)
@@ -306,7 +328,7 @@ class CVExperienceSerializerInt(serializers.ModelSerializer):
 
 class CVExperienceSerializerExt(serializers.ModelSerializer):
     """
-    Serializer for employee experience
+    Serializer for employee experience (reading)
     """
 
     created_at = serializers.DateTimeField(read_only=True)
@@ -354,7 +376,7 @@ class CVEducationSerializer(serializers.ModelSerializer):
 
 class CVSerializerInt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer):
     """
-    Serializer internal pk
+    Serializer for CV's create/update actions (internal pk)
     """
 
     experience = CVExperienceSerializerInt(many=True)
@@ -413,7 +435,7 @@ class CVSerializerInt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerial
 
 class CVSerializerExt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer):
     """
-    Serializer for reading
+    Serializer for CV reading
     """
 
     employee = EmployeeSerializerExt()
@@ -442,11 +464,12 @@ class CVSerializerExt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerial
         depth = 1
 
 
+# Vacancy
 class VacancySerializerInt(
     OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
 ):
     """
-    Serializer internal pk
+    Serializer for Vacancies's create/update actions (internal pk)
     """
 
     city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
@@ -472,7 +495,7 @@ class VacancySerializerExt(
     OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
 ):
     """
-    Serializer for reading
+    Serializer for Vacancy reading
     """
 
     employer = EmployerSerializerExt()
@@ -502,19 +525,21 @@ class CVResponseSerializerInt(
     OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
 ):
     """
-    Serializer internal pk
+    Serializer for create/update actions (internal pk) with validation
     """
 
     cv = serializers.PrimaryKeyRelatedField(queryset=CV.objects.all())
     vacancy = serializers.PrimaryKeyRelatedField(queryset=Vacancy.objects.all())
 
     def validate_cv(self, value):
+        """Validate CV and check if it's published (approved)"""
         cv_obj = value
         if cv_obj and cv_obj.status.id == ConstDocumentStatus.approved:
             return value
         raise serializers.ValidationError("Approved CV required")
 
     def validate_vacancy(self, value):
+        """Validate vacancy and check if it's approved and owned by creator"""
         request = self.context["request"]
         vacancy_obj = value
         if (
@@ -547,6 +572,7 @@ class CVResponseSerializerInt(
         ]
 
 
+# CV Response
 class CVResponseSerializerExt(
     OwnedModelMixin,
     LoggedModelMixin,
@@ -576,19 +602,21 @@ class CVResponseSerializerExt(
         depth = 1
 
 
+# Vacancy Response
 class VacancyResponseSerializerInt(
     OwnedModelMixin, LoggedModelMixin, serializers.ModelSerializer
 ):
     """
-    Serializer internal pk
+    Serializer for write operations (internal pk)
     """
 
     cv = serializers.PrimaryKeyRelatedField(queryset=CV.objects.all())
     vacancy = serializers.PrimaryKeyRelatedField(queryset=Vacancy.objects.all())
 
     def validate_cv(self, value):
+        """Validate CV and check if it's approved and owned by creator"""
         request = self.context["request"]
-        cv_obj = value  # CV.objects.get(pk=value)
+        cv_obj = value
         if (
             cv_obj
             and cv_obj.owner == request.user
@@ -598,7 +626,8 @@ class VacancyResponseSerializerInt(
         raise serializers.ValidationError("Own approved CV required")
 
     def validate_vacancy(self, value):
-        vacancy_obj = value  # Vacancy.objects.get(pk=value)
+        """Validate vacancy and check if it's published (approved)"""
+        vacancy_obj = value
         if vacancy_obj and vacancy_obj.status.id == ConstDocumentStatus.approved:
             return value
         raise serializers.ValidationError("Approved vacancy required")

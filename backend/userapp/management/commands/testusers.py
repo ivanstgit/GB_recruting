@@ -1,49 +1,18 @@
-# create or delete must be set
+"""
+testusers are used for sample data
+"""
+
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 
-from userapp.models import UserRoles, GROUP_PERMISSIONS
+from userapp.utils import UserUtils
 
 MODES = ["create", "delete"]
 
 TEST_USERS = [
-    {
-        "username": "testEmployer",
-        "password": "password",
-        "first_name": "test",
-        "last_name": "Employer",
-        "email": "testEmployer@ru.ru",
-        "is_superuser": False,
-        "is_staff": False,
-        "is_validated": True,
-        "role": UserRoles.employer.value,
-        "groups": [GROUP_PERMISSIONS.get(UserRoles.employer.value)],
-    },
-    {
-        "username": "testEmployee",
-        "password": "password",
-        "first_name": "test",
-        "last_name": "Employee",
-        "email": "testEmployee@ru.ru",
-        "is_superuser": False,
-        "is_staff": False,
-        "is_validated": True,
-        "role": UserRoles.employee.value,
-        "groups": [GROUP_PERMISSIONS.get(UserRoles.employee.value)],
-    },
-    {
-        "username": "testModerator",
-        "password": "password",
-        "first_name": "test",
-        "last_name": "Moderator",
-        "email": "testModerator@ru.ru",
-        "is_superuser": False,
-        "is_staff": True,
-        "is_validated": True,
-        "role": UserRoles.moderator.value,
-        "groups": [GROUP_PERMISSIONS.get(UserRoles.moderator.value)],
-    },
+    UserUtils.test_employee,
+    UserUtils.test_employer,
+    UserUtils.test_moderator,
 ]
 
 
@@ -73,44 +42,13 @@ class Command(BaseCommand):
         # create
         if options.get("mode") == MODES[0]:
             for tuser in TEST_USERS:
-                uname = tuser.get("username")
-                try:
-                    user = user_model.objects.get_by_natural_key(uname)
-                    self.stdout.write(
-                        self.style.WARNING(f"User {uname} already exists, skipped")
-                    )
-                except user_model.DoesNotExist:
-                    # user_model.objects.create_superuser #наверно, тут есть специфика, не стал делать
-
-                    password = options.get("pwd")
-                    if not password:
-                        password = tuser.get("password")
-                    user = user_model.objects.create_user(
-                        username=uname,
-                        email=tuser.get("email"),
-                        password=tuser.get("password"),
-                    )
-                    user.first_name = tuser.get("first_name")
-                    user.last_name = tuser.get("last_name")
-                    user.is_superuser = tuser.get("is_superuser")
-                    user.is_staff = tuser.get("is_staff")
-                    user.is_validated = tuser.get("is_validated")
-                    user.role = tuser.get("role")
-                    user.save()
-
-                    self.stdout.write(
-                        self.style.SUCCESS(f"User {uname} created succsessfully")
-                    )
-
-                groups = tuser.get("groups")
-                if groups and user:
-                    for group_name in groups:
-                        group = Group.objects.get(name=group_name)
-                        user.groups.add(group)
-                        user.save()
-                        self.stdout.write(
-                            self.style.SUCCESS(f"Group {group_name} added for {uname}")
-                        )
+                user, is_created = UserUtils.create_test_user(
+                    tuser, raise_if_exists=False
+                )
+                if is_created:
+                    self.style.SUCCESS(f"User {user} added")
+                else:
+                    self.style.WARNING(f"User {user} already exists")
 
         elif options.get("mode") == MODES[1]:
             for tuser in TEST_USERS:

@@ -1,23 +1,14 @@
 """config URL Configuration
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+1. admin 
+2. userapp and recrutingapp
+3. api schema documentation (openapi 3 by drf_specctacular)
+
 """
 
 from django.contrib import admin
 from django.urls import include, path, re_path
 
-from rest_framework import permissions
 from rest_framework.authtoken import views as AuthtokenViews
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import (
@@ -25,8 +16,11 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularRedocView,
+    SpectacularSwaggerView,
+)
 
 from userapp.views import SignUpViewSet, EmailConfirmViewSet, SignInViewSet
 from recrutingapp.views import (
@@ -44,21 +38,7 @@ from recrutingapp.views import (
     VacancyViewSet,
 )
 
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Recruting",
-        default_version="1.0",
-        description="Documentation",
-        contact=openapi.Contact(email="admin@admin.local"),
-        license=openapi.License(name="MIT License"),
-    ),
-    public=True,
-    permission_classes=[permissions.IsAdminUser],
-)
-
 router = DefaultRouter()
-
-
 router.register("accounts/signup", SignUpViewSet, basename="signup")
 router.register("accounts/confirm", EmailConfirmViewSet, basename="confirm")
 router.register("accounts/signin", SignInViewSet, basename="signin")
@@ -79,28 +59,31 @@ router.register(
 )
 
 urlpatterns = [
+    # Administration page
     path("admin/", admin.site.urls),
+    # Auth tokens
     path("api-auth/", include("rest_framework.urls")),
-    re_path(r"^api/v(?P<version>(1.0|2.1))/", include(router.urls)),
-    # re_path(r"^api/v(?P<version>\d\.\d)/", include(router.urls)),
-    # path("api/", include(router.urls)),
     path("api-token-auth/", AuthtokenViews.obtain_auth_token),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+    # Main app router
+    re_path(r"^api/v(?P<version>(1.0|2.1))/", include(router.urls)),
+    # re_path(r"^api/v(?P<version>\d\.\d)/", include(router.urls)),
+    # Documentation
     re_path(
-        r"^swagger/v(?P<version>(1.0))/",
-        schema_view.with_ui("swagger", cache_timeout=0),
-        name="schema-swagger-ui",
+        r"api/schema/v(?P<version>(1.0))/yaml/",
+        SpectacularAPIView.as_view(),
+        name="schema",
     ),
     re_path(
-        r"^swagger/v(?P<version>(1.0))(?P<format>\.json|\.yaml)$",
-        schema_view.without_ui(cache_timeout=0),
-        name="schema-json",
+        r"api/schema/v(?P<version>(1.0))/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
     ),
     re_path(
-        r"^redoc/v(?P<version>(1.0))",
-        schema_view.with_ui("redoc", cache_timeout=0),
-        name="schema-redoc",
+        r"api/schema/v(?P<version>(1.0))/redoc/",
+        SpectacularRedocView.as_view(url_name="schema"),
+        name="redoc",
     ),
 ]

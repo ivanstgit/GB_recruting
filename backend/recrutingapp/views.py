@@ -1,13 +1,18 @@
+"""
+All custom views for recruting App.
+"""
+
 from rest_framework import permissions
 from rest_framework import pagination
 from rest_framework import viewsets
 from rest_framework import mixins
 from rest_framework import status
-from rest_framework import relations
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from django.db.models import Exists, OuterRef, Q
+from drf_spectacular.utils import extend_schema
+
+from django.db.models import Exists, OuterRef
 from django.contrib.contenttypes.models import ContentType
 from recrutingapp.models import (
     CVResponse,
@@ -89,6 +94,14 @@ class DocStatusModelMixin:
     Provide method for status handling
     """
 
+    @extend_schema(
+        description="Method for status management",
+        request=DocumentStatusMixinSerializer,
+        responses={
+            200: None,
+            400: None,
+        },
+    )
     @action(detail=True, methods=["patch"])
     def status(self, request, version=None, pk=None):
         obj = self.get_object()
@@ -126,6 +139,18 @@ class FavoriteMixin:
     Provide methods for favorites handling
     """
 
+    @extend_schema(
+        description="Add object to favorite",
+        methods=["POST"],
+        request=None,
+        responses={201: None},
+    )
+    @extend_schema(
+        description="Remove object from favorite",
+        methods=["DELETE"],
+        request=None,
+        responses={204: None},
+    )
     @action(
         detail=True,
         methods=["post", "delete"],
@@ -153,6 +178,7 @@ class FavoriteMixin:
             if favorite_obj:
                 favorite_obj.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def annotate_qs_is_favorite_field(self, queryset):
         """
@@ -191,6 +217,9 @@ class MessagesMixin:
     Provide methods for message handling
     """
 
+    @extend_schema(
+        request=DocumentMessageSerializer(), responses=DocumentMessageSerializer()
+    )
     @action(
         detail=True,
         methods=["patch"],

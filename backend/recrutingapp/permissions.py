@@ -40,6 +40,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 class CVPermission(permissions.BasePermission):
     """
+    Object-level permission for CV
     Grants permission based on role, status
     """
 
@@ -78,6 +79,7 @@ class CVPermission(permissions.BasePermission):
 
 class EmployerPermission(permissions.BasePermission):
     """
+    Object-level permission for employer profile
     Grants permission based on role, status
     """
 
@@ -121,6 +123,7 @@ class EmployerPermission(permissions.BasePermission):
 
 class VacancyPermission(permissions.BasePermission):
     """
+    Object-level permission for vacancies
     Grants permission based on role, status
     """
 
@@ -159,6 +162,7 @@ class VacancyPermission(permissions.BasePermission):
 
 class CVResponsePermission(permissions.BasePermission):
     """
+    Object-level permission for responses on CV
     Grants permission based on role, status
     """
 
@@ -198,6 +202,7 @@ class CVResponsePermission(permissions.BasePermission):
 
 class VacancyResponsePermission(permissions.BasePermission):
     """
+    Object-level permission for responses on vacancies
     Grants permission based on role, status
     """
 

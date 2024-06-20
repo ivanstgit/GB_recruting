@@ -1,7 +1,10 @@
+"""
+All models for recruting App
+"""
+
 import datetime
 from dateutil.relativedelta import relativedelta
 
-from django.core.validators import URLValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -18,6 +21,10 @@ CONTENT_TYPES = [
 
 
 class ConstDocumentStatus:
+    """
+    Status keys for documents, stored in DB
+    """
+
     draft = "d"
     pending = "p"
     approved = "a"
@@ -33,6 +40,10 @@ DOCUMENT_STATUSES = [
 
 
 class DocumentStatus(models.Model):
+    """
+    Document statuses properties and description
+    """
+
     id = models.CharField(
         max_length=1,
         primary_key=True,
@@ -45,7 +56,7 @@ class DocumentStatus(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     class Meta:
         verbose_name = _("status")
@@ -53,6 +64,10 @@ class DocumentStatus(models.Model):
 
 
 class DocStatusMixin(models.Model):
+    """
+    Mix-in for status fields adding
+    """
+
     status = models.ForeignKey(
         DocumentStatus,
         help_text=_("Status"),
@@ -69,6 +84,10 @@ class DocStatusMixin(models.Model):
 
 
 class DocumentMessage(models.Model):
+    """
+    Generic messages model for documents with chat feature
+    """
+
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey("content_type", "object_id")
@@ -86,6 +105,10 @@ class DocumentMessage(models.Model):
 
 
 class DocMessagesMixin(models.Model):
+    """
+    Mix-in for messages relation adding
+    """
+
     messages = GenericRelation(DocumentMessage)
 
     class Meta:
@@ -93,6 +116,10 @@ class DocMessagesMixin(models.Model):
 
 
 class LoggingMixin(models.Model):
+    """
+    Mix-in for changes logging
+    """
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey(
@@ -107,6 +134,10 @@ class LoggingMixin(models.Model):
 
 
 class OwnedMixin(models.Model):
+    """
+    Mix-in for document with 'owner' property
+    """
+
     owner = models.ForeignKey(
         CustomUser,
         help_text=_("Owner"),
@@ -118,6 +149,10 @@ class OwnedMixin(models.Model):
 
 
 class Region(models.Model):
+    """
+    Geographic region for city
+    """
+
     name = models.CharField(
         max_length=100,
         help_text=_("Region name"),
@@ -128,7 +163,7 @@ class Region(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     class Meta:
         verbose_name = _("region")
@@ -136,6 +171,10 @@ class Region(models.Model):
 
 
 class City(models.Model):
+    """
+    City master data (name and region)
+    """
+
     name = models.CharField(
         max_length=100,
         help_text=_("City name"),
@@ -152,11 +191,11 @@ class City(models.Model):
     )
 
     @property
-    def fullname(self):
+    def fullname(self) -> str:
         return ", ".join([self.name, " ,", str(self.region)])
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     class Meta:
         verbose_name = _("city")
@@ -164,6 +203,10 @@ class City(models.Model):
 
 
 class Skill(models.Model):
+    """
+    Employee skill description
+    """
+
     name = models.CharField(
         max_length=100,
         help_text=_("Skill name"),
@@ -174,7 +217,7 @@ class Skill(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     class Meta:
         verbose_name = _("skill")
@@ -182,6 +225,10 @@ class Skill(models.Model):
 
 
 class Gender(models.Model):
+    """
+    Gender master data
+    """
+
     id = models.CharField(
         max_length=1,
         primary_key=True,
@@ -193,7 +240,7 @@ class Gender(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     class Meta:
         verbose_name = _("gender")
@@ -201,6 +248,10 @@ class Gender(models.Model):
 
 
 class NewsTag(models.Model):
+    """
+    Tag description for news
+    """
+
     name = models.CharField(
         max_length=30,
         help_text=_("News tag name"),
@@ -211,7 +262,7 @@ class NewsTag(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     class Meta:
         verbose_name = _("newstag")
@@ -219,6 +270,9 @@ class NewsTag(models.Model):
 
 
 class NewsPost(LoggingMixin, models.Model):
+    """
+    News model
+    """
 
     title = models.CharField(
         max_length=60,
@@ -240,7 +294,7 @@ class NewsPost(LoggingMixin, models.Model):
     )
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
     class Meta:
         verbose_name = _("newspost")
@@ -248,6 +302,9 @@ class NewsPost(LoggingMixin, models.Model):
 
 
 class Employee(LoggingMixin, models.Model):
+    """
+    Employee profile (extends user model)
+    """
 
     # one-to-one!!!
     owner = models.OneToOneField(
@@ -279,13 +336,14 @@ class Employee(LoggingMixin, models.Model):
     skills = models.ManyToManyField(Skill, help_text=_("Skills"), related_name="skills")
 
     @property
-    def age(self):
+    def age(self) -> int:
+        """Age in years"""
         if self.birthday:
             return relativedelta(datetime.date.today(), self.birthday).years
         return 0
 
     def __str__(self):
-        return "Employee" + str(self.user.get_full_name())
+        return "Employee" + str(self.name)
 
     class Meta:
         verbose_name = _("employee")
@@ -293,6 +351,9 @@ class Employee(LoggingMixin, models.Model):
 
 
 class Employer(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+    """
+    Employer profile (extends user model)
+    """
 
     # one-to-one!!!
     owner = models.OneToOneField(
@@ -320,7 +381,7 @@ class Employer(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
     welcome_letter = models.TextField(max_length=1000, default="")
 
     @property
-    def age(self):
+    def age(self) -> int:
         if self.established:
             return relativedelta(datetime.date.today(), self.established).years
         return 0
@@ -334,6 +395,10 @@ class Employer(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
 
 
 class CV(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+    """
+    Employee CV
+    """
+
     employee = models.ForeignKey(
         Employee,
         on_delete=models.CASCADE,
@@ -360,6 +425,9 @@ class CV(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
 
 
 class CVExperience(models.Model):
+    """
+    Experience items in employee's CV
+    """
 
     cv = models.ForeignKey(CV, on_delete=models.CASCADE, related_name="experience")
 
@@ -389,6 +457,9 @@ class CVExperience(models.Model):
 
 
 class CVEducation(models.Model):
+    """
+    Education items in employee's CV
+    """
 
     cv = models.ForeignKey(CV, on_delete=models.CASCADE, related_name="education")
 
@@ -413,6 +484,10 @@ class CVEducation(models.Model):
 
 
 class Vacancy(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
+    """
+    Employer's vacancy
+    """
+
     employer = models.ForeignKey(
         Employer, on_delete=models.CASCADE, related_name="vacancies"
     )
@@ -445,6 +520,10 @@ class Vacancy(OwnedMixin, LoggingMixin, DocStatusMixin, models.Model):
 class CVResponse(
     OwnedMixin, LoggingMixin, DocStatusMixin, DocMessagesMixin, models.Model
 ):
+    """
+    Employer's rosponse on CV
+    """
+
     cv = models.ForeignKey(
         CV,
         on_delete=models.CASCADE,
@@ -468,6 +547,10 @@ class CVResponse(
 class VacancyResponse(
     OwnedMixin, LoggingMixin, DocStatusMixin, DocMessagesMixin, models.Model
 ):
+    """
+    Employee's rosponse on vacancy
+    """
+
     vacancy = models.ForeignKey(
         Vacancy,
         on_delete=models.CASCADE,
@@ -489,6 +572,10 @@ class VacancyResponse(
 
 
 class Favorite(models.Model):
+    """
+    Generic model for favorite user documents
+    """
+
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
