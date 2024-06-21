@@ -152,7 +152,7 @@ const EmployerProfileForm = ({ backTo }) => {
                             setStatus(formStatuses.error)
                         } else {
                             if (sendToApprove) {
-                                dataProvider.setStatus(DATA_RESOURCES.employer, profile.id, EmployerStatuses.pending)
+                                dataProvider.setStatus(DATA_RESOURCES.employer, res.data.id, EmployerStatuses.pending)
                                     .then((res) => {
                                         if (res.error) {
                                             setError(res.error)

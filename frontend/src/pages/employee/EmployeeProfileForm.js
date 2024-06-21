@@ -19,13 +19,14 @@ const initialState = {
     email: "",
     city: "",
     description: "",
-    skills: []
+    skills: ""
 }
 
 const EmployeeProfileForm = (props) => {
 
     const [genders, setGenders] = useState([]);
     const [cities, setCities] = useState([]);
+    const [profile, setProfile] = useState({});
 
     const [input, setInput] = useState(initialState);
     const [error, setError] = useState("")
@@ -37,8 +38,7 @@ const EmployeeProfileForm = (props) => {
     const auth = useAuth()
     const dataProvider = useData()
 
-    const profile = dataProvider.employeeProfile?.[0] ?? null
-    const isEdit = profile ? true : false
+    const isEdit = profile.id ? true : false
     const emptyFieldError = t("Errors.FieldIsRequired")
 
     useEffect(() => {
@@ -53,32 +53,37 @@ const EmployeeProfileForm = (props) => {
                 .then((res) => {
                     setCities(res?.data ?? [])
                 })
+            dataProvider.getList(DATA_RESOURCES.employee)
+                .then((res) => {
+                    let prof = res?.data[0] ?? {}
+                    setProfile(prof)
 
-            // form prefill from existing profile or user data
-            if (isEdit) {
-                setInput(
-                    {
-                        name: profile.name,
-                        birthday: profile.birthday,
-                        gender: profile.gender.id,
-                        email: profile.email,
-                        city: profile.city.id,
-                        description: profile.description,
-                        skills: profile.skills.join("\n")
-                    })
-                setError("")
+                    // form prefill from existing profile or user data
+                    if (prof.id) {
+                        setInput(
+                            {
+                                name: prof.name,
+                                birthday: prof.birthday,
+                                gender: prof.gender.id,
+                                email: prof.email,
+                                city: prof.city.id,
+                                description: prof.description,
+                                skills: prof.skills.join("\n")
+                            })
+                        setError("")
 
-            } else {
-                setInput((prev) => ({
-                    ...prev,
-                    name: auth.user.lastName + auth.user.firstName ?? prev.name,
-                    email: auth.user.email ?? prev.email,
-                }));
-            }
+                    } else {
+                        setInput((prev) => ({
+                            ...prev,
+                            name: auth.user.lastName + auth.user.firstName ?? prev.name,
+                            email: auth.user.email ?? prev.email,
+                        }));
+                    }
+                })
             setStatus(formStatuses.initial)
         }
         // eslint-disable-next-line
-    }, [status]);
+    }, [status, profile]);
 
     const validateInput = () => {
         const res = {}
@@ -114,8 +119,11 @@ const EmployeeProfileForm = (props) => {
             setValidationErrors(errors)
             setStatus(formStatuses.error)
         } else {
-            let data = input
-            data.skills = data.skills.split("\n")
+            let data = {
+                ...input,
+                skills: input.skills.split("\n"),
+            }
+
             if (isEdit) {
                 dataProvider.putOne(DATA_RESOURCES.employee, profile.id, data)
                     .then(res => {

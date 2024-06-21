@@ -36,9 +36,14 @@ sudo docker run -p 1080:1080 -p 1025:1025 sj26/mailcatcher
 Prepare dev or test
 ================================================
 backend:
+poetry run python manage.py migrate
 poetry run python manage.py usergroups -m create
 poetry run python manage.py testusers -m create
+
 poetry run python manage.py loaddata recrutingapp/fixtures/genders.json recrutingapp/fixtures/regions.json recrutingapp/fixtures/cities.json
+or
+python manage.py loaddata recrutingapp/fixtures/test_data.json
+
 poetry run python manage.py test
 
 ================================================

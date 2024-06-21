@@ -40,7 +40,7 @@ const EmployeeHomePage = () => {
                     <h4>{t("Profile.header")} </h4>
                 </div>
                 <div className="col">
-                    <SuccessIcon isSuccess={profile?.status?.id} />
+                    <SuccessIcon isSuccess={profile?.id ? true : false} />
                 </div>
                 <WarningLabel text={emptyProfileText} />
                 <p className="text-ws-pre">{t("Profile.description")}</p>

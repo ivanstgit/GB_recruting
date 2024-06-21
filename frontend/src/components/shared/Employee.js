@@ -28,6 +28,10 @@ export const EmployeeProfileCard = ({ profile }) => {
         {
             name: t("card.description"),
             value: profile?.description ?? ""
+        },
+        {
+            name: t("card.skills"),
+            value: profile?.skills.join(", ") ?? ""
         }
     ]
 

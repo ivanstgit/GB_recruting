@@ -22,7 +22,7 @@ export const NewsDetail = ({ item }) => {
             <div className="card-body">
                 <h5 className="card-title">{item.title}</h5>
                 <h6 className="card-subtitle">{new Date(item.created_at).toLocaleString()}</h6>
-                <p className="card-text">{item.content}</p>
+                <p className="card-text text-ws-pre">{item.content}</p>
             </div>
         </div>
     )

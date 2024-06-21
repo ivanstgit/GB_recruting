@@ -1,4 +1,6 @@
 from enum import Enum
+
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.mail import send_mail
 from django.contrib.auth.models import Group, Permission
 
@@ -6,13 +8,16 @@ from userapp.models import CustomUser, UserRoles
 
 
 def send_confirmation_mail(user):
-    send_mail(
-        "E-mail confirmation",
-        "Your confirmation code is " + user.validation_code,
-        "noreply@example.com",
-        [user.email],
-        fail_silently=False,
-    )
+    try:
+        send_mail(
+            "E-mail confirmation",
+            "Your confirmation code is " + user.validation_code,
+            "noreply@example.com",
+            [user.email],
+            fail_silently=True,
+        )
+    finally:
+        pass
 
 
 class UserGroups(Enum):
@@ -134,32 +139,29 @@ class UserUtils:
         "is_validated": True,
         "role": UserRoles.employer.value,
     }
-    test_employee = (
-        {
-            "username": "testEmployee",
-            "password": "password",
-            "first_name": "test",
-            "last_name": "Employee",
-            "email": "testEmployee@ru.ru",
-            "is_superuser": False,
-            "is_staff": False,
-            "is_validated": True,
-            "role": UserRoles.employee.value,
-        },
-    )
-    test_moderator = (
-        {
-            "username": "testModerator",
-            "password": "password",
-            "first_name": "test",
-            "last_name": "Moderator",
-            "email": "testModerator@ru.ru",
-            "is_superuser": False,
-            "is_staff": True,
-            "is_validated": True,
-            "role": UserRoles.moderator.value,
-        },
-    )
+    test_employee = {
+        "username": "testEmployee",
+        "password": "password",
+        "first_name": "test",
+        "last_name": "Employee",
+        "email": "testEmployee@ru.ru",
+        "is_superuser": False,
+        "is_staff": False,
+        "is_validated": True,
+        "role": UserRoles.employee.value,
+    }
+
+    test_moderator = {
+        "username": "testModerator",
+        "password": "password",
+        "first_name": "test",
+        "last_name": "Moderator",
+        "email": "testModerator@ru.ru",
+        "is_superuser": False,
+        "is_staff": True,
+        "is_validated": True,
+        "role": UserRoles.moderator.value,
+    }
 
     @staticmethod
     def create_test_user(user_dict: dict, raise_if_exists=True) -> CustomUser:
@@ -171,28 +173,27 @@ class UserUtils:
             user = CustomUser.objects.get_by_natural_key(uname)
             if user:
                 is_exists = True
-        except CustomUser.DoesNotExist:
+                user.set_password(user_dict.get("password"))
+        except ObjectDoesNotExist:
             user = CustomUser.objects.create_user(
                 username=uname,
                 email=user_dict.get("email"),
                 password=user_dict.get("password"),
             )
-            user.first_name = user_dict.get("first_name")
-            user.last_name = user_dict.get("last_name")
-            user.is_superuser = user_dict.get("is_superuser", False)
-            user.is_staff = user_dict.get("is_staff", False)
-            user.is_validated = user_dict.get("is_validated", False)
-            user.role = user_dict.get("role")
-            user.save()
             is_created = True
-
         if is_exists and raise_if_exists:
             raise ValueError("already exists")
 
-        groups = [UserGroupUtils.GROUP_PERMISSIONS.get(user.role)]
-        if user and is_created:
-            groups = UserGroupUtils.get_groups_for_role(user.role)
-            for group in groups:
-                user.groups.add(group)
-                user.save()
+        user.first_name = user_dict.get("first_name")
+        user.last_name = user_dict.get("last_name")
+        user.is_superuser = user_dict.get("is_superuser", False)
+        user.is_staff = user_dict.get("is_staff", False)
+        user.is_validated = user_dict.get("is_validated", False)
+        user.role = user_dict.get("role")
+        user.save()
+
+        groups = UserGroupUtils.get_groups_for_role(user.role)
+        for group in groups:
+            user.groups.add(group)
+        user.save()
         return user, is_created

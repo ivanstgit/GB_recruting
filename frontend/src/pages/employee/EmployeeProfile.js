@@ -1,21 +1,40 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useTranslation } from 'react-i18next';
 
-import { useData } from "../../hooks/DataProvider.js";
+import { ActionGroup, commonActions } from "../../components/common/Actions.js";
+import { ErrorLabel, WarningLabel } from "../../components/common/UICommon.js";
 import EmployeeProfileCard from "../../components/shared/Employee.js";
-import { WarningLabel } from "../../components/common/UICommon.js";
-import { EmployeePaths } from "./Employee.js";
+import { DATA_RESOURCES, useData } from "../../hooks/DataProvider.js";
 import { ObjectActions } from "../../routes/AppPaths.js";
 
 const EmployeeProfilePage = () => {
     const { t } = useTranslation("Employee");
 
-    const dataProvider = useData()
+    const navigate = useNavigate();
+    const dataProvider = useData();
+
+    const [error, setError] = useState();
 
     const profile = dataProvider.employeeProfile?.[0] ?? null
     const emptyProfileText = profile ? "" : t("Profile.emptyWarning")
-    const linkTextProfileAdd = profile ? t("Profile.actions.edit") : t("Profile.actions.create")
+
+    let actions = {}
+    actions[commonActions.edit] = () => navigate(ObjectActions.edit)
+    if (profile) {
+        actions[commonActions.delete] = () => {
+            dataProvider.deleteOne(DATA_RESOURCES.employee, profile.id)
+                .then((res) => {
+                    if (res.error) {
+                        setError(res.error)
+                    } else {
+                        setError("")
+                        dataProvider.refreshDelayed(DATA_RESOURCES.employee)
+                    }
+                })
+        }
+    }
 
     return (
         <div>
@@ -23,14 +42,17 @@ const EmployeeProfilePage = () => {
 
             <div className="row">
                 <WarningLabel text={emptyProfileText} />
-            </div>
+                <ErrorLabel errorText={error} />
 
+            </div>
             <div className="row">
-                <div className="col-6">
-                    <Link to={"../" + EmployeePaths.profile + ObjectActions.edit} className="btn btn-primary">{linkTextProfileAdd}</Link>
+                <div className="col">
+                    <ActionGroup actions={actions} size="" showText={true} />
                 </div>
             </div>
-            <EmployeeProfileCard profile={profile} />
+            <div className="row">
+                <EmployeeProfileCard profile={profile} />
+            </div>
         </div>
 
     )

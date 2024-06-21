@@ -23,7 +23,9 @@ const EmployerProfilePage = () => {
 
     useEffect(() => {
         let newActions = {}
-
+        if (!profile) {
+            newActions[commonActions.edit] = () => navigate(ObjectActions.edit)
+        }
         if (profile?.status?.id === EmployerStatuses.draft || profile?.status?.id === EmployerStatuses.rejected) {
             newActions[commonActions.edit] = () => navigate(ObjectActions.edit)
             newActions[commonActions.delete] = () => {

@@ -20,6 +20,7 @@ from recrutingapp.models import (
     Gender,
     NewsTag,
     NewsPost,
+    Skill,
     Vacancy,
     VacancyResponse,
 )
@@ -88,6 +89,16 @@ class GenderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Gender
         fields = ["id", "name"]
+
+
+class SkillWritableField(serializers.CharField):
+    """Skill serializer. Only for write."""
+
+    def to_internal_value(self, data):
+        skill, is_created = Skill.objects.get_or_create(name=data)
+        if is_created:
+            skill.save()
+        return skill
 
 
 class CitySerializer(serializers.ModelSerializer):
@@ -177,6 +188,8 @@ class EmployeeSerializerExt(OwnedModelMixin, serializers.ModelSerializer):
     Serializer for reading
     """
 
+    skills = serializers.SlugRelatedField(many=True, slug_field="name", read_only=True)
+
     class Meta:
         model = Employee
         fields = [
@@ -210,6 +223,7 @@ class EmployeeSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
     gender = serializers.PrimaryKeyRelatedField(
         queryset=Gender.objects.all(), required=True
     )
+    skills = serializers.ListSerializer(child=SkillWritableField())
 
     def validate_birthday(self, value):
         """birthday must be in past"""
@@ -220,6 +234,25 @@ class EmployeeSerializerInt(OwnedModelMixin, serializers.ModelSerializer):
         ):
             return value
         raise serializers.ValidationError("Incorrect date")
+
+    def create(self, validated_data):
+        skills_data = validated_data.pop("skills")
+        employee = super().create(validated_data)
+
+        for skill in skills_data:
+            employee.skills.add(skill)
+        employee.save()
+        return employee
+
+    def update(self, instance: Employee, validated_data):
+        skills_data = validated_data.pop("skills")
+        employee = super().update(instance, validated_data)
+        employee.skills.clear()
+
+        for skill in skills_data:
+            employee.skills.add(skill)
+        employee.save()
+        return employee
 
     class Meta:
         model = Employee
