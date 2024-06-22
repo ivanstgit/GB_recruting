@@ -92,7 +92,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "todolist",
+        "NAME": "recruting",
         "USER": "postgres",
         "PASSWORD": get_secret("POSTGRES_PASSWORD", ""),
         "HOST": "db",

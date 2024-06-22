@@ -12,6 +12,9 @@ MODES = ["create", "delete"]
 TEST_USERS = [
     UserUtils.test_employee,
     UserUtils.test_employer,
+    UserUtils.test_employer2,
+    UserUtils.test_employer3,
+    UserUtils.test_employer4,
     UserUtils.test_moderator,
 ]
 

@@ -140,6 +140,39 @@ class UserUtils:
         "is_validated": True,
         "role": UserRoles.employer.value,
     }
+    test_employer2 = {
+        "username": "testEmployer2",
+        "password": "password",
+        "first_name": "test",
+        "last_name": "Employer",
+        "email": "testEmployer2@ru.ru",
+        "is_superuser": False,
+        "is_staff": False,
+        "is_validated": True,
+        "role": UserRoles.employer.value,
+    }
+    test_employer3 = {
+        "username": "testEmployer3",
+        "password": "password",
+        "first_name": "test",
+        "last_name": "Employer",
+        "email": "testEmployer3@ru.ru",
+        "is_superuser": False,
+        "is_staff": False,
+        "is_validated": True,
+        "role": UserRoles.employer.value,
+    }
+    test_employer4 = {
+        "username": "testEmployer4",
+        "password": "password",
+        "first_name": "test",
+        "last_name": "Employer",
+        "email": "testEmployer4@ru.ru",
+        "is_superuser": False,
+        "is_staff": False,
+        "is_validated": True,
+        "role": UserRoles.employer.value,
+    }
     test_employee = {
         "username": "testEmployee",
         "password": "password",

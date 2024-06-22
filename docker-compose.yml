@@ -22,12 +22,18 @@ services:
 
   adminer:
     image: adminer:4.7.8-standalone
-    container_name: dbadm
     restart: always
     ports:
-      - 8081:8080
+      - 50080:8080
     depends_on:
       - db
+
+  mail:
+    image: sj26/mailcatcher
+    restart: always
+    ports:
+      - 1080:1080
+      - 1025:1025
 
   backend:
     build: ./backend
@@ -45,7 +51,7 @@ services:
       - db_password
       - django_secret_key
       - django_allowed_hosts
-    command: bash -c " python manage.py migrate && python manage.py usergroups -m create && python manage.py testusers -m create && gunicorn config.wsgi -b 0.0.0.0:8080"
+    command: bash -c " sleep 10 && python manage.py migrate && python manage.py usergroups -m create && python manage.py testusers -m create && python manage.py loaddata recrutingapp/fixtures/test_data.json && gunicorn config.wsgi -b 0.0.0.0:8080"
     depends_on:
       db:
         condition: service_healthy
