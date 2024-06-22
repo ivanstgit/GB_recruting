@@ -50,14 +50,14 @@ class AuthProvider extends React.Component {
     }
 
     componentDidMount() {
-        console.log("mounting AuthProvider")
+        // console.log("mounting AuthProvider")
         this.logInFromCookie()
     }
 
     async logInFromCookie() {
         await this.refreshToken()
             .then(() => {
-                console.log(this.state.isPending)
+                // console.log(this.state.isPending)
                 this.loadUser()
                     .then(() => {
                         this.setState(prevState => {
@@ -79,7 +79,7 @@ class AuthProvider extends React.Component {
                 isPending: true,
             }
         })
-        console.log("login step 1")
+        // console.log("login step 1")
         const res = await this.generateToken(login, password) && this.loadUser()
 
         this.setState(prevState => {
@@ -96,7 +96,7 @@ class AuthProvider extends React.Component {
         AuthCookies.set(authCookieName, { token: "" }, cookieSetOptions)
         AuthCookies.remove(authCookieName, cookieSetOptions)
         this.setState(initialState)
-        console.log("Logout successful")
+        // console.log("Logout successful")
     }
 
     getAccessToken() {
@@ -123,7 +123,7 @@ class AuthProvider extends React.Component {
     async loadUser() {
         if (this._tokenAccess !== "") {
             try {
-                console.log("load user data")
+                // console.log("load user data")
                 const response = await authSignIn(this._tokenAccess)
 
                 if (response.data) {
@@ -146,7 +146,7 @@ class AuthProvider extends React.Component {
                 }
             }
             catch (err) {
-                console.log('Login error', err);
+                // console.log('Login error', err);
                 this.logOut()
             }
         }
@@ -158,18 +158,18 @@ class AuthProvider extends React.Component {
     async generateToken(login, password) {
 
         try {
-            console.log("sending login response")
+            // console.log("sending login response")
             const response = await authGenerate(login, password)
 
             if (response.data.access) {
                 this._tokenAccess = response.data.access
-                console.log("Login successful")
+                // console.log("Login successful")
                 AuthCookies.set(authCookieName, { token: response.data.refresh }, cookieSetOptions)
                 return true
             }
         }
         catch (err) {
-            console.log('Login error', err);
+            // console.log('Login error', err);
             this._tokenAccess = ""
         }
         return false
@@ -179,9 +179,9 @@ class AuthProvider extends React.Component {
         let cookieData = AuthCookies.get(authCookieName, cookieSetOptions)
 
         if (cookieData === undefined || cookieData === "undefined") {
-            console.log("no cookie found")
+            // console.log("no cookie found")
         } else {
-            console.log("refreshing token with " + cookieData.token)
+            // console.log("refreshing token with " + cookieData.token)
             try {
                 let response = await authRefresh(cookieData.token)
                 if (response.data.access) {
@@ -190,15 +190,15 @@ class AuthProvider extends React.Component {
                         cookieData.token = response.data.refresh
                     }
                     AuthCookies.set(authCookieName, JSON.stringify(cookieData), cookieSetOptions)
-                    console.log("refreshed")
+                    // console.log("refreshed")
                 } else {
-                    console.log("token is undefined or incorrect")
+                    // console.log("token is undefined or incorrect")
                     this._tokenAccess = response.data.access = ""
                     AuthCookies.remove(authCookieName)
                 }
             }
             catch (err) {
-                console.log(err)
+                // console.log(err)
                 this._tokenAccess = ""
                 AuthCookies.remove(authCookieName)
             }
@@ -229,38 +229,38 @@ class AuthProvider extends React.Component {
 
 export const accountCreate = async (data) => {
     try {
-        console.log("sign up")
+        // console.log("sign up")
         const response = await authSignUp(data)
-        console.log(response)
+        // console.log(response)
 
         if (response.status === 201) {
             return { data: response.data, error: null }
         } else {
-            console.log(response)
+            // console.log(response)
             return { data: response.data, error: response.statusText }
         }
     }
     catch (error) {
-        console.log('SignUp error', error);
+        // console.log('SignUp error', error);
         return { data: error?.response?.data ?? null, error: error.message }
     }
 }
 
 export const accountConfirm = async (username, token) => {
     try {
-        console.log("account confirmation")
+        // console.log("account confirmation")
         const response = await authConfirm(username, token)
-        console.log(response)
+        // console.log(response)
 
         if (response.status === 201) {
             return { data: response.data, error: null }
         } else {
-            console.log(response)
+            // console.log(response)
             return { data: response.data, error: response.statusText }
         }
     }
     catch (error) {
-        console.log('confirmation error', error);
+        // console.log('confirmation error', error);
         return { data: null, error: error.message }
     }
 
@@ -268,19 +268,19 @@ export const accountConfirm = async (username, token) => {
 
 export const accountConfirmResend = async (token) => {
     try {
-        console.log("account confirmation resend")
+        // console.log("account confirmation resend")
         const response = await authConfirmResend(token)
-        console.log(response)
+        // console.log(response)
 
         if (response.status === 201) {
             return { data: null, error: null }
         } else {
-            console.log(response)
+            // console.log(response)
             return { data: null, error: response.statusText }
         }
     }
     catch (error) {
-        console.log('confirmation resend error', error);
+        // console.log('confirmation resend error', error);
         return { data: null, error: error.message }
     }
 

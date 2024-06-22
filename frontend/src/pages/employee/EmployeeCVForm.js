@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Navigate, useLocation, useParams } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
-import { useData, DATA_RESOURCES } from '../../hooks/DataProvider.js'
+import { useData, DATA_RESOURCES, PrivateDataContext } from '../../hooks/DataProvider.js'
 
 import {
     FormContainer, formStatuses,
@@ -276,6 +276,7 @@ const EmployeeCVForm = ({ backTo }) => {
     const { t } = useTranslation("SharedCV");
 
     const dataProvider = useData()
+    const privateData = useContext(PrivateDataContext)
 
     const { id } = useParams();
     const location = useLocation()
@@ -317,7 +318,7 @@ const EmployeeCVForm = ({ backTo }) => {
                                 education: res.data.education
                             })
                         setError("")
-                        if (res.data.status?.id === CVStatuses.approved || res.data.status?.id === CVStatuses.pending) {
+                        if (isEdit && (res.data.status?.id === CVStatuses.approved || res.data.status?.id === CVStatuses.pending)) {
                             setIsBlocked(true)
                         } else {
                             setIsBlocked(false)
@@ -356,14 +357,14 @@ const EmployeeCVForm = ({ backTo }) => {
     }
 
     const handleEditExperience = (index) => {
-        console.log("edit " + index)
+        // console.log("edit " + index)
         if (selectedExperienceIndex !== index) {
             setSelectedExperienceIndex(index)
         }
     }
 
     const handleDeleteExperience = (index) => {
-        console.log("delete " + index)
+        // console.log("delete " + index)
 
         let exp = input.experience
 
@@ -395,14 +396,14 @@ const EmployeeCVForm = ({ backTo }) => {
     }
 
     const handleEditEducation = (index) => {
-        console.log("edit " + index)
+        // console.log("edit " + index)
         if (selectedEducationIndex !== index) {
             setSelectedEducationIndex(index)
         }
     }
 
     const handleDeleteEducation = (index) => {
-        console.log("delete " + index)
+        // console.log("delete " + index)
 
         let edu = input.education
 
@@ -454,7 +455,8 @@ const EmployeeCVForm = ({ backTo }) => {
                             }
                             setStatus(formStatuses.error)
                         } else {
-                            setStatus(formStatuses.success)
+                            privateData.refreshCVList().then(
+                                setStatus(formStatuses.success))
                         }
                     })
             } else {
@@ -468,7 +470,8 @@ const EmployeeCVForm = ({ backTo }) => {
                             }
                             setStatus(formStatuses.error)
                         } else {
-                            setStatus(formStatuses.success)
+                            privateData.refreshCVList().then(
+                                setStatus(formStatuses.success))
                         }
                     })
             }

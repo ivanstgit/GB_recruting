@@ -28,17 +28,6 @@ const EmployeeCVDetailPage = ({ backTo }) => {
     actions[commonActions.copy] = () => navigate(backTo + ObjectActions.add, { state: { fromId: item.id } })
     if (item?.status?.id === CVStatuses.draft || item?.status?.id === CVStatuses.rejected) {
         actions[commonActions.edit] = () => navigate(ObjectActions.edit)
-        actions[commonActions.delete] = () => {
-            dataProvider.deleteOne(DATA_RESOURCES.cvs, id)
-                .then((res) => {
-                    if (res.error) {
-                        setError(res.error)
-                    } else {
-                        setError("")
-                        privateData.refreshCVList().then(navigate(backTo))
-                    }
-                })
-        }
         actions[commonActions.publish] = () => {
             dataProvider.setStatus(DATA_RESOURCES.cvs, id, CVStatuses.pending)
                 .then((res) => {
@@ -51,12 +40,23 @@ const EmployeeCVDetailPage = ({ backTo }) => {
                 })
         }
     }
+    actions[commonActions.delete] = () => {
+        dataProvider.deleteOne(DATA_RESOURCES.cvs, id)
+            .then((res) => {
+                if (res.error) {
+                    setError(res.error)
+                } else {
+                    setError("")
+                    privateData.refreshCVList().then(navigate(backTo))
+                }
+            })
+    }
 
     useEffect(() => {
         if (!item) {
             dataProvider.getOne(DATA_RESOURCES.cvs, id)
                 .then(res => {
-                    console.log(res)
+                    // console.log(res)
                     if (res.error) {
                         setError(res.error)
                     } else {

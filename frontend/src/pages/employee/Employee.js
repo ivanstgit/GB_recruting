@@ -49,7 +49,7 @@ const EmployeePage = () => {
     const [vacancyResponseCount, setVacancyResponseCount] = useState(0)
     const [vacancyResponseList, setVacancyResponseList] = useState([])
 
-    const refreshTimeout = 60000
+    const refreshTimeout = 600000
 
     const navLocalItems = [
         {

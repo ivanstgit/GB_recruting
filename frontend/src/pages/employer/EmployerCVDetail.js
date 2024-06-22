@@ -22,7 +22,7 @@ const EmployerCVDetailPage = ({ backTo, respondTo }) => {
     const refresh = () => {
         dataProvider.getOne(DATA_RESOURCES.cvs, id)
             .then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.error) {
                     setError(res.error)
                 } else {

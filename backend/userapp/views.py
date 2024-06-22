@@ -1,11 +1,12 @@
-import random
-from rest_framework import status
-from rest_framework.mixins import CreateModelMixin, UpdateModelMixin, ListModelMixin
-from rest_framework.viewsets import GenericViewSet
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+"""
+All views for registration process (/account branch)
+"""
+
+from rest_framework import status, mixins, viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
+from drf_spectacular.utils import extend_schema
 
 from userapp.serializers import SignUpSerializer, EmailConfirmSerializer, UserSerializer
 from userapp.models import CustomUser
@@ -13,25 +14,42 @@ from userapp.utils import send_confirmation_mail
 
 
 class SignUpViewSet(
-    CreateModelMixin,
-    GenericViewSet,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
 ):
-    permission_classes = [AllowAny]
+    """
+    User registration.
+    """
+
+    permission_classes = [permissions.AllowAny]
     serializer_class = SignUpSerializer
 
 
 class EmailConfirmViewSet(
-    CreateModelMixin,
-    GenericViewSet,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet,
 ):
-    permission_classes = [AllowAny]
-    serializer_class = EmailConfirmSerializer
+    """
+    User e-mail confirmation.
+    """
 
+    permission_classes = [permissions.AllowAny]
+    serializer_class = EmailConfirmSerializer
+    queryset = CustomUser.objects.none()
+
+    @extend_schema(
+        description="Method for resending of confirmation code ",
+        request=None,
+        responses={
+            201: None,
+            400: None,
+        },
+    )
     @action(
         detail=False,
         methods=["post"],
-        permission_classes=[IsAuthenticated],
-        serializer_class=None,
+        permission_classes=[permissions.IsAuthenticated],
+        # serializer_class=None,
     )
     def resend(self, request, version=None, pk=None):
         user = request.user
@@ -41,17 +59,19 @@ class EmailConfirmViewSet(
         try:
             send_confirmation_mail(user)
             return Response(status=status.HTTP_201_CREATED)
-        except Exception as e:
+        except Exception:
             return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class SignInViewSet(
-    ListModelMixin,
-    GenericViewSet,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
 ):
-    permission_classes = [IsAuthenticated]
+    """
+    User data request
+    """
+
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = UserSerializer
     pagination_class = None
 

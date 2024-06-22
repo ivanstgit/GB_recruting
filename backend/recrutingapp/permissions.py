@@ -40,6 +40,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 class CVPermission(permissions.BasePermission):
     """
+    Object-level permission for CV
     Grants permission based on role, status
     """
 
@@ -51,9 +52,14 @@ class CVPermission(permissions.BasePermission):
 
         # employee has full permissions except changing data in pending status
         if role == UserRoles.employee.value and obj.owner == request.user:
-            if request.method in permissions.SAFE_METHODS or obj.status.id in (
-                ConstDocumentStatus.draft,
-                ConstDocumentStatus.rejected,
+            if (
+                request.method in permissions.SAFE_METHODS
+                or obj.status.id
+                in (
+                    ConstDocumentStatus.draft,
+                    ConstDocumentStatus.rejected,
+                )
+                or view.action == "destroy"
             ):
                 return True
 
@@ -78,6 +84,7 @@ class CVPermission(permissions.BasePermission):
 
 class EmployerPermission(permissions.BasePermission):
     """
+    Object-level permission for employer profile
     Grants permission based on role, status
     """
 
@@ -121,6 +128,7 @@ class EmployerPermission(permissions.BasePermission):
 
 class VacancyPermission(permissions.BasePermission):
     """
+    Object-level permission for vacancies
     Grants permission based on role, status
     """
 
@@ -132,9 +140,14 @@ class VacancyPermission(permissions.BasePermission):
 
         # employer has full permissions except changing data in pending status
         if role == UserRoles.employer.value and obj.owner == request.user:
-            if request.method in permissions.SAFE_METHODS or obj.status.id in (
-                ConstDocumentStatus.draft,
-                ConstDocumentStatus.rejected,
+            if (
+                request.method in permissions.SAFE_METHODS
+                or obj.status.id
+                in (
+                    ConstDocumentStatus.draft,
+                    ConstDocumentStatus.rejected,
+                )
+                or view.action == "destroy"
             ):
                 return True
 
@@ -159,6 +172,7 @@ class VacancyPermission(permissions.BasePermission):
 
 class CVResponsePermission(permissions.BasePermission):
     """
+    Object-level permission for responses on CV
     Grants permission based on role, status
     """
 
@@ -198,6 +212,7 @@ class CVResponsePermission(permissions.BasePermission):
 
 class VacancyResponsePermission(permissions.BasePermission):
     """
+    Object-level permission for responses on vacancies
     Grants permission based on role, status
     """
 

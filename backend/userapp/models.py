@@ -6,76 +6,10 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class UserGroups(Enum):
-    employers = "employers"
-    employees = "employees"
-    moderators = "moderators"
-
-
 class UserRoles(Enum):
     employer = "employer"
     employee = "employee"
     moderator = "moderator"
-
-
-ROLE_GROUPS = {
-    UserRoles.employer.value: [UserGroups.employers.value],
-    UserRoles.employee.value: [UserGroups.employees.value],
-    UserRoles.moderator.value: [UserGroups.moderators.value],
-}
-
-
-GROUP_PERMISSIONS = {
-    UserGroups.employers.value: [
-        "view_employer",
-        "add_employer",
-        "change_employer",
-        "view_vacancy",
-        "add_vacancy",
-        "change_vacancy",
-        "delete_vacancy",
-        "view_vacancyresponse",
-        "change_vacancyresponse",
-        "view_cv",
-        "view_cvresponse",
-        "add_cvresponse",
-        "change_cvresponse",
-        "delete_cvresponse",
-    ],
-    UserGroups.employees.value: [
-        "view_employee",
-        "add_employee",
-        "change_employee",
-        "view_cv",
-        "add_cv",
-        "change_cv",
-        "delete_cv",
-        "view_cvresponse",
-        "change_cvresponse",
-        "view_vacancy",
-        "view_vacancyresponse",
-        "add_vacancyresponse",
-        "change_vacancyresponse",
-        "delete_vacancyresponse",
-    ],
-    UserGroups.moderators.value: [
-        "view_customuser",
-        "view_newspost",
-        "add_newspost",
-        "change_newspost",
-        "delete_newspost",
-        "view_newstag",
-        "add_newstag",
-        "change_newstag",
-        "delete_newstag",
-        "view_cv",
-        "change_cv",
-        "view_employer",
-        "change_employer",
-        "view_vacancy",
-        "change_vacancy",
-    ],
-}
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):

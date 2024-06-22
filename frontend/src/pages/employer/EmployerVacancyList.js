@@ -104,9 +104,9 @@ const EmployerVacancyListItem = ({ item, onDelete, onPublish }) => {
     actions[commonActions.copy] = () => navigate(ObjectActions.add, { state: { fromId: item.id } })
     if (item.status.id === VacancyStatuses.draft || item.status.id === VacancyStatuses.rejected) {
         actions[commonActions.edit] = () => navigate(item.id + "/" + ObjectActions.edit)
-        actions[commonActions.delete] = () => onDelete(item.id)
         actions[commonActions.publish] = () => onPublish(item.id)
     }
+    actions[commonActions.delete] = () => onDelete(item.id)
 
     return (
         <tr>

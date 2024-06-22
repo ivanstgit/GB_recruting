@@ -130,7 +130,7 @@ const DataProvider = (props) => {
             if (error instanceof TokenExpiredError) {
                 isTokenExpired = true;
             } else {
-                console.log(error)
+                // console.log(error)
                 return { data: null, error: error.message }
             }
         }
@@ -141,7 +141,7 @@ const DataProvider = (props) => {
                 let res = await _getOne(resource, id, token)
                 return res
             } catch (error) {
-                console.log(error)
+                // console.log(error)
                 return { data: null, error: error.message }
             }
         }
@@ -155,11 +155,11 @@ const DataProvider = (props) => {
             if (response.status === 200) {
                 return { data: response.data, error: null }
             } else {
-                console.log(response)
+                // console.log(response)
                 return { data: null, error: response.error }
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             if (error.response && error.response.status === 401) {
                 throw new TokenExpiredError("Token expired")
             } else {
@@ -171,7 +171,7 @@ const DataProvider = (props) => {
     const postOne = async (resource, data) => {
         if (auth.isAuthenticated) {
             if (resource.methods.includes("post")) {
-                console.log("posting " + resource + ": " + JSON.stringify(data))
+                // console.log("posting " + resource + ": " + JSON.stringify(data))
 
                 let isTokenExpired = false;
                 let token = auth.tokenFunc();
@@ -183,7 +183,7 @@ const DataProvider = (props) => {
                     if (error instanceof TokenExpiredError) {
                         isTokenExpired = true;
                     } else {
-                        console.log(error)
+                        // console.log(error)
                         return { data: null, error: error.message }
                     }
                 }
@@ -194,7 +194,7 @@ const DataProvider = (props) => {
                         let res = await _postOne(resource, data, token)
                         return res
                     } catch (error) {
-                        console.log(error)
+                        // console.log(error)
                         return { data: null, error: error.message }
                     }
                 }
@@ -212,11 +212,11 @@ const DataProvider = (props) => {
             if (response.status === 201) {
                 return { data: response.data, error: null }
             } else {
-                console.log(response)
+                // console.log(response)
                 return { data: null, error: response.error }
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             if (error.response && error.response.status === 401) {
                 throw new TokenExpiredError("Token expired")
             } else if (error.response && error.response.status === 400) {
@@ -230,7 +230,7 @@ const DataProvider = (props) => {
     const putOne = async (resource, id, data) => {
         if (auth.isAuthenticated) {
             if (resource.methods.includes("put")) {
-                console.log("puting " + resource + id + ": " + JSON.stringify(data))
+                // console.log("puting " + resource + id + ": " + JSON.stringify(data))
 
                 let isTokenExpired = false;
                 let token = auth.tokenFunc();
@@ -242,7 +242,7 @@ const DataProvider = (props) => {
                     if (error instanceof TokenExpiredError) {
                         isTokenExpired = true;
                     } else {
-                        console.log(error)
+                        // console.log(error)
                         return { data: null, error: error.message }
                     }
                 }
@@ -253,7 +253,7 @@ const DataProvider = (props) => {
                         let res = await _putOne(resource, id, data, token)
                         return res
                     } catch (error) {
-                        console.log(error)
+                        // console.log(error)
                         return { data: null, error: error.message }
                     }
                 }
@@ -271,11 +271,11 @@ const DataProvider = (props) => {
             if (response.status === 200) {
                 return { data: response.data.results, error: null }
             } else {
-                console.log(response)
+                // console.log(response)
                 return { data: null, error: response.error }
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             if (error.response && error.response.status === 401) {
                 throw new TokenExpiredError("Token expired")
             } else if (error.response && error.response.status === 400) {
@@ -300,7 +300,7 @@ const DataProvider = (props) => {
                     if (error instanceof TokenExpiredError) {
                         isTokenExpired = true;
                     } else {
-                        console.log(error)
+                        // console.log(error)
                         return { data: null, error: error.message }
                     }
                 }
@@ -311,7 +311,7 @@ const DataProvider = (props) => {
                         let res = await _setStatus(resource, id, status, token)
                         return res
                     } catch (error) {
-                        console.log(error)
+                        // console.log(error)
                         return { data: null, error: error.message }
                     }
                 }
@@ -329,11 +329,11 @@ const DataProvider = (props) => {
             if (response.status === 200) {
                 return { data: response.data.results, error: null }
             } else {
-                console.log(response)
+                // console.log(response)
                 return { data: null, error: response.error }
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             if (error.response && error.response.status === 401) {
                 throw new TokenExpiredError("Token expired")
             } else if (error.response && error.response.status === 400) {
@@ -351,7 +351,7 @@ const DataProvider = (props) => {
             if ((isFavorite && response.status === 201) || (!isFavorite && response.status === 204)) {
                 return successResult
             } else {
-                console.log(response)
+                // console.log(response)
                 return { error: response.error }
             }
         }
@@ -362,7 +362,7 @@ const DataProvider = (props) => {
                 let response = await dataSetFavorite(resource.api, token, id, isFavorite)
                 return parseResponse(response)
             } catch (error) {
-                console.log(error)
+                // console.log(error)
                 if (error.response && error.response.status === 401) {
                     throw new TokenExpiredError("Token expired")
                 } else {
@@ -401,7 +401,7 @@ const DataProvider = (props) => {
             if (response.status === 201) {
                 return successResult
             } else {
-                console.log(response)
+                // console.log(response)
                 return { error: response.error }
             }
         }
@@ -412,7 +412,7 @@ const DataProvider = (props) => {
                 let response = await dataAddMessage(resource.api, token, id, msgText)
                 return parseResponse(response)
             } catch (error) {
-                console.log(error)
+                // console.log(error)
                 if (error.response && error.response.status === 401) {
                     throw new TokenExpiredError("Token expired")
                 } else {
@@ -447,7 +447,7 @@ const DataProvider = (props) => {
     const deleteOne = async (resource, id) => {
         if (auth.isAuthenticated) {
             if (resource.methods.includes("delete")) {
-                console.log("deleting " + resource + ": " + id)
+                // console.log("deleting " + resource + ": " + id)
 
                 let isTokenExpired = false;
                 let token = auth.tokenFunc();
@@ -459,7 +459,7 @@ const DataProvider = (props) => {
                     if (error instanceof TokenExpiredError) {
                         isTokenExpired = true;
                     } else {
-                        console.log(error)
+                        // console.log(error)
                         return { data: null, error: error.message }
                     }
                 }
@@ -470,7 +470,7 @@ const DataProvider = (props) => {
                         let res = await _deleteOne(resource, id, token)
                         return res
                     } catch (error) {
-                        console.log(error)
+                        // console.log(error)
                         return { data: null, error: error.message }
                     }
                 }
@@ -488,11 +488,11 @@ const DataProvider = (props) => {
             if (response.status === 204) {
                 return { data: response.data, error: null }
             } else {
-                console.log(response)
+                // console.log(response)
                 return { data: null, error: response.error }
             }
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             if (error.response && error.response.status === 401) {
                 throw new TokenExpiredError("Token expired")
             } else {
@@ -502,7 +502,7 @@ const DataProvider = (props) => {
     }
 
     const getList = async (resource, params) => {
-        console.log("loading " + resource.api)
+        // console.log("loading " + resource.api)
 
         const emptyResult = { data: [], error: null, count: 0 }
         const parseResponse = (response) => {
@@ -511,7 +511,7 @@ const DataProvider = (props) => {
                 let cnt = response.data.count ?? res.length ?? 0
                 return { data: res, error: null, count: cnt }
             } else {
-                console.log(response)
+                // console.log(response)
                 return { data: [], error: response.error, count: 0 }
             }
         }
@@ -521,10 +521,10 @@ const DataProvider = (props) => {
             try {
                 let token = "";
                 let response = await dataGetList(resource.api, token, params)
-                console.log(response)
+                // console.log(response)
                 return parseResponse(response)
             } catch (error) {
-                console.log(error)
+                // console.log(error)
                 return parseError(error)
             }
         }
@@ -537,7 +537,7 @@ const DataProvider = (props) => {
                 let response = await dataGetList(resource.api, token, params)
                 return parseResponse(response)
             } catch (error) {
-                console.log(error)
+                // console.log(error)
                 if (error.response && error.response.status === 401) {
                     isTokenExpired = true;
                 } else {
@@ -582,7 +582,7 @@ const DataProvider = (props) => {
             getList(resource, params)
                 .then(res => {
                     if (res.error) {
-                        console.log("error refreshing" + resource + ": " + res.error)
+                        // console.log("error refreshing" + resource + ": " + res.error)
                         callback([])
                     } else {
                         callback(res.data)
@@ -590,7 +590,7 @@ const DataProvider = (props) => {
                 })
                 .catch(error => {
                     callback([])
-                    console.log("error refreshing" + resource + ": " + error)
+                    // console.log("error refreshing" + resource + ": " + error)
                 })
         } else {
             callback([])
@@ -603,7 +603,7 @@ const DataProvider = (props) => {
 
     // After user change triggers effect with refreshing data
     useEffect(() => {
-        console.log("refreshing after auth change for user " + JSON.stringify(auth.user))
+        // console.log("refreshing after auth change for user " + JSON.stringify(auth.user))
         refresh(DATA_RESOURCES.publicNews)
         refresh(DATA_RESOURCES.publicEmployers)
         refresh(DATA_RESOURCES.employee)

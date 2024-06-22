@@ -1,0 +1,128 @@
+[
+    {
+        "model": "userapp.customuser",
+        "pk": 1,
+        "fields": {
+            "password": "pbkdf2_sha256$390000$aM84OAsIfAekO83kuQlFKn$+XhDsgv26Pb6OgKS+hfuqKUsCFL9Sgh/oRMf6A7/1sQ=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "testEmployee",
+            "first_name": "test",
+            "last_name": "Employee",
+            "email": "testEmployee@ru.ru",
+            "is_staff": false,
+            "role": "employee",
+            "is_active": true,
+            "is_validated": true,
+            "validation_code": "",
+            "date_created": "2024-06-21T17:42:32.158Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "userapp.customuser",
+        "pk": 2,
+        "fields": {
+            "password": "pbkdf2_sha256$390000$KSpCyIVW6c6PKeJYmlnkec$ewGwGu5WMI0ZF7gmiNBFPXXhntU5WpGuCNgGsQOZzoY=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "testEmployer",
+            "first_name": "test",
+            "last_name": "Employer",
+            "email": "testEmployer@ru.ru",
+            "is_staff": false,
+            "role": "employer",
+            "is_active": true,
+            "is_validated": true,
+            "validation_code": "",
+            "date_created": "2024-06-21T17:42:32.469Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "userapp.customuser",
+        "pk": 3,
+        "fields": {
+            "password": "pbkdf2_sha256$390000$YUBjooN6hXgHHpfKdVl39H$z0xutY4+zAg1WGNAlLyD9l6+7r7sx9T2YQY/4+wIN5I=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "testModerator",
+            "first_name": "test",
+            "last_name": "Moderator",
+            "email": "testModerator@ru.ru",
+            "is_staff": true,
+            "role": "moderator",
+            "is_active": true,
+            "is_validated": true,
+            "validation_code": "",
+            "date_created": "2024-06-21T17:42:32.773Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "userapp.customuser",
+        "pk": 4,
+        "fields": {
+            "password": "pbkdf2_sha256$390000$KSpCyIVW6c6PKeJYmlnkec$ewGwGu5WMI0ZF7gmiNBFPXXhntU5WpGuCNgGsQOZzoY=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "testEmployer2",
+            "first_name": "test",
+            "last_name": "Employer",
+            "email": "testEmployer2@ru.ru",
+            "is_staff": false,
+            "role": "employer",
+            "is_active": true,
+            "is_validated": true,
+            "validation_code": "",
+            "date_created": "2024-06-21T17:42:32.469Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "userapp.customuser",
+        "pk": 5,
+        "fields": {
+            "password": "pbkdf2_sha256$390000$KSpCyIVW6c6PKeJYmlnkec$ewGwGu5WMI0ZF7gmiNBFPXXhntU5WpGuCNgGsQOZzoY=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "testEmployer3",
+            "first_name": "test",
+            "last_name": "Employer",
+            "email": "testEmployer3@ru.ru",
+            "is_staff": false,
+            "role": "employer",
+            "is_active": true,
+            "is_validated": true,
+            "validation_code": "",
+            "date_created": "2024-06-21T17:42:32.469Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    },
+    {
+        "model": "userapp.customuser",
+        "pk": 6,
+        "fields": {
+            "password": "pbkdf2_sha256$390000$KSpCyIVW6c6PKeJYmlnkec$ewGwGu5WMI0ZF7gmiNBFPXXhntU5WpGuCNgGsQOZzoY=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "testEmployer4",
+            "first_name": "test",
+            "last_name": "Employer",
+            "email": "testEmployer4@ru.ru",
+            "is_staff": false,
+            "role": "employer",
+            "is_active": true,
+            "is_validated": true,
+            "validation_code": "",
+            "date_created": "2024-06-21T17:42:32.469Z",
+            "groups": [],
+            "user_permissions": []
+        }
+    }
+]

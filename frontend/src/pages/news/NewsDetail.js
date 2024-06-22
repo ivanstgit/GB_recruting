@@ -25,7 +25,7 @@ const NewsDetailPage = (props) => {
     } else {
         dataProvider.getOne(DATA_RESOURCES.publicNews, id)
             .then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.error) {
                     setError(res.error)
                 } else {

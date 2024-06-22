@@ -58,7 +58,7 @@ const ModeratorVacancyDetailPage = ({ backTo }) => {
     } else {
         dataProvider.getOne(DATA_RESOURCES.vacancies, id)
             .then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.error) {
                     setError(res.error)
                 } else {

@@ -1,0 +1,974 @@
+[
+    {
+        "model": "recrutingapp.documentstatus",
+        "pk": "a",
+        "fields": {
+            "name": "Подтверждено"
+        }
+    },
+    {
+        "model": "recrutingapp.documentstatus",
+        "pk": "d",
+        "fields": {
+            "name": "Черновик"
+        }
+    },
+    {
+        "model": "recrutingapp.documentstatus",
+        "pk": "p",
+        "fields": {
+            "name": "Отправлено"
+        }
+    },
+    {
+        "model": "recrutingapp.documentstatus",
+        "pk": "r",
+        "fields": {
+            "name": "Отклонено"
+        }
+    },
+    {
+        "model": "recrutingapp.region",
+        "pk": 1,
+        "fields": {
+            "name": "Москва"
+        }
+    },
+    {
+        "model": "recrutingapp.region",
+        "pk": 2,
+        "fields": {
+            "name": "Санкт-Петербург"
+        }
+    },
+    {
+        "model": "recrutingapp.region",
+        "pk": 3,
+        "fields": {
+            "name": "Московская область"
+        }
+    },
+    {
+        "model": "recrutingapp.region",
+        "pk": 4,
+        "fields": {
+            "name": "Воронежская область"
+        }
+    },
+    {
+        "model": "recrutingapp.city",
+        "pk": 1,
+        "fields": {
+            "name": "Москва",
+            "region": 1
+        }
+    },
+    {
+        "model": "recrutingapp.city",
+        "pk": 2,
+        "fields": {
+            "name": "Химки",
+            "region": 3
+        }
+    },
+    {
+        "model": "recrutingapp.city",
+        "pk": 3,
+        "fields": {
+            "name": "Санкт-Петербург",
+            "region": 2
+        }
+    },
+    {
+        "model": "recrutingapp.city",
+        "pk": 4,
+        "fields": {
+            "name": "Воронеж",
+            "region": 4
+        }
+    },
+    {
+        "model": "recrutingapp.skill",
+        "pk": 1,
+        "fields": {
+            "name": "апа"
+        }
+    },
+    {
+        "model": "recrutingapp.skill",
+        "pk": 2,
+        "fields": {
+            "name": "апап"
+        }
+    },
+    {
+        "model": "recrutingapp.skill",
+        "pk": 3,
+        "fields": {
+            "name": "Неужели"
+        }
+    },
+    {
+        "model": "recrutingapp.skill",
+        "pk": 4,
+        "fields": {
+            "name": "Ого"
+        }
+    },
+    {
+        "model": "recrutingapp.skill",
+        "pk": 5,
+        "fields": {
+            "name": "Django"
+        }
+    },
+    {
+        "model": "recrutingapp.skill",
+        "pk": 6,
+        "fields": {
+            "name": "Flask"
+        }
+    },
+    {
+        "model": "recrutingapp.skill",
+        "pk": 7,
+        "fields": {
+            "name": "React"
+        }
+    },
+    {
+        "model": "recrutingapp.gender",
+        "pk": "f",
+        "fields": {
+            "name": "Женский"
+        }
+    },
+    {
+        "model": "recrutingapp.gender",
+        "pk": "m",
+        "fields": {
+            "name": "Мужской"
+        }
+    },
+    {
+        "model": "recrutingapp.newstag",
+        "pk": 1,
+        "fields": {
+            "name": "string"
+        }
+    },
+    {
+        "model": "recrutingapp.newspost",
+        "pk": 2,
+        "fields": {
+            "created_at": "2024-04-25T16:20:41.050Z",
+            "updated_at": "2024-04-25T16:20:41.050Z",
+            "updated_by": [
+                "testModerator"
+            ],
+            "title": "Заголовок новости",
+            "body": "Краткое описание новости",
+            "content_type": "TX",
+            "content": "текст новости, \nдлинный и интересный",
+            "tags": []
+        }
+    },
+    {
+        "model": "recrutingapp.newspost",
+        "pk": 6,
+        "fields": {
+            "created_at": "2024-04-25T16:29:46.968Z",
+            "updated_at": "2024-06-21T16:26:53.783Z",
+            "updated_by": [
+                "testModerator"
+            ],
+            "title": "Обновление",
+            "body": "Добавлена функция чата между соискателем и работодателем",
+            "content_type": "TX",
+            "content": "Добавлена функция чата между соискателем и работодателем.\nТеперь для принятых откликов на резюме/вакансию доступна форма обратной связи!",
+            "tags": []
+        }
+    },
+    {
+        "model": "recrutingapp.newspost",
+        "pk": 7,
+        "fields": {
+            "created_at": "2024-04-25T16:30:10.873Z",
+            "updated_at": "2024-06-21T16:28:53.705Z",
+            "updated_by": [
+                "testModerator"
+            ],
+            "title": "Новые партнеры",
+            "body": "ООО \"Рога и копыта\" разместила 10 новых резюме",
+            "content_type": "TX",
+            "content": "Наш портал набирает популярность.\nООО \"Рога и копыта\" разместила 10 новых резюме.",
+            "tags": []
+        }
+    },
+    {
+        "model": "recrutingapp.newspost",
+        "pk": 8,
+        "fields": {
+            "created_at": "2024-04-25T16:30:54.876Z",
+            "updated_at": "2024-06-21T16:32:21.598Z",
+            "updated_by": [
+                "testModerator"
+            ],
+            "title": "Как составить резюме",
+            "body": "Советы для начинающих",
+            "content_type": "TX",
+            "content": "Соблюдение приведенных советов поможет быстрее найти работу:\n1) составляйте резюме для конкретного работодателя\n2) посмотрите, какие вакансии он разместил, какие компетенции ему интересны\n3) сделайте в резюме упор на описание необходимых работодателю навыков",
+            "tags": []
+        }
+    },
+    {
+        "model": "recrutingapp.newspost",
+        "pk": 9,
+        "fields": {
+            "created_at": "2024-04-25T16:31:34.369Z",
+            "updated_at": "2024-06-21T16:34:04.047Z",
+            "updated_by": [
+                "testModerator"
+            ],
+            "title": "Мы растем",
+            "body": "Более 1000 активных резюме и 500 вакансий",
+            "content_type": "TX",
+            "content": "Мы преодолели важный психологический барьер.\nБолее 1000 сотрудников и 500 компаний воспользовались услугами нашего сайта",
+            "tags": []
+        }
+    },
+    {
+        "model": "recrutingapp.newspost",
+        "pk": 10,
+        "fields": {
+            "created_at": "2024-04-25T16:31:58.776Z",
+            "updated_at": "2024-06-21T16:36:10.084Z",
+            "updated_by": [
+                "testModerator"
+            ],
+            "title": "Обновление правил модерации",
+            "body": "Зачем резюме проходят модерацию?",
+            "content_type": "TX",
+            "content": "Мы ценим время наших компаний-партнеров.\nА также помогаем соискателям в составлении более грамотного резюме.",
+            "tags": []
+        }
+    },
+    {
+        "model": "recrutingapp.employee",
+        "pk": 4,
+        "fields": {
+            "created_at": "2024-06-21T14:41:53.940Z",
+            "updated_at": "2024-06-21T16:06:26.158Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "name": "Петров Андрей Иванович",
+            "birthday": "1999-03-19",
+            "gender": "m",
+            "email": "testEmployee@ru.ru",
+            "city": 1,
+            "description": "Специалист в области веб-разработки (full-stack).\nЛюблю рыбалку и Agile.",
+            "skills": [
+                5,
+                6,
+                7
+            ]
+        }
+    },
+    {
+        "model": "recrutingapp.employer",
+        "pk": 1,
+        "fields": {
+            "status": "a",
+            "status_info": "",
+            "created_at": "2024-05-24T20:11:51.619Z",
+            "updated_at": "2024-06-12T10:14:40.550Z",
+            "updated_by": [
+                "testEmployer"
+            ],
+            "owner": [
+                "testEmployer"
+            ],
+            "name": "ООО \"Рога и копыта\"",
+            "established": "2004-01-01",
+            "email": "testEmployer@ru.ru",
+            "city": 3,
+            "description": "Самые большие рога и очень много копыт! Многолетний опыт на рынке.",
+            "welcome_letter": "Стань частью успешной компании!\nПрисоединяйся к команде по заточке рогов!"
+        }
+    },
+    {
+        "model": "recrutingapp.employer",
+        "pk": 2,
+        "fields": {
+            "status": "d",
+            "status_info": "",
+            "created_at": "2024-05-24T20:11:51.619Z",
+            "updated_at": "2024-06-12T10:14:40.550Z",
+            "updated_by": [
+                "testEmployer2"
+            ],
+            "owner": [
+                "testEmployer2"
+            ],
+            "name": "ООО \"Рога и копыта\"2",
+            "established": "2004-01-01",
+            "email": "testEmployer2@ru.ru",
+            "city": 3,
+            "description": "Самые большие рога и очень много копыт! Многолетний опыт на рынке.",
+            "welcome_letter": "Стань частью успешной компании!\nПрисоединяйся к команде по заточке рогов!"
+        }
+    },
+    {
+        "model": "recrutingapp.employer",
+        "pk": 3,
+        "fields": {
+            "status": "p",
+            "status_info": "",
+            "created_at": "2024-05-24T20:11:51.619Z",
+            "updated_at": "2024-06-12T10:14:40.550Z",
+            "updated_by": [
+                "testEmployer3"
+            ],
+            "owner": [
+                "testEmployer3"
+            ],
+            "name": "ООО \"Рога и копыта\"3",
+            "established": "2004-01-01",
+            "email": "testEmployer3@ru.ru",
+            "city": 3,
+            "description": "Самые большие рога и очень много копыт! Многолетний опыт на рынке.",
+            "welcome_letter": "Стань частью успешной компании!\nПрисоединяйся к команде по заточке рогов!"
+        }
+    },
+    {
+        "model": "recrutingapp.employer",
+        "pk": 4,
+        "fields": {
+            "status": "r",
+            "status_info": "reason",
+            "created_at": "2024-05-24T20:11:51.619Z",
+            "updated_at": "2024-06-12T10:14:40.550Z",
+            "updated_by": [
+                "testEmployer4"
+            ],
+            "owner": [
+                "testEmployer4"
+            ],
+            "name": "ООО \"Рога и копыта\"4",
+            "established": "2004-01-01",
+            "email": "testEmployer4@ru.ru",
+            "city": 3,
+            "description": "Самые большие рога и очень много копыт! Многолетний опыт на рынке.",
+            "welcome_letter": "Стань частью успешной компании!\nПрисоединяйся к команде по заточке рогов!"
+        }
+    },
+    {
+        "model": "recrutingapp.cv",
+        "pk": 8,
+        "fields": {
+            "status": "a",
+            "status_info": "",
+            "created_at": "2024-06-21T16:14:23.853Z",
+            "updated_at": "2024-06-21T17:05:56.225Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "employee": 4,
+            "title": "Python-разработчик (мидл для Рогов и копыт)",
+            "position": "Python-разработчик (middle)",
+            "salary": "150",
+            "description": "Прошел обучение, 5 лет релевантного опыта."
+        }
+    },
+    {
+        "model": "recrutingapp.cv",
+        "pk": 9,
+        "fields": {
+            "status": "a",
+            "status_info": "",
+            "created_at": "2024-06-21T16:20:48.714Z",
+            "updated_at": "2024-06-21T17:05:54.813Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "employee": 4,
+            "title": "Разработчик React (middle)",
+            "position": "React-разработчик (middle)",
+            "salary": "150",
+            "description": "Прошел обучение, 3 года релевантного опыта."
+        }
+    },
+    {
+        "model": "recrutingapp.cv",
+        "pk": 10,
+        "fields": {
+            "status": "a",
+            "status_info": "",
+            "created_at": "2024-06-21T16:22:09.729Z",
+            "updated_at": "2024-06-21T17:05:32.459Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "employee": 4,
+            "title": "Python-разработчик (senior) 2",
+            "position": "Python-разработчик (senior)",
+            "salary": "150",
+            "description": "Прошел обучение, 5 лет релевантного опыта."
+        }
+    },
+    {
+        "model": "recrutingapp.cv",
+        "pk": 11,
+        "fields": {
+            "status": "a",
+            "status_info": "",
+            "created_at": "2024-06-21T16:22:57.641Z",
+            "updated_at": "2024-06-21T17:05:57.248Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "employee": 4,
+            "title": "Python-разработчик (senior)",
+            "position": "Python-разработчик (senior)",
+            "salary": "150",
+            "description": "Прошел обучение, 5 лет релевантного опыта."
+        }
+    },
+    {
+        "model": "recrutingapp.cv",
+        "pk": 12,
+        "fields": {
+            "status": "r",
+            "status_info": "дубль?",
+            "created_at": "2024-06-21T16:23:10.346Z",
+            "updated_at": "2024-06-21T17:05:44.985Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "employee": 4,
+            "title": "Python-разработчик (senior) 3",
+            "position": "Python-разработчик (senior)",
+            "salary": "150",
+            "description": "Прошел обучение, 5 лет релевантного опыта."
+        }
+    },
+    {
+        "model": "recrutingapp.cv",
+        "pk": 13,
+        "fields": {
+            "status": "p",
+            "status_info": "",
+            "created_at": "2024-06-21T17:13:18.642Z",
+            "updated_at": "2024-06-21T17:13:27.657Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "employee": 4,
+            "title": "Разработчик React (middle) 4",
+            "position": "React-разработчик (middle)",
+            "salary": "150",
+            "description": "Прошел обучение, 3 года релевантного опыта."
+        }
+    },
+    {
+        "model": "recrutingapp.cv",
+        "pk": 14,
+        "fields": {
+            "status": "d",
+            "status_info": "",
+            "created_at": "2024-06-21T17:13:18.642Z",
+            "updated_at": "2024-06-21T17:13:27.657Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "employee": 4,
+            "title": "Разработчик БД",
+            "position": "Разработчик БД",
+            "salary": "150",
+            "description": "Прошел обучение, 3 года релевантного опыта."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 31,
+        "fields": {
+            "cv": 9,
+            "datefrom": "2019-06-14",
+            "dateto": "2021-01-11",
+            "is_current": false,
+            "city": 2,
+            "company": "ООО \"Мобильные игры\"",
+            "position": "Стажер",
+            "content": "Начальная позиция."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 32,
+        "fields": {
+            "cv": 9,
+            "datefrom": "2021-02-20",
+            "dateto": "2024-06-21",
+            "is_current": true,
+            "city": 1,
+            "company": "ЗАО \"Сервис для банков\"",
+            "position": "Инженер-программист",
+            "content": "Разработка и поддержка системы учета рабочего времени.\nFlask + React.\n300 пользователей."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 33,
+        "fields": {
+            "cv": 8,
+            "datefrom": "2019-06-14",
+            "dateto": "2021-01-11",
+            "is_current": false,
+            "city": 2,
+            "company": "ООО \"Мобильные игры\"",
+            "position": "Стажер",
+            "content": "Начальная позиция."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 34,
+        "fields": {
+            "cv": 8,
+            "datefrom": "2021-02-20",
+            "dateto": "2024-06-21",
+            "is_current": true,
+            "city": 1,
+            "company": "ЗАО \"Сервис для банков\"",
+            "position": "Инженер-программист",
+            "content": "Разработка и поддержка системы учета рабочего времени.\nFlask + React.\n300 пользователей."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 37,
+        "fields": {
+            "cv": 10,
+            "datefrom": "2019-06-14",
+            "dateto": "2021-01-11",
+            "is_current": false,
+            "city": 2,
+            "company": "ООО \"Мобильные игры\"",
+            "position": "Стажер",
+            "content": "Начальная позиция."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 38,
+        "fields": {
+            "cv": 10,
+            "datefrom": "2021-02-20",
+            "dateto": "2024-06-21",
+            "is_current": true,
+            "city": 1,
+            "company": "ЗАО \"Сервис для банков\"",
+            "position": "Инженер-программист",
+            "content": "Разработка и поддержка системы учета рабочего времени.\nFlask + React.\n300 пользователей."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 39,
+        "fields": {
+            "cv": 11,
+            "datefrom": "2019-06-14",
+            "dateto": "2021-01-11",
+            "is_current": false,
+            "city": 2,
+            "company": "ООО \"Мобильные игры\"",
+            "position": "Стажер",
+            "content": "Начальная позиция."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 40,
+        "fields": {
+            "cv": 11,
+            "datefrom": "2021-02-20",
+            "dateto": "2024-06-21",
+            "is_current": true,
+            "city": 1,
+            "company": "ЗАО \"Сервис для банков\"",
+            "position": "Инженер-программист",
+            "content": "Разработка и поддержка системы учета рабочего времени.\nFlask + React.\n300 пользователей."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 41,
+        "fields": {
+            "cv": 12,
+            "datefrom": "2019-06-14",
+            "dateto": "2021-01-11",
+            "is_current": false,
+            "city": 2,
+            "company": "ООО \"Мобильные игры\"",
+            "position": "Стажер",
+            "content": "Начальная позиция."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 42,
+        "fields": {
+            "cv": 12,
+            "datefrom": "2021-02-20",
+            "dateto": "2024-06-21",
+            "is_current": true,
+            "city": 1,
+            "company": "ЗАО \"Сервис для банков\"",
+            "position": "Инженер-программист",
+            "content": "Разработка и поддержка системы учета рабочего времени.\nFlask + React.\n300 пользователей."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 43,
+        "fields": {
+            "cv": 13,
+            "datefrom": "2019-06-14",
+            "dateto": "2021-01-11",
+            "is_current": false,
+            "city": 2,
+            "company": "ООО \"Мобильные игры\"",
+            "position": "Стажер",
+            "content": "Начальная позиция."
+        }
+    },
+    {
+        "model": "recrutingapp.cvexperience",
+        "pk": 44,
+        "fields": {
+            "cv": 13,
+            "datefrom": "2021-02-20",
+            "dateto": "2024-06-21",
+            "is_current": true,
+            "city": 1,
+            "company": "ЗАО \"Сервис для банков\"",
+            "position": "Инженер-программист",
+            "content": "Разработка и поддержка системы учета рабочего времени.\nFlask + React.\n300 пользователей."
+        }
+    },
+    {
+        "model": "recrutingapp.cveducation",
+        "pk": 32,
+        "fields": {
+            "cv": 9,
+            "date": "2019-06-11",
+            "institution": "ООО \"Гикбрейнс\"",
+            "specialty": "Разработчик-программист",
+            "content": "Факультет Python-разработки"
+        }
+    },
+    {
+        "model": "recrutingapp.cveducation",
+        "pk": 33,
+        "fields": {
+            "cv": 8,
+            "date": "2019-06-11",
+            "institution": "ООО \"Гикбрейнс\"",
+            "specialty": "Разработчик-программист",
+            "content": "Факультет Python-разработки"
+        }
+    },
+    {
+        "model": "recrutingapp.cveducation",
+        "pk": 35,
+        "fields": {
+            "cv": 10,
+            "date": "2019-06-11",
+            "institution": "ООО \"Гикбрейнс\"",
+            "specialty": "Разработчик-программист",
+            "content": "Факультет Python-разработки"
+        }
+    },
+    {
+        "model": "recrutingapp.cveducation",
+        "pk": 36,
+        "fields": {
+            "cv": 11,
+            "date": "2019-06-11",
+            "institution": "ООО \"Гикбрейнс\"",
+            "specialty": "Разработчик-программист",
+            "content": "Факультет Python-разработки"
+        }
+    },
+    {
+        "model": "recrutingapp.cveducation",
+        "pk": 37,
+        "fields": {
+            "cv": 12,
+            "date": "2019-06-11",
+            "institution": "ООО \"Гикбрейнс\"",
+            "specialty": "Разработчик-программист",
+            "content": "Факультет Python-разработки"
+        }
+    },
+    {
+        "model": "recrutingapp.cveducation",
+        "pk": 38,
+        "fields": {
+            "cv": 13,
+            "date": "2019-06-11",
+            "institution": "ООО \"Гикбрейнс\"",
+            "specialty": "Разработчик-программист",
+            "content": "Факультет Python-разработки"
+        }
+    },
+    {
+        "model": "recrutingapp.vacancy",
+        "pk": 1,
+        "fields": {
+            "status": "a",
+            "status_info": "",
+            "created_at": "2024-06-13T18:04:38.398Z",
+            "updated_at": "2024-06-14T17:13:40.473Z",
+            "updated_by": [
+                "testEmployer"
+            ],
+            "owner": [
+                "testEmployer"
+            ],
+            "employer": 1,
+            "title": "Python-разработчик (для ДИТ до 01.08)",
+            "city": 3,
+            "position": "Python-разработчик (junior)",
+            "salary": "51",
+            "description": "В департамент разработки мобильных игр требуется Python-разработчик.\nТребования к кандидату:\n- высшее образование;\n- знание FastAPI."
+        }
+    },
+    {
+        "model": "recrutingapp.vacancy",
+        "pk": 6,
+        "fields": {
+            "status": "a",
+            "status_info": "",
+            "created_at": "2024-06-14T17:24:57.336Z",
+            "updated_at": "2024-06-14T17:25:18.804Z",
+            "updated_by": [
+                "testEmployer"
+            ],
+            "owner": [
+                "testEmployer"
+            ],
+            "employer": 1,
+            "title": "Python-разработчик 2 (для ДИТ до 01.08)",
+            "city": 3,
+            "position": "Python-разработчик (middle)",
+            "salary": "80",
+            "description": "В департамент разработки мобильных игр требуется Python-разработчик.\nТребования к кандидату:\n- высшее образование;\n- знание FastAPI;\n- опыт работы от 2х лет"
+        }
+    },
+    {
+        "model": "recrutingapp.vacancy",
+        "pk": 7,
+        "fields": {
+            "status": "r",
+            "status_info": "дубль?",
+            "created_at": "2024-06-19T12:25:40.842Z",
+            "updated_at": "2024-06-21T17:06:15.571Z",
+            "updated_by": [
+                "testEmployer"
+            ],
+            "owner": [
+                "testEmployer"
+            ],
+            "employer": 1,
+            "title": "Python-разработчик 3 (для ДИТ до 01.08)",
+            "city": 3,
+            "position": "Python-разработчик (middle)",
+            "salary": "80",
+            "description": "В департамент разработки мобильных игр требуется Python-разработчик.\nТребования к кандидату:\n- высшее образование;\n- знание FastAPI;\n- опыт работы от 2х лет"
+        }
+    },
+    {
+        "model": "recrutingapp.vacancy",
+        "pk": 8,
+        "fields": {
+            "status": "p",
+            "status_info": "",
+            "created_at": "2024-06-21T17:22:24.189Z",
+            "updated_at": "2024-06-21T17:22:30.152Z",
+            "updated_by": [
+                "testEmployer"
+            ],
+            "owner": [
+                "testEmployer"
+            ],
+            "employer": 1,
+            "title": "React-разработчик (middle) - для ДИТ до 01.08",
+            "city": 3,
+            "position": "Python-разработчик (middle)",
+            "salary": "51",
+            "description": "В департамент разработки мобильных игр требуется React-разработчик.\nТребования к кандидату:\n- высшее образование;\n- опыт разработки веб-приложений от 1 года."
+        }
+    },
+    {
+        "model": "recrutingapp.vacancy",
+        "pk": 9,
+        "fields": {
+            "status": "d",
+            "status_info": "",
+            "created_at": "2024-06-21T17:22:24.189Z",
+            "updated_at": "2024-06-21T17:22:30.152Z",
+            "updated_by": [
+                "testEmployer"
+            ],
+            "owner": [
+                "testEmployer"
+            ],
+            "employer": 1,
+            "title": "React-разработчик (middle) - для ДИТ до 01.08",
+            "city": 3,
+            "position": "Python-разработчик (middle)",
+            "salary": "51",
+            "description": "В департамент разработки мобильных игр требуется React-разработчик.\nТребования к кандидату:\n- высшее образование;\n- опыт разработки веб-приложений от 1 года."
+        }
+    },
+    {
+        "model": "recrutingapp.cvresponse",
+        "pk": 8,
+        "fields": {
+            "status": "p",
+            "status_info": "",
+            "created_at": "2024-06-21T17:19:11.285Z",
+            "updated_at": "2024-06-21T17:19:11.547Z",
+            "updated_by": [
+                "testEmployer"
+            ],
+            "owner": [
+                "testEmployer"
+            ],
+            "cv": 9,
+            "vacancy": 6
+        }
+    },
+    {
+        "model": "recrutingapp.vacancyresponse",
+        "pk": 2,
+        "fields": {
+            "status": "a",
+            "status_info": "",
+            "created_at": "2024-06-21T17:13:59.656Z",
+            "updated_at": "2024-06-21T17:16:21.852Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "vacancy": 6,
+            "cv": 8
+        }
+    },
+    {
+        "model": "recrutingapp.vacancyresponse",
+        "pk": 4,
+        "fields": {
+            "status": "r",
+            "status_info": "",
+            "created_at": "2024-06-21T17:14:41.934Z",
+            "updated_at": "2024-06-21T17:18:19.351Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "vacancy": 6,
+            "cv": 9
+        }
+    },
+    {
+        "model": "recrutingapp.vacancyresponse",
+        "pk": 5,
+        "fields": {
+            "status": "p",
+            "status_info": "",
+            "created_at": "2024-06-21T17:17:57.250Z",
+            "updated_at": "2024-06-21T17:17:57.453Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "vacancy": 6,
+            "cv": 11
+        }
+    },
+    {
+        "model": "recrutingapp.favorite",
+        "pk": 8,
+        "fields": {
+            "user": [
+                "testEmployer"
+            ],
+            "content_type": [
+                "recrutingapp",
+                "cv"
+            ],
+            "object_id": 3
+        }
+    },
+    {
+        "model": "recrutingapp.favorite",
+        "pk": 10,
+        "fields": {
+            "user": [
+                "testEmployee"
+            ],
+            "content_type": [
+                "recrutingapp",
+                "vacancy"
+            ],
+            "object_id": 6
+        }
+    },
+    {
+        "model": "recrutingapp.favorite",
+        "pk": 11,
+        "fields": {
+            "user": [
+                "testEmployer"
+            ],
+            "content_type": [
+                "recrutingapp",
+                "cv"
+            ],
+            "object_id": 9
+        }
+    }
+]

@@ -1,0 +1,3596 @@
+openapi: 3.0.3
+info:
+  title: Recruting
+  version: 1.0 (1.0)
+  description: Final project
+paths:
+  /api-token-auth/:
+    post:
+      operationId: api_token_auth_create
+      tags:
+      - api-token-auth
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthToken'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthToken'
+          description: ''
+  /api/token/:
+    post:
+      operationId: api_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: api_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/token/verify/:
+    post:
+      operationId: api_token_verify_create
+      description: |-
+        Takes a token and indicates if it is valid.  This view provides no
+        information about a token's fitness for a particular use.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+  /api/v1.0/accounts/confirm/:
+    post:
+      operationId: api_v1.0_accounts_confirm_create
+      description: User e-mail confirmation.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmailConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmailConfirm'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailConfirm'
+          description: ''
+  /api/v1.0/accounts/confirm/resend/:
+    post:
+      operationId: api_v1.0_accounts_confirm_resend_create
+      description: 'Method for resending of confirmation code '
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          description: No response body
+        '400':
+          description: No response body
+  /api/v1.0/accounts/signin/:
+    get:
+      operationId: api_v1.0_accounts_signin_list
+      description: User data request
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          description: ''
+  /api/v1.0/accounts/signup/:
+    post:
+      operationId: api_v1.0_accounts_signup_create
+      description: User registration.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUp'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SignUp'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SignUp'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignUp'
+          description: ''
+  /api/v1.0/protected/cities/:
+    get:
+      operationId: api_v1.0_protected_cities_list
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/City'
+          description: ''
+  /api/v1.0/protected/cv-responses/:
+    get:
+      operationId: api_v1.0_protected_cv_responses_list
+      description: View for CV response
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CVResponseSerializerExt'
+          description: ''
+    post:
+      operationId: api_v1.0_protected_cv_responses_create
+      description: View for CV response
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CVResponseSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CVResponseSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CVResponseSerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CVResponseSerializerInt'
+          description: ''
+  /api/v1.0/protected/cv-responses/{id}/:
+    get:
+      operationId: api_v1.0_protected_cv_responses_retrieve
+      description: View for CV response
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CVResponseSerializerExt'
+          description: ''
+    put:
+      operationId: api_v1.0_protected_cv_responses_update
+      description: View for CV response
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CVResponseSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CVResponseSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CVResponseSerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CVResponseSerializerInt'
+          description: ''
+    patch:
+      operationId: api_v1.0_protected_cv_responses_partial_update
+      description: View for CV response
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCVResponseSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCVResponseSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCVResponseSerializerInt'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CVResponseSerializerInt'
+          description: ''
+    delete:
+      operationId: api_v1.0_protected_cv_responses_destroy
+      description: View for CV response
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1.0/protected/cv-responses/{id}/messages/:
+    patch:
+      operationId: api_v1.0_protected_cv_responses_messages_partial_update
+      description: Add message
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentMessage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentMessage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentMessage'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentMessage'
+          description: ''
+  /api/v1.0/protected/cv-responses/{id}/status/:
+    patch:
+      operationId: api_v1.0_protected_cv_responses_status_partial_update
+      description: Method for status management
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          description: No response body
+  /api/v1.0/protected/cvs/:
+    get:
+      operationId: api_v1.0_protected_cvs_list
+      description: View for CV
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCVSerializerExtList'
+          description: ''
+    post:
+      operationId: api_v1.0_protected_cvs_create
+      description: View for CV
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CVSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CVSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CVSerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CVSerializerInt'
+          description: ''
+  /api/v1.0/protected/cvs/{id}/:
+    get:
+      operationId: api_v1.0_protected_cvs_retrieve
+      description: View for CV
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CVSerializerExt'
+          description: ''
+    put:
+      operationId: api_v1.0_protected_cvs_update
+      description: View for CV
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CVSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CVSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CVSerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CVSerializerInt'
+          description: ''
+    patch:
+      operationId: api_v1.0_protected_cvs_partial_update
+      description: View for CV
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCVSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCVSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCVSerializerInt'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CVSerializerInt'
+          description: ''
+    delete:
+      operationId: api_v1.0_protected_cvs_destroy
+      description: View for CV
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1.0/protected/cvs/{id}/favorite/:
+    post:
+      operationId: api_v1.0_protected_cvs_favorite_create
+      description: Add object to favorite
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          description: No response body
+    delete:
+      operationId: api_v1.0_protected_cvs_favorite_destroy
+      description: Remove object from favorite
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1.0/protected/cvs/{id}/status/:
+    patch:
+      operationId: api_v1.0_protected_cvs_status_partial_update
+      description: Method for status management
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          description: No response body
+  /api/v1.0/protected/cvs/favorites/:
+    get:
+      operationId: api_v1.0_protected_cvs_favorites_retrieve
+      description: List of objects in favorites
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CVSerializerExt'
+          description: ''
+  /api/v1.0/protected/employees/:
+    get:
+      operationId: api_v1.0_protected_employees_list
+      description: View for employee
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmployeeSerializerExt'
+          description: ''
+    post:
+      operationId: api_v1.0_protected_employees_create
+      description: View for employee
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmployeeSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmployeeSerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeSerializerInt'
+          description: ''
+  /api/v1.0/protected/employees/{id}/:
+    get:
+      operationId: api_v1.0_protected_employees_retrieve
+      description: View for employee
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeSerializerExt'
+          description: ''
+    put:
+      operationId: api_v1.0_protected_employees_update
+      description: View for employee
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmployeeSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmployeeSerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeSerializerInt'
+          description: ''
+    patch:
+      operationId: api_v1.0_protected_employees_partial_update
+      description: View for employee
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployeeSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployeeSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployeeSerializerInt'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployeeSerializerInt'
+          description: ''
+    delete:
+      operationId: api_v1.0_protected_employees_destroy
+      description: View for employee
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1.0/protected/employers/:
+    get:
+      operationId: api_v1.0_protected_employers_list
+      description: View for employer (Company card)
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEmployerSerializerExtList'
+          description: ''
+    post:
+      operationId: api_v1.0_protected_employers_create
+      description: View for employer (Company card)
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployerSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmployerSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmployerSerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerSerializerInt'
+          description: ''
+  /api/v1.0/protected/employers/{id}/:
+    get:
+      operationId: api_v1.0_protected_employers_retrieve
+      description: View for employer (Company card)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerSerializerExt'
+          description: ''
+    put:
+      operationId: api_v1.0_protected_employers_update
+      description: View for employer (Company card)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployerSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EmployerSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EmployerSerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerSerializerInt'
+          description: ''
+    patch:
+      operationId: api_v1.0_protected_employers_partial_update
+      description: View for employer (Company card)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployerSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployerSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEmployerSerializerInt'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerSerializerInt'
+          description: ''
+    delete:
+      operationId: api_v1.0_protected_employers_destroy
+      description: View for employer (Company card)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1.0/protected/employers/{id}/status/:
+    patch:
+      operationId: api_v1.0_protected_employers_status_partial_update
+      description: Method for status management
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          description: No response body
+  /api/v1.0/protected/genders/:
+    get:
+      operationId: api_v1.0_protected_genders_list
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Gender'
+          description: ''
+  /api/v1.0/protected/news/posts/:
+    get:
+      operationId: api_v1.0_protected_news_posts_list
+      description: View for staff
+      parameters:
+      - in: query
+        name: created_at_after
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: created_at_before
+        schema:
+          type: string
+          format: date
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: tags__name
+        schema:
+          type: string
+      - in: query
+        name: title
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNewsStaffList'
+          description: ''
+    post:
+      operationId: api_v1.0_protected_news_posts_create
+      description: View for staff
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsStaff'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewsStaff'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NewsStaff'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsStaff'
+          description: ''
+  /api/v1.0/protected/news/posts/{id}/:
+    get:
+      operationId: api_v1.0_protected_news_posts_retrieve
+      description: View for staff
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this newspost.
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsStaff'
+          description: ''
+    put:
+      operationId: api_v1.0_protected_news_posts_update
+      description: View for staff
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this newspost.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsStaff'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewsStaff'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NewsStaff'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsStaff'
+          description: ''
+    patch:
+      operationId: api_v1.0_protected_news_posts_partial_update
+      description: View for staff
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this newspost.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsStaff'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsStaff'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsStaff'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsStaff'
+          description: ''
+    delete:
+      operationId: api_v1.0_protected_news_posts_destroy
+      description: View for staff
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this newspost.
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1.0/protected/news/tags/:
+    get:
+      operationId: api_v1.0_protected_news_tags_list
+      description: View for staff
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNewsTagStaffList'
+          description: ''
+    post:
+      operationId: api_v1.0_protected_news_tags_create
+      description: View for staff
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsTagStaff'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewsTagStaff'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NewsTagStaff'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsTagStaff'
+          description: ''
+  /api/v1.0/protected/news/tags/{id}/:
+    get:
+      operationId: api_v1.0_protected_news_tags_retrieve
+      description: View for staff
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this newstag.
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsTagStaff'
+          description: ''
+    put:
+      operationId: api_v1.0_protected_news_tags_update
+      description: View for staff
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this newstag.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsTagStaff'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NewsTagStaff'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NewsTagStaff'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsTagStaff'
+          description: ''
+    patch:
+      operationId: api_v1.0_protected_news_tags_partial_update
+      description: View for staff
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this newstag.
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsTagStaff'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsTagStaff'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNewsTagStaff'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsTagStaff'
+          description: ''
+    delete:
+      operationId: api_v1.0_protected_news_tags_destroy
+      description: View for staff
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this newstag.
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1.0/protected/vacancies/:
+    get:
+      operationId: api_v1.0_protected_vacancies_list
+      description: View for Vacancies
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVacancySerializerExtList'
+          description: ''
+    post:
+      operationId: api_v1.0_protected_vacancies_create
+      description: View for Vacancies
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VacancySerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VacancySerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VacancySerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancySerializerInt'
+          description: ''
+  /api/v1.0/protected/vacancies/{id}/:
+    get:
+      operationId: api_v1.0_protected_vacancies_retrieve
+      description: View for Vacancies
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancySerializerExt'
+          description: ''
+    put:
+      operationId: api_v1.0_protected_vacancies_update
+      description: View for Vacancies
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VacancySerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VacancySerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VacancySerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancySerializerInt'
+          description: ''
+    patch:
+      operationId: api_v1.0_protected_vacancies_partial_update
+      description: View for Vacancies
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVacancySerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVacancySerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVacancySerializerInt'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancySerializerInt'
+          description: ''
+    delete:
+      operationId: api_v1.0_protected_vacancies_destroy
+      description: View for Vacancies
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1.0/protected/vacancies/{id}/favorite/:
+    post:
+      operationId: api_v1.0_protected_vacancies_favorite_create
+      description: Add object to favorite
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          description: No response body
+    delete:
+      operationId: api_v1.0_protected_vacancies_favorite_destroy
+      description: Remove object from favorite
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1.0/protected/vacancies/{id}/status/:
+    patch:
+      operationId: api_v1.0_protected_vacancies_status_partial_update
+      description: Method for status management
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          description: No response body
+  /api/v1.0/protected/vacancies/favorites/:
+    get:
+      operationId: api_v1.0_protected_vacancies_favorites_retrieve
+      description: List of objects in favorites
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancySerializerExt'
+          description: ''
+  /api/v1.0/protected/vacancy-responses/:
+    get:
+      operationId: api_v1.0_protected_vacancy_responses_list
+      description: View for Vacancy response
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VacancyResponseSerializerExt'
+          description: ''
+    post:
+      operationId: api_v1.0_protected_vacancy_responses_create
+      description: View for Vacancy response
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VacancyResponseSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VacancyResponseSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VacancyResponseSerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancyResponseSerializerInt'
+          description: ''
+  /api/v1.0/protected/vacancy-responses/{id}/:
+    get:
+      operationId: api_v1.0_protected_vacancy_responses_retrieve
+      description: View for Vacancy response
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancyResponseSerializerExt'
+          description: ''
+    put:
+      operationId: api_v1.0_protected_vacancy_responses_update
+      description: View for Vacancy response
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VacancyResponseSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VacancyResponseSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VacancyResponseSerializerInt'
+        required: true
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancyResponseSerializerInt'
+          description: ''
+    patch:
+      operationId: api_v1.0_protected_vacancy_responses_partial_update
+      description: View for Vacancy response
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVacancyResponseSerializerInt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVacancyResponseSerializerInt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVacancyResponseSerializerInt'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VacancyResponseSerializerInt'
+          description: ''
+    delete:
+      operationId: api_v1.0_protected_vacancy_responses_destroy
+      description: View for Vacancy response
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1.0/protected/vacancy-responses/{id}/messages/:
+    patch:
+      operationId: api_v1.0_protected_vacancy_responses_messages_partial_update
+      description: Add message
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentMessage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentMessage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentMessage'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentMessage'
+          description: ''
+  /api/v1.0/protected/vacancy-responses/{id}/status/:
+    patch:
+      operationId: api_v1.0_protected_vacancy_responses_status_partial_update
+      description: Method for status management
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDocumentStatusMixin'
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+        '400':
+          description: No response body
+  /api/v1.0/public/employers/:
+    get:
+      operationId: api_v1.0_public_employers_list
+      description: View for end or anonimous users
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEmployerSerializerExtList'
+          description: ''
+  /api/v1.0/public/employers/{id}/:
+    get:
+      operationId: api_v1.0_public_employers_retrieve
+      description: View for end or anonimous users
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this employer.
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmployerSerializerExt'
+          description: ''
+  /api/v1.0/public/news/:
+    get:
+      operationId: api_v1.0_public_news_list
+      description: View for end or anonimous users
+      parameters:
+      - in: query
+        name: created_at_after
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: created_at_before
+        schema:
+          type: string
+          format: date
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: tags__name
+        schema:
+          type: string
+      - in: query
+        name: title
+        schema:
+          type: string
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNewsPublicListList'
+          description: ''
+  /api/v1.0/public/news/{id}/:
+    get:
+      operationId: api_v1.0_public_news_retrieve
+      description: View for end or anonimous users
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this newspost.
+        required: true
+      tags:
+      - api
+      security:
+      - basicAuth: []
+      - tokenAuth: []
+      - cookieAuth: []
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsPublicDetail'
+          description: ''
+components:
+  schemas:
+    AuthToken:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        token:
+          type: string
+          readOnly: true
+      required:
+      - password
+      - token
+      - username
+    CVEducation:
+      type: object
+      description: Serializer for employee education
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        date:
+          type: string
+          format: date
+        specialty:
+          type: string
+          title: Speciality
+          maxLength: 100
+        institution:
+          type: string
+          maxLength: 100
+        content:
+          type: string
+          description: Content
+          maxLength: 1024
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - content
+      - created_at
+      - date
+      - id
+      - institution
+      - specialty
+      - updated_at
+    CVExperienceSerializerExt:
+      type: object
+      description: Serializer for employee experience (reading)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        datefrom:
+          type: string
+          format: date
+        dateto:
+          type: string
+          format: date
+        is_current:
+          type: boolean
+        city:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        company:
+          type: string
+          maxLength: 100
+        position:
+          type: string
+          maxLength: 100
+        content:
+          type: string
+          description: Content
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - city
+      - company
+      - content
+      - created_at
+      - datefrom
+      - id
+      - position
+      - updated_at
+    CVExperienceSerializerInt:
+      type: object
+      description: Serializer for employee experience (create/update)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        datefrom:
+          type: string
+          format: date
+        dateto:
+          type: string
+          format: date
+        is_current:
+          type: boolean
+        city:
+          type: integer
+        company:
+          type: string
+          maxLength: 100
+        position:
+          type: string
+          maxLength: 100
+        content:
+          type: string
+          description: Content
+      required:
+      - city
+      - company
+      - content
+      - datefrom
+      - id
+      - is_current
+      - position
+    CVResponseSerializerExt:
+      type: object
+      description: Serializer for reading
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        cv:
+          $ref: '#/components/schemas/CVSerializerExt'
+        vacancy:
+          $ref: '#/components/schemas/VacancySerializerExt'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        status_info:
+          type: string
+          description: Status info
+          maxLength: 150
+        messages:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/DocumentMessage'
+          readOnly: true
+      required:
+      - created_at
+      - cv
+      - id
+      - messages
+      - owner
+      - status
+      - updated_at
+      - vacancy
+    CVResponseSerializerInt:
+      type: object
+      description: Serializer for create/update actions (internal pk) with validation
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        cv:
+          type: integer
+        vacancy:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - cv
+      - id
+      - owner
+      - updated_at
+      - vacancy
+    CVSerializerExt:
+      type: object
+      description: Serializer for CV reading
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        employee:
+          $ref: '#/components/schemas/EmployeeSerializerExt'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        status_info:
+          type: string
+          description: Status info
+          maxLength: 150
+        title:
+          type: string
+          description: Title
+          maxLength: 60
+        position:
+          type: string
+          maxLength: 100
+        salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,0})?$
+        description:
+          type: string
+        experience:
+          type: array
+          items:
+            $ref: '#/components/schemas/CVExperienceSerializerExt'
+        education:
+          type: array
+          items:
+            $ref: '#/components/schemas/CVEducation'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_favorite:
+          type: boolean
+          readOnly: true
+      required:
+      - created_at
+      - description
+      - education
+      - employee
+      - experience
+      - id
+      - is_favorite
+      - owner
+      - position
+      - salary
+      - status
+      - title
+      - updated_at
+    CVSerializerInt:
+      type: object
+      description: Serializer for CV's create/update actions (internal pk)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        employee:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        title:
+          type: string
+          description: Title
+          maxLength: 60
+        position:
+          type: string
+          maxLength: 100
+        salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,0})?$
+        description:
+          type: string
+        experience:
+          type: array
+          items:
+            $ref: '#/components/schemas/CVExperienceSerializerInt'
+        education:
+          type: array
+          items:
+            $ref: '#/components/schemas/CVEducation'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - description
+      - education
+      - employee
+      - experience
+      - id
+      - owner
+      - position
+      - salary
+      - title
+      - updated_at
+    City:
+      type: object
+      description: City model serializer (no logic)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          description: City name
+          maxLength: 100
+        region:
+          type: integer
+          description: Region
+        fullname:
+          type: string
+          readOnly: true
+      required:
+      - fullname
+      - id
+      - name
+      - region
+    ContentTypeEnum:
+      enum:
+      - MD
+      - HT
+      - TX
+      type: string
+      description: |-
+        * `MD` - Markdown
+        * `HT` - HTML
+        * `TX` - Plain text
+    DocumentMessage:
+      type: object
+      description: Serializer for document chat messages
+      properties:
+        sender:
+          allOf:
+          - $ref: '#/components/schemas/SenderEnum'
+          title: End user role
+          description: |-
+            End user role
+
+            * `employer` - employer
+            * `employee` - employee
+            * `moderator` - moderator
+          readOnly: true
+        content:
+          type: string
+          maxLength: 1024
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - content
+      - created_at
+      - sender
+    EmailConfirm:
+      type: object
+      description: Validating user and assigning group permissions
+      properties:
+        username:
+          type: string
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
+      - username
+    EmployeeSerializerExt:
+      type: object
+      description: Serializer for reading
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        birthday:
+          type: string
+          format: date
+        age:
+          type: integer
+          description: Age in years
+          readOnly: true
+        email:
+          type: string
+          title: Email address
+          maxLength: 256
+        city:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        gender:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        description:
+          type: string
+          maxLength: 250
+        skills:
+          type: array
+          items:
+            type: string
+            description: Skill name
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - age
+      - birthday
+      - city
+      - email
+      - gender
+      - id
+      - name
+      - owner
+      - skills
+      - updated_at
+    EmployeeSerializerInt:
+      type: object
+      description: Serializer internal pk
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          maxLength: 100
+        birthday:
+          type: string
+          format: date
+        city:
+          type: integer
+        gender:
+          type: string
+          description: Gender id
+        description:
+          type: string
+          maxLength: 250
+        skills:
+          type: array
+          items:
+            type: string
+      required:
+      - birthday
+      - city
+      - email
+      - gender
+      - id
+      - name
+      - owner
+      - skills
+    EmployerSerializerExt:
+      type: object
+      description: Serializer for employer profile reading
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        established:
+          type: string
+          format: date
+        age:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          title: Email address
+          maxLength: 256
+        city:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        description:
+          type: string
+          maxLength: 250
+        welcome_letter:
+          type: string
+          maxLength: 1000
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        status_info:
+          type: string
+          description: Status info
+          maxLength: 150
+      required:
+      - age
+      - city
+      - email
+      - established
+      - id
+      - name
+      - owner
+      - status
+      - updated_at
+    EmployerSerializerInt:
+      type: object
+      description: Employer profile serializer for create/update actions
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          maxLength: 100
+        established:
+          type: string
+          format: date
+        city:
+          type: integer
+        description:
+          type: string
+          maxLength: 250
+        welcome_letter:
+          type: string
+          maxLength: 1000
+      required:
+      - city
+      - email
+      - established
+      - id
+      - name
+      - owner
+    Gender:
+      type: object
+      description: Gender model serializer (no logic)
+      properties:
+        id:
+          type: string
+          description: Gender id
+          maxLength: 1
+        name:
+          type: string
+          description: Gender name
+          maxLength: 25
+      required:
+      - id
+      - name
+    Nested:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          description: City name
+          maxLength: 100
+        region:
+          type: integer
+          description: Region
+      required:
+      - id
+      - name
+      - region
+    NewsPublicDetail:
+      type: object
+      description: Serializer for public detail access
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Title
+          maxLength: 60
+        body:
+          type: string
+          description: Body
+          maxLength: 200
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        content:
+          type: string
+          description: Content
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        tags:
+          type: array
+          items:
+            type: string
+            description: News tag name
+          readOnly: true
+      required:
+      - body
+      - content
+      - content_type
+      - created_at
+      - id
+      - tags
+      - title
+    NewsPublicList:
+      type: object
+      description: Serializer for public list access
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Title
+          maxLength: 60
+        body:
+          type: string
+          description: Body
+          maxLength: 200
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        tags:
+          type: array
+          items:
+            type: string
+            description: News tag name
+          readOnly: true
+      required:
+      - body
+      - created_at
+      - id
+      - tags
+      - title
+    NewsStaff:
+      type: object
+      description: Serializer for managimg news (staff)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Title
+          maxLength: 60
+        body:
+          type: string
+          description: Body
+          maxLength: 200
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        content:
+          type: string
+          description: Content
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_by:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        tags:
+          type: array
+          items:
+            type: string
+            description: News tag name
+      required:
+      - body
+      - content
+      - content_type
+      - created_at
+      - id
+      - title
+      - updated_at
+      - updated_by
+    NewsTagStaff:
+      type: object
+      description: Serializer for managimg news (staff)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          description: News tag name
+          maxLength: 30
+      required:
+      - id
+      - name
+    PaginatedCVSerializerExtList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CVSerializerExt'
+    PaginatedEmployerSerializerExtList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmployerSerializerExt'
+    PaginatedNewsPublicListList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsPublicList'
+    PaginatedNewsStaffList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsStaff'
+    PaginatedNewsTagStaffList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NewsTagStaff'
+    PaginatedVacancySerializerExtList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/VacancySerializerExt'
+    PatchedCVResponseSerializerInt:
+      type: object
+      description: Serializer for create/update actions (internal pk) with validation
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        cv:
+          type: integer
+        vacancy:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedCVSerializerInt:
+      type: object
+      description: Serializer for CV's create/update actions (internal pk)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        employee:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        title:
+          type: string
+          description: Title
+          maxLength: 60
+        position:
+          type: string
+          maxLength: 100
+        salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,0})?$
+        description:
+          type: string
+        experience:
+          type: array
+          items:
+            $ref: '#/components/schemas/CVExperienceSerializerInt'
+        education:
+          type: array
+          items:
+            $ref: '#/components/schemas/CVEducation'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedDocumentMessage:
+      type: object
+      description: Serializer for document chat messages
+      properties:
+        sender:
+          allOf:
+          - $ref: '#/components/schemas/SenderEnum'
+          title: End user role
+          description: |-
+            End user role
+
+            * `employer` - employer
+            * `employee` - employee
+            * `moderator` - moderator
+          readOnly: true
+        content:
+          type: string
+          maxLength: 1024
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedDocumentStatusMixin:
+      type: object
+      description: Mixin for objects with status ('status' action handling)
+      properties:
+        status:
+          type: string
+          maxLength: 1
+        info:
+          type: string
+          maxLength: 150
+    PatchedEmployeeSerializerInt:
+      type: object
+      description: Serializer internal pk
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          maxLength: 100
+        birthday:
+          type: string
+          format: date
+        city:
+          type: integer
+        gender:
+          type: string
+          description: Gender id
+        description:
+          type: string
+          maxLength: 250
+        skills:
+          type: array
+          items:
+            type: string
+    PatchedEmployerSerializerInt:
+      type: object
+      description: Employer profile serializer for create/update actions
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+          maxLength: 100
+        established:
+          type: string
+          format: date
+        city:
+          type: integer
+        description:
+          type: string
+          maxLength: 250
+        welcome_letter:
+          type: string
+          maxLength: 1000
+    PatchedNewsStaff:
+      type: object
+      description: Serializer for managimg news (staff)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Title
+          maxLength: 60
+        body:
+          type: string
+          description: Body
+          maxLength: 200
+        content_type:
+          $ref: '#/components/schemas/ContentTypeEnum'
+        content:
+          type: string
+          description: Content
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_by:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        tags:
+          type: array
+          items:
+            type: string
+            description: News tag name
+    PatchedNewsTagStaff:
+      type: object
+      description: Serializer for managimg news (staff)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          description: News tag name
+          maxLength: 30
+    PatchedVacancyResponseSerializerInt:
+      type: object
+      description: Serializer for write operations (internal pk)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        cv:
+          type: integer
+        vacancy:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedVacancySerializerInt:
+      type: object
+      description: Serializer for Vacancies's create/update actions (internal pk)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        employer:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        title:
+          type: string
+          description: Title
+          maxLength: 60
+        city:
+          type: integer
+        position:
+          type: string
+          maxLength: 100
+        salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,0})?$
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    RoleEnum:
+      enum:
+      - employer
+      - employee
+      - moderator
+      type: string
+      description: |-
+        * `employer` - employer
+        * `employee` - employee
+        * `moderator` - moderator
+    SenderEnum:
+      enum:
+      - employer
+      - employee
+      - moderator
+      type: string
+      description: |-
+        * `employer` - employer
+        * `employee` - employee
+        * `moderator` - moderator
+    SignUp:
+      type: object
+      description: Creating user without group permissions and sending validation
+        code
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          format: email
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          title: End user role
+          description: |-
+            End user role
+
+            * `employer` - employer
+            * `employee` - employee
+            * `moderator` - moderator
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+      required:
+      - email
+      - password
+      - username
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+          writeOnly: true
+      required:
+      - token
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+          readOnly: true
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          type: string
+          readOnly: true
+          title: Email address
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+          title: End user role
+          description: |-
+            End user role
+
+            * `employer` - employer
+            * `employee` - employee
+            * `moderator` - moderator
+        is_validated:
+          type: boolean
+          readOnly: true
+          title: Validated
+          description: Designates whether this user has validated his account
+      required:
+      - email
+      - is_validated
+      - role
+      - username
+    VacancyResponseSerializerExt:
+      type: object
+      description: Serializer for reading
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        cv:
+          $ref: '#/components/schemas/CVSerializerExt'
+        vacancy:
+          $ref: '#/components/schemas/VacancySerializerExt'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        status_info:
+          type: string
+          description: Status info
+          maxLength: 150
+        messages:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/DocumentMessage'
+          readOnly: true
+      required:
+      - created_at
+      - cv
+      - id
+      - messages
+      - owner
+      - status
+      - updated_at
+      - vacancy
+    VacancyResponseSerializerInt:
+      type: object
+      description: Serializer for write operations (internal pk)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        cv:
+          type: integer
+        vacancy:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - cv
+      - id
+      - owner
+      - updated_at
+      - vacancy
+    VacancySerializerExt:
+      type: object
+      description: Serializer for Vacancy reading
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        employer:
+          $ref: '#/components/schemas/EmployerSerializerExt'
+        status:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        status_info:
+          type: string
+          description: Status info
+          maxLength: 150
+        title:
+          type: string
+          description: Title
+          maxLength: 60
+        city:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        position:
+          type: string
+          maxLength: 100
+        salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,0})?$
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        is_favorite:
+          type: boolean
+          readOnly: true
+      required:
+      - city
+      - created_at
+      - description
+      - employer
+      - id
+      - is_favorite
+      - owner
+      - position
+      - salary
+      - status
+      - title
+      - updated_at
+    VacancySerializerInt:
+      type: object
+      description: Serializer for Vacancies's create/update actions (internal pk)
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          readOnly: true
+        employer:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        title:
+          type: string
+          description: Title
+          maxLength: 60
+        city:
+          type: integer
+        position:
+          type: string
+          maxLength: 100
+        salary:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,10}(?:\.\d{0,0})?$
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - city
+      - created_at
+      - description
+      - employer
+      - id
+      - owner
+      - position
+      - salary
+      - title
+      - updated_at
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"

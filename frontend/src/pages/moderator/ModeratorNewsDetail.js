@@ -31,7 +31,7 @@ const ModeratorNewsDetailPage = ({ backTo }) => {
     } else {
         dataProvider.getOne(DATA_RESOURCES.publicNews, id)
             .then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.error) {
                     setError(res.error)
                 } else {
