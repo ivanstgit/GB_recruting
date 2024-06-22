@@ -140,9 +140,14 @@ class VacancyPermission(permissions.BasePermission):
 
         # employer has full permissions except changing data in pending status
         if role == UserRoles.employer.value and obj.owner == request.user:
-            if request.method in permissions.SAFE_METHODS or obj.status.id in (
-                ConstDocumentStatus.draft,
-                ConstDocumentStatus.rejected,
+            if (
+                request.method in permissions.SAFE_METHODS
+                or obj.status.id
+                in (
+                    ConstDocumentStatus.draft,
+                    ConstDocumentStatus.rejected,
+                )
+                or view.action == "destroy"
             ):
                 return True
 

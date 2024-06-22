@@ -56,7 +56,7 @@ const EmployeeCVDetailPage = ({ backTo }) => {
         if (!item) {
             dataProvider.getOne(DATA_RESOURCES.cvs, id)
                 .then(res => {
-                    console.log(res)
+                    // console.log(res)
                     if (res.error) {
                         setError(res.error)
                     } else {

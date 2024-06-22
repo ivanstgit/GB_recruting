@@ -110,7 +110,7 @@ class DocStatusModelMixin:
             new_status = serializer.validated_data["status"]
             new_status_info = serializer.validated_data["info"]
             if obj and (
-                new_status == ConstDocumentStatus.draft
+                (new_status == ConstDocumentStatus.draft and obj.owner == request.user)
                 or (
                     obj.status.id
                     in (ConstDocumentStatus.draft, ConstDocumentStatus.rejected)
@@ -271,7 +271,7 @@ class NewsPublicViewSet(
 class NewsTagsStaffViewSet(viewsets.ModelViewSet):
     """View for staff"""
 
-    queryset = NewsTag.objects.all()
+    queryset = NewsTag.objects.all().order_by("name")
     permission_classes = [permissions.DjangoModelPermissions]
     serializer_class = NewsTagStaffSerializer
 
@@ -369,7 +369,6 @@ class EmployerProtectedViewSet(
     OwnedModelMixin,
     LoggedModelMixin,
     DocStatusModelMixin,
-    FavoriteMixin,
     viewsets.ModelViewSet,
 ):
     """View for employer (Company card)"""
@@ -399,11 +398,7 @@ class EmployerProtectedViewSet(
         else:
             qs = Employer.objects.filter(status=ConstDocumentStatus.approved)
 
-        return (
-            self.annotate_qs_is_favorite_field(qs)
-            .order_by("-updated_at")
-            .prefetch_related("city")
-        )
+        return qs.order_by("-updated_at").prefetch_related("city")
 
     def get_serializer_class(self):
         if self.request.method in REQUEST_METHODS_CHANGE:

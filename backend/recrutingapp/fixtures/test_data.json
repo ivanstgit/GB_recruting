@@ -301,6 +301,72 @@
         }
     },
     {
+        "model": "recrutingapp.employer",
+        "pk": 2,
+        "fields": {
+            "status": "d",
+            "status_info": "",
+            "created_at": "2024-05-24T20:11:51.619Z",
+            "updated_at": "2024-06-12T10:14:40.550Z",
+            "updated_by": [
+                "testEmployer2"
+            ],
+            "owner": [
+                "testEmployer2"
+            ],
+            "name": "ООО \"Рога и копыта\"2",
+            "established": "2004-01-01",
+            "email": "testEmployer2@ru.ru",
+            "city": 3,
+            "description": "Самые большие рога и очень много копыт! Многолетний опыт на рынке.",
+            "welcome_letter": "Стань частью успешной компании!\nПрисоединяйся к команде по заточке рогов!"
+        }
+    },
+    {
+        "model": "recrutingapp.employer",
+        "pk": 3,
+        "fields": {
+            "status": "p",
+            "status_info": "",
+            "created_at": "2024-05-24T20:11:51.619Z",
+            "updated_at": "2024-06-12T10:14:40.550Z",
+            "updated_by": [
+                "testEmployer3"
+            ],
+            "owner": [
+                "testEmployer3"
+            ],
+            "name": "ООО \"Рога и копыта\"3",
+            "established": "2004-01-01",
+            "email": "testEmployer3@ru.ru",
+            "city": 3,
+            "description": "Самые большие рога и очень много копыт! Многолетний опыт на рынке.",
+            "welcome_letter": "Стань частью успешной компании!\nПрисоединяйся к команде по заточке рогов!"
+        }
+    },
+    {
+        "model": "recrutingapp.employer",
+        "pk": 4,
+        "fields": {
+            "status": "r",
+            "status_info": "reason",
+            "created_at": "2024-05-24T20:11:51.619Z",
+            "updated_at": "2024-06-12T10:14:40.550Z",
+            "updated_by": [
+                "testEmployer4"
+            ],
+            "owner": [
+                "testEmployer4"
+            ],
+            "name": "ООО \"Рога и копыта\"4",
+            "established": "2004-01-01",
+            "email": "testEmployer4@ru.ru",
+            "city": 3,
+            "description": "Самые большие рога и очень много копыт! Многолетний опыт на рынке.",
+            "welcome_letter": "Стань частью успешной компании!\nПрисоединяйся к команде по заточке рогов!"
+        }
+    },
+    {
         "model": "recrutingapp.cv",
         "pk": 8,
         "fields": {
@@ -422,6 +488,27 @@
             "employee": 4,
             "title": "Разработчик React (middle) 4",
             "position": "React-разработчик (middle)",
+            "salary": "150",
+            "description": "Прошел обучение, 3 года релевантного опыта."
+        }
+    },
+    {
+        "model": "recrutingapp.cv",
+        "pk": 14,
+        "fields": {
+            "status": "d",
+            "status_info": "",
+            "created_at": "2024-06-21T17:13:18.642Z",
+            "updated_at": "2024-06-21T17:13:27.657Z",
+            "updated_by": [
+                "testEmployee"
+            ],
+            "owner": [
+                "testEmployee"
+            ],
+            "employee": 4,
+            "title": "Разработчик БД",
+            "position": "Разработчик БД",
             "salary": "150",
             "description": "Прошел обучение, 3 года релевантного опыта."
         }
@@ -731,6 +818,28 @@
         "pk": 8,
         "fields": {
             "status": "p",
+            "status_info": "",
+            "created_at": "2024-06-21T17:22:24.189Z",
+            "updated_at": "2024-06-21T17:22:30.152Z",
+            "updated_by": [
+                "testEmployer"
+            ],
+            "owner": [
+                "testEmployer"
+            ],
+            "employer": 1,
+            "title": "React-разработчик (middle) - для ДИТ до 01.08",
+            "city": 3,
+            "position": "Python-разработчик (middle)",
+            "salary": "51",
+            "description": "В департамент разработки мобильных игр требуется React-разработчик.\nТребования к кандидату:\n- высшее образование;\n- опыт разработки веб-приложений от 1 года."
+        }
+    },
+    {
+        "model": "recrutingapp.vacancy",
+        "pk": 9,
+        "fields": {
+            "status": "d",
             "status_info": "",
             "created_at": "2024-06-21T17:22:24.189Z",
             "updated_at": "2024-06-21T17:22:30.152Z",

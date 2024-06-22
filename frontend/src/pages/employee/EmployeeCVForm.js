@@ -357,14 +357,14 @@ const EmployeeCVForm = ({ backTo }) => {
     }
 
     const handleEditExperience = (index) => {
-        console.log("edit " + index)
+        // console.log("edit " + index)
         if (selectedExperienceIndex !== index) {
             setSelectedExperienceIndex(index)
         }
     }
 
     const handleDeleteExperience = (index) => {
-        console.log("delete " + index)
+        // console.log("delete " + index)
 
         let exp = input.experience
 
@@ -396,14 +396,14 @@ const EmployeeCVForm = ({ backTo }) => {
     }
 
     const handleEditEducation = (index) => {
-        console.log("edit " + index)
+        // console.log("edit " + index)
         if (selectedEducationIndex !== index) {
             setSelectedEducationIndex(index)
         }
     }
 
     const handleDeleteEducation = (index) => {
-        console.log("delete " + index)
+        // console.log("delete " + index)
 
         let edu = input.education
 

@@ -54,7 +54,7 @@ const EmployerVacancyResponseDetailPage = ({ backTo, CVTo, vacancyTo }) => {
     const refreshItem = () => {
         dataProvider.getOne(DATA_RESOURCES.vacancyResponses, id)
             .then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.error) {
                     setError(res.error)
                 } else {

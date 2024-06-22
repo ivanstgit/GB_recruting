@@ -26,17 +26,6 @@ const EmployerVacancyDetailPage = ({ backTo }) => {
     actions[commonActions.copy] = () => navigate(backTo + ObjectActions.add, { state: { fromId: item.id } })
     if (item?.status?.id === VacancyStatuses.draft || item?.status?.id === VacancyStatuses.rejected) {
         actions[commonActions.edit] = () => navigate(ObjectActions.edit)
-        actions[commonActions.delete] = () => {
-            dataProvider.deleteOne(DATA_RESOURCES.vacancies, id)
-                .then((res) => {
-                    if (res.error) {
-                        setError(res.error)
-                    } else {
-                        setError("")
-                        privateData.refreshVacancyList().then(navigate(backTo))
-                    }
-                })
-        }
         actions[commonActions.publish] = () => {
             dataProvider.setStatus(DATA_RESOURCES.vacancies, id, VacancyStatuses.pending)
                 .then((res) => {
@@ -49,12 +38,24 @@ const EmployerVacancyDetailPage = ({ backTo }) => {
                 })
         }
     }
+    actions[commonActions.delete] = () => {
+        dataProvider.deleteOne(DATA_RESOURCES.vacancies, id)
+            .then((res) => {
+                if (res.error) {
+                    setError(res.error)
+                } else {
+                    setError("")
+                    privateData.refreshVacancyList().then(navigate(backTo))
+                }
+            })
+    }
+
 
     useEffect(() => {
         if (!item) {
             dataProvider.getOne(DATA_RESOURCES.vacancies, id)
                 .then(res => {
-                    console.log(res)
+                    // console.log(res)
                     if (res.error) {
                         setError(res.error)
                     } else {

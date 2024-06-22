@@ -117,6 +117,7 @@ paths:
   /api/v1.0/accounts/confirm/:
     post:
       operationId: api_v1.0_accounts_confirm_create
+      description: User e-mail confirmation.
       tags:
       - api
       requestBody:
@@ -147,7 +148,7 @@ paths:
   /api/v1.0/accounts/confirm/resend/:
     post:
       operationId: api_v1.0_accounts_confirm_resend_create
-      description: Method for status management
+      description: 'Method for resending of confirmation code '
       tags:
       - api
       security:
@@ -163,6 +164,7 @@ paths:
   /api/v1.0/accounts/signin/:
     get:
       operationId: api_v1.0_accounts_signin_list
+      description: User data request
       tags:
       - api
       security:
@@ -182,6 +184,7 @@ paths:
   /api/v1.0/accounts/signup/:
     post:
       operationId: api_v1.0_accounts_signup_create
+      description: User registration.
       tags:
       - api
       requestBody:
@@ -285,8 +288,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv_response.
+          type: string
         required: true
       tags:
       - api
@@ -309,8 +311,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv_response.
+          type: string
         required: true
       tags:
       - api
@@ -345,8 +346,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv_response.
+          type: string
         required: true
       tags:
       - api
@@ -380,8 +380,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv_response.
+          type: string
         required: true
       tags:
       - api
@@ -401,8 +400,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv_response.
+          type: string
         required: true
       tags:
       - api
@@ -437,8 +435,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv_response.
+          type: string
         required: true
       tags:
       - api
@@ -468,18 +465,6 @@ paths:
       operationId: api_v1.0_protected_cvs_list
       description: View for CV
       parameters:
-      - in: query
-        name: city
-        schema:
-          type: string
-      - in: query
-        name: description
-        schema:
-          type: string
-      - in: query
-        name: is_favorite
-        schema:
-          type: boolean
       - name: limit
         required: false
         in: query
@@ -492,23 +477,6 @@ paths:
         description: The initial index from which to return the results.
         schema:
           type: integer
-      - in: query
-        name: position
-        schema:
-          type: string
-      - in: query
-        name: published_since
-        schema:
-          type: string
-          format: date-time
-      - in: query
-        name: salary_max
-        schema:
-          type: number
-      - in: query
-        name: salary_min
-        schema:
-          type: number
       tags:
       - api
       security:
@@ -560,8 +528,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv.
+          type: string
         required: true
       tags:
       - api
@@ -584,8 +551,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv.
+          type: string
         required: true
       tags:
       - api
@@ -620,8 +586,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv.
+          type: string
         required: true
       tags:
       - api
@@ -655,8 +620,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv.
+          type: string
         required: true
       tags:
       - api
@@ -676,8 +640,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv.
+          type: string
         required: true
       tags:
       - api
@@ -696,8 +659,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv.
+          type: string
         required: true
       tags:
       - api
@@ -717,8 +679,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this cv.
+          type: string
         required: true
       tags:
       - api
@@ -818,8 +779,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this employee.
+          type: string
         required: true
       tags:
       - api
@@ -842,8 +802,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this employee.
+          type: string
         required: true
       tags:
       - api
@@ -878,8 +837,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this employee.
+          type: string
         required: true
       tags:
       - api
@@ -913,8 +871,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this employee.
+          type: string
         required: true
       tags:
       - api
@@ -994,8 +951,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this employer.
+          type: string
         required: true
       tags:
       - api
@@ -1018,8 +974,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this employer.
+          type: string
         required: true
       tags:
       - api
@@ -1054,8 +1009,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this employer.
+          type: string
         required: true
       tags:
       - api
@@ -1089,49 +1043,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this employer.
-        required: true
-      tags:
-      - api
-      security:
-      - basicAuth: []
-      - tokenAuth: []
-      - cookieAuth: []
-      - jwtAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/v1.0/protected/employers/{id}/favorite/:
-    post:
-      operationId: api_v1.0_protected_employers_favorite_create
-      description: Add object to favorite
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this employer.
-        required: true
-      tags:
-      - api
-      security:
-      - basicAuth: []
-      - tokenAuth: []
-      - cookieAuth: []
-      - jwtAuth: []
-      responses:
-        '201':
-          description: No response body
-    delete:
-      operationId: api_v1.0_protected_employers_favorite_destroy
-      description: Remove object from favorite
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this employer.
+          type: string
         required: true
       tags:
       - api
@@ -1151,8 +1063,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this employer.
+          type: string
         required: true
       tags:
       - api
@@ -1177,24 +1088,6 @@ paths:
           description: No response body
         '400':
           description: No response body
-  /api/v1.0/protected/employers/favorites/:
-    get:
-      operationId: api_v1.0_protected_employers_favorites_retrieve
-      description: List of objects in favorites
-      tags:
-      - api
-      security:
-      - basicAuth: []
-      - tokenAuth: []
-      - cookieAuth: []
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmployerSerializerExt'
-          description: ''
   /api/v1.0/protected/genders/:
     get:
       operationId: api_v1.0_protected_genders_list
@@ -1897,8 +1790,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this vacancy_response.
+          type: string
         required: true
       tags:
       - api
@@ -1921,8 +1813,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this vacancy_response.
+          type: string
         required: true
       tags:
       - api
@@ -1957,8 +1848,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this vacancy_response.
+          type: string
         required: true
       tags:
       - api
@@ -1992,8 +1882,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this vacancy_response.
+          type: string
         required: true
       tags:
       - api
@@ -2013,8 +1902,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this vacancy_response.
+          type: string
         required: true
       tags:
       - api
@@ -2049,8 +1937,7 @@ paths:
       - in: path
         name: id
         schema:
-          type: integer
-        description: A unique integer value identifying this vacancy_response.
+          type: string
         required: true
       tags:
       - api
@@ -2262,7 +2149,7 @@ components:
       - updated_at
     CVExperienceSerializerExt:
       type: object
-      description: Serializer for employee experience
+      description: Serializer for employee experience (reading)
       properties:
         id:
           type: integer
@@ -2307,7 +2194,7 @@ components:
       - updated_at
     CVExperienceSerializerInt:
       type: object
-      description: Serializer for employee experience
+      description: Serializer for employee experience (create/update)
       properties:
         id:
           type: integer
@@ -2388,7 +2275,7 @@ components:
       - vacancy
     CVResponseSerializerInt:
       type: object
-      description: Serializer internal pk
+      description: Serializer for create/update actions (internal pk) with validation
       properties:
         id:
           type: integer
@@ -2419,7 +2306,7 @@ components:
       - vacancy
     CVSerializerExt:
       type: object
-      description: Serializer for reading
+      description: Serializer for CV reading
       properties:
         id:
           type: integer
@@ -2487,7 +2374,7 @@ components:
       - updated_at
     CVSerializerInt:
       type: object
-      description: Serializer internal pk
+      description: Serializer for CV's create/update actions (internal pk)
       properties:
         id:
           type: integer
@@ -2544,6 +2431,7 @@ components:
       - updated_at
     City:
       type: object
+      description: City model serializer (no logic)
       properties:
         id:
           type: integer
@@ -2575,6 +2463,7 @@ components:
         * `TX` - Plain text
     DocumentMessage:
       type: object
+      description: Serializer for document chat messages
       properties:
         sender:
           allOf:
@@ -2600,6 +2489,7 @@ components:
       - sender
     EmailConfirm:
       type: object
+      description: Validating user and assigning group permissions
       properties:
         username:
           type: string
@@ -2629,6 +2519,7 @@ components:
           format: date
         age:
           type: integer
+          description: Age in years
           readOnly: true
         email:
           type: string
@@ -2648,7 +2539,8 @@ components:
         skills:
           type: array
           items:
-            $ref: '#/components/schemas/Nested'
+            type: string
+            description: Skill name
           readOnly: true
         updated_at:
           type: string
@@ -2697,8 +2589,7 @@ components:
         skills:
           type: array
           items:
-            $ref: '#/components/schemas/Nested'
-          readOnly: true
+            type: string
       required:
       - birthday
       - city
@@ -2710,7 +2601,7 @@ components:
       - skills
     EmployerSerializerExt:
       type: object
-      description: Serializer for reading
+      description: Serializer for employer profile reading
       properties:
         id:
           type: integer
@@ -2767,7 +2658,7 @@ components:
       - updated_at
     EmployerSerializerInt:
       type: object
-      description: Serializer internal pk
+      description: Employer profile serializer for create/update actions
       properties:
         id:
           type: integer
@@ -2803,6 +2694,7 @@ components:
       - owner
     Gender:
       type: object
+      description: Gender model serializer (no logic)
       properties:
         id:
           type: string
@@ -2903,7 +2795,7 @@ components:
       - title
     NewsStaff:
       type: object
-      description: Serializer for administration
+      description: Serializer for managimg news (staff)
       properties:
         id:
           type: integer
@@ -2950,7 +2842,7 @@ components:
       - updated_by
     NewsTagStaff:
       type: object
-      description: Serializer for administration
+      description: Serializer for managimg news (staff)
       properties:
         id:
           type: integer
@@ -3084,7 +2976,7 @@ components:
             $ref: '#/components/schemas/VacancySerializerExt'
     PatchedCVResponseSerializerInt:
       type: object
-      description: Serializer internal pk
+      description: Serializer for create/update actions (internal pk) with validation
       properties:
         id:
           type: integer
@@ -3108,7 +3000,7 @@ components:
           readOnly: true
     PatchedCVSerializerInt:
       type: object
-      description: Serializer internal pk
+      description: Serializer for CV's create/update actions (internal pk)
       properties:
         id:
           type: integer
@@ -3153,6 +3045,7 @@ components:
           readOnly: true
     PatchedDocumentMessage:
       type: object
+      description: Serializer for document chat messages
       properties:
         sender:
           allOf:
@@ -3174,6 +3067,7 @@ components:
           readOnly: true
     PatchedDocumentStatusMixin:
       type: object
+      description: Mixin for objects with status ('status' action handling)
       properties:
         status:
           type: string
@@ -3213,11 +3107,10 @@ components:
         skills:
           type: array
           items:
-            $ref: '#/components/schemas/Nested'
-          readOnly: true
+            type: string
     PatchedEmployerSerializerInt:
       type: object
-      description: Serializer internal pk
+      description: Employer profile serializer for create/update actions
       properties:
         id:
           type: integer
@@ -3246,7 +3139,7 @@ components:
           maxLength: 1000
     PatchedNewsStaff:
       type: object
-      description: Serializer for administration
+      description: Serializer for managimg news (staff)
       properties:
         id:
           type: integer
@@ -3284,7 +3177,7 @@ components:
             description: News tag name
     PatchedNewsTagStaff:
       type: object
-      description: Serializer for administration
+      description: Serializer for managimg news (staff)
       properties:
         id:
           type: integer
@@ -3295,7 +3188,7 @@ components:
           maxLength: 30
     PatchedVacancyResponseSerializerInt:
       type: object
-      description: Serializer internal pk
+      description: Serializer for write operations (internal pk)
       properties:
         id:
           type: integer
@@ -3319,7 +3212,7 @@ components:
           readOnly: true
     PatchedVacancySerializerInt:
       type: object
-      description: Serializer internal pk
+      description: Serializer for Vacancies's create/update actions (internal pk)
       properties:
         id:
           type: integer
@@ -3378,6 +3271,8 @@ components:
         * `moderator` - moderator
     SignUp:
       type: object
+      description: Creating user without group permissions and sending validation
+        code
       properties:
         username:
           type: string
@@ -3540,7 +3435,7 @@ components:
       - vacancy
     VacancyResponseSerializerInt:
       type: object
-      description: Serializer internal pk
+      description: Serializer for write operations (internal pk)
       properties:
         id:
           type: integer
@@ -3571,7 +3466,7 @@ components:
       - vacancy
     VacancySerializerExt:
       type: object
-      description: Serializer for reading
+      description: Serializer for Vacancy reading
       properties:
         id:
           type: integer
@@ -3634,7 +3529,7 @@ components:
       - updated_at
     VacancySerializerInt:
       type: object
-      description: Serializer internal pk
+      description: Serializer for Vacancies's create/update actions (internal pk)
       properties:
         id:
           type: integer

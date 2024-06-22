@@ -55,6 +55,7 @@ class UserGroupUtils:
             "view_employee",
             "add_employee",
             "change_employee",
+            "delete_employee",
             "view_cv",
             "add_cv",
             "change_cv",
