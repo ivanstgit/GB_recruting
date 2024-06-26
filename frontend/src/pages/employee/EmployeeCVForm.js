@@ -285,6 +285,9 @@ const EmployeeCVForm = ({ backTo }) => {
     const isEdit = id ? true : false
     const isCopy = fromId ? true : false
 
+    const profile = dataProvider.employeeProfile?.[0] ?? null
+    const isProfileNotExist = profile ? false : true
+
     const emptyFieldError = t("form.fieldIsRequired")
 
     if (status === formStatuses.prefill) {
@@ -478,6 +481,15 @@ const EmployeeCVForm = ({ backTo }) => {
         }
     }
 
+    if (isProfileNotExist) {
+        return (
+            <div className="container-xxl">
+                <div className="row mb-1">
+                    <ErrorLabel errorText={t("form.Warnings.ProfileNotExists")} />
+                </div>
+            </div>
+        )
+    }
     if (status === formStatuses.success) {
         return (<Navigate to={backTo} />)
     }

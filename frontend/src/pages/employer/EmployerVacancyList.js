@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ObjectActions } from "../../routes/AppPaths.js"
 import { useData, DATA_RESOURCES, dataStatuses, PrivateDataContext } from '../../hooks/DataProvider.js'
-import { ErrorLabel } from "../../components/common/UICommon.js";
+import { ErrorLabel, WarningLabel } from "../../components/common/UICommon.js";
 import { ActionButtonCreate, ActionGroup, commonActions } from "../../components/common/Actions.js";
 import { VacancyStatusIcon, VacancyStatuses } from "../../components/shared/Vacancy.js";
 
@@ -17,6 +17,10 @@ const EmployerVacancyListPage = () => {
 
     const [error, setError] = useState("")
     const [status, setStatus] = useState(dataStatuses.initial)
+
+    const profile = dataProvider.employerProfile?.[0] ?? null
+    const isProfileNotExist = profile ? false : true
+    const emptyProfileText = profile ? "" : t("Profile.emptyWarning")
 
     const deleteItem = (id) => {
         if (status !== dataStatuses.loading) {
@@ -60,11 +64,12 @@ const EmployerVacancyListPage = () => {
 
             <div className="row">
                 <ErrorLabel errorText={error} />
+                <WarningLabel text={emptyProfileText} />
             </div>
 
             <div className="row">
                 <div className="col-6">
-                    <ActionButtonCreate />
+                    <ActionButtonCreate disabled={isProfileNotExist} />
                 </div>
             </div>
             <div className="row">

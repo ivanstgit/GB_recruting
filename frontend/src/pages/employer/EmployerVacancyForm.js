@@ -41,6 +41,9 @@ const EmployerVacancyForm = ({ backTo }) => {
     const isEdit = id ? true : false
     const isCopy = fromId ? true : false
 
+    const profile = dataProvider.employerProfile?.[0] ?? null
+    const isProfileNotExist = profile ? false : true
+
     const emptyFieldError = t("form.fieldIsRequired")
 
     useEffect(() => {
@@ -157,6 +160,15 @@ const EmployerVacancyForm = ({ backTo }) => {
         }
     }
 
+    if (isProfileNotExist) {
+        return (
+            <div className="container-xxl">
+                <div className="row mb-1">
+                    <ErrorLabel errorText={t("form.Warnings.ProfileNotExists")} />
+                </div>
+            </div>
+        )
+    }
     if (status === formStatuses.success) {
         return (<Navigate to={backTo} />)
     }

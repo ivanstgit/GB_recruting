@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // import { useTranslation } from 'react-i18next';
-import { DATA_RESOURCES, useData } from '../../hooks/DataProvider.js'
+import { DATA_RESOURCES, PrivateDataContext, useData } from '../../hooks/DataProvider.js'
 
 import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
 import { CVDetail } from '../../components/shared/CV.js';
 import { ActionGroup, commonActions } from '../../components/common/Actions.js';
+import { useTranslation } from 'react-i18next';
 
 const EmployerCVDetailPage = ({ backTo, respondTo }) => {
 
@@ -15,9 +16,10 @@ const EmployerCVDetailPage = ({ backTo, respondTo }) => {
 
     const { id } = useParams();
     const dataProvider = useData();
+    const privateData = useContext(PrivateDataContext);
     const navigate = useNavigate();
 
-    // const { t } = useTranslation("SharedCV");
+    const { t } = useTranslation("Employer");
 
     const refresh = () => {
         dataProvider.getOne(DATA_RESOURCES.cvs, id)
@@ -60,7 +62,13 @@ const EmployerCVDetailPage = ({ backTo, respondTo }) => {
                     })
             }
         }
-        actions[commonActions.respond] = () => navigate(respondTo, { state: { CVId: item.id } })
+        actions[commonActions.respond] = () => {
+            if (privateData.vacancyApprovedCount > 0) {
+                navigate(respondTo, { state: { CVId: item.id } })
+            } else {
+                setError(t("Errors.NoVacancyExist"))
+            }
+        }
 
         return (
             <>
@@ -74,6 +82,7 @@ const EmployerCVDetailPage = ({ backTo, respondTo }) => {
 
                 </div>
                 <div className="row">
+                    <ErrorLabel errorText={error} />
                     <CVDetail item={item} />
                 </div>
             </>

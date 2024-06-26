@@ -42,6 +42,7 @@ const EmployeePage = () => {
     const [error, setError] = useState("")
     const [CVCount, setCVCount] = useState(0)
     const [CVRejectedCount, setCVRejectedCount] = useState(0)
+    const [CVApprovedCount, setCVApprovedCount] = useState(0)
     const [CVList, setCVList] = useState([])
     const [CVResponseCount, setCVResponseCount] = useState(0)
     const [CVResponsePendingCount, setCVResponsePendingCount] = useState(0)
@@ -51,6 +52,8 @@ const EmployeePage = () => {
 
     const refreshTimeout = 600000
 
+    const profile = dataProvider.employeeProfile?.[0] ?? null
+
     const navLocalItems = [
         {
             link: EmployeePaths.home,
@@ -59,6 +62,7 @@ const EmployeePage = () => {
         {
             link: EmployeePaths.profile,
             text: t("Employee.Profile"),
+            badge: ((profile)) ? "" : "!"
         },
         {
             link: EmployeePaths.CVs,
@@ -88,11 +92,13 @@ const EmployeePage = () => {
                     setCVList([])
                     setCVCount(0)
                     setCVRejectedCount(0)
+                    setCVApprovedCount(0)
                     setError(res.error)
                     setStatus(dataStatuses.error)
                 } else {
                     setCVList(res.data)
                     setCVRejectedCount(res.data.filter(v => (v?.status?.id === CVStatuses.rejected)).length)
+                    setCVApprovedCount(res.data.filter(v => (v?.status?.id === CVStatuses.approved)).length)
                     setCVList(res.data)
                     setError("")
                     setStatus(dataStatuses.success)
@@ -139,6 +145,7 @@ const EmployeePage = () => {
     const privateDataContextValue = useMemo(() => ({
         CVList,
         CVCount,
+        CVApprovedCount,
         CVRejectedCount,
         refreshCVList,
         CVResponseList,
