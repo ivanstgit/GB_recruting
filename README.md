@@ -29,3 +29,4 @@
  3. (опционально) Поменять пароли и настройки в каталоге `/secrets`
  4. (опционально) Если разворачивать на сервере, то подставить имя сервера в env-файле `frontend/.env/production` по маске `REACT_APP_API_URL=http://<your server hostname>:8000/api`
 5. Запустить сборку <br> `sudo docker-compose up --build`
+6. http://localhost или http://127.0.0.1:80
