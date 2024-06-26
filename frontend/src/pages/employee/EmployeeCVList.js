@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ObjectActions } from "../../routes/AppPaths.js"
 import { useData, DATA_RESOURCES, dataStatuses, PrivateDataContext } from '../../hooks/DataProvider.js'
-import { ErrorLabel } from "../../components/common/UICommon.js";
+import { ErrorLabel, WarningLabel } from "../../components/common/UICommon.js";
 import { ActionButtonCreate, ActionGroup, commonActions } from "../../components/common/Actions.js";
 import { CVStatusIcon, CVStatuses } from "../../components/shared/CV.js";
 
@@ -18,6 +18,10 @@ const EmployeeCVListPage = () => {
 
     const [error, setError] = useState("")
     const [status, setStatus] = useState(dataStatuses.initial)
+
+    const profile = dataProvider.employeeProfile?.[0] ?? null
+    const isProfileNotExist = profile ? false : true
+    const emptyProfileText = profile ? "" : t("Profile.emptyWarning")
 
 
     const deleteItem = (id) => {
@@ -59,12 +63,13 @@ const EmployeeCVListPage = () => {
             <h3>{headerText}</h3>
 
             <div className="row">
+                <WarningLabel text={emptyProfileText} />
                 <ErrorLabel errorText={error} />
             </div>
 
             <div className="row">
                 <div className="col-6">
-                    <ActionButtonCreate />
+                    <ActionButtonCreate disabled={isProfileNotExist} />
                 </div>
             </div>
             <div className="row">

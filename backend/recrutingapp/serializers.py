@@ -432,6 +432,16 @@ class CVSerializerInt(OwnedModelMixin, LoggedModelMixin, serializers.ModelSerial
         ]
         depth = 1
 
+    def validate(self, attrs):
+        """Check employee profile exists"""
+        request = self.context["request"]
+        if (
+            request.method == "POST"
+            and Employee.objects.filter(owner=request.user).count() == 0
+        ):
+            raise serializers.ValidationError("No profile exists!")
+        return super().validate(attrs)
+
     def create(self, validated_data):
         experience_data = validated_data.pop("experience")
         education_data = validated_data.pop("education")
@@ -506,6 +516,16 @@ class VacancySerializerInt(
     """
 
     city = serializers.PrimaryKeyRelatedField(queryset=City.objects.all())
+
+    def validate(self, attrs):
+        """Check employer profile exists"""
+        request = self.context["request"]
+        if (
+            request.method == "POST"
+            and Employer.objects.filter(owner=request.user).count() == 0
+        ):
+            raise serializers.ValidationError("No profile exists!")
+        return super().validate(attrs)
 
     class Meta:
         model = Vacancy

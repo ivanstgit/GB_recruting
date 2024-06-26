@@ -15,9 +15,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 def get_secret(key, default):
+    """Read value from file with secrets"""
     value = os.getenv(key, default)
     if os.path.isfile(value):
-        with open(value) as f:
+        with open(value, encoding="utf-8") as f:
             return f.read()
     return value
 
@@ -205,3 +206,28 @@ LOGOUT_REDIRECT_URL = "/api/"
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
+
+EMAIL_HOST = get_secret("EMAIL_HOST", "127.0.0.1")
+EMAIL_HOST_USER = get_secret("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = get_secret("EMAIL_HOST_PASSWORD", "")
+EMAIL_PORT = int(get_secret("EMAIL_PORT", 1025))
+EMAIL_USE_TLS = bool(get_secret("EMAIL_HOST", False))
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "ERROR",
+            "class": "logging.FileHandler",
+            "filename": "./django_error.log",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "ERROR",
+            "propagate": True,
+        },
+    },
+}

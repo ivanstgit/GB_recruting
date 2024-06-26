@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
-import { DATA_RESOURCES, dataStatuses, useData } from '../../hooks/DataProvider.js'
+import { DATA_RESOURCES, PrivateDataContext, dataStatuses, useData } from '../../hooks/DataProvider.js'
 
 import { VacancyCard, VacancySearchForm } from "../../components/shared/Vacancy.js";
 import { commonActions } from "../../components/common/Actions.js";
@@ -13,6 +13,7 @@ const EmployeeVacancyListPage = ({ respondTo }) => {
     const { t } = useTranslation("Employee");
     const navigate = useNavigate();
     const dataProvider = useData();
+    const privateData = useContext(PrivateDataContext)
 
     const [status, setStatus] = useState(dataStatuses.initial)
     const [error, setError] = useState("")
@@ -65,7 +66,11 @@ const EmployeeVacancyListPage = ({ respondTo }) => {
     }
 
     const handleRespond = (id) => {
-        navigate(respondTo, { state: { vacancyId: id } })
+        if (privateData.CVApprovedCount > 0) {
+            navigate(respondTo, { state: { vacancyId: id } })
+        } else {
+            setError(t("Errors.NoCVExist"))
+        }
     }
 
     useEffect(() => {

@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // import { useTranslation } from 'react-i18next';
-import { DATA_RESOURCES, useData } from '../../hooks/DataProvider.js'
+import { DATA_RESOURCES, PrivateDataContext, useData } from '../../hooks/DataProvider.js'
 
 import { ErrorLabel, Loading } from '../../components/common/UICommon.js';
 import { VacancyDetail } from '../../components/shared/Vacancy.js';
 import { ActionGroup, commonActions } from '../../components/common/Actions.js';
+import { useTranslation } from 'react-i18next';
 
 const EmployeeVacancyDetailPage = ({ backTo, respondTo }) => {
 
@@ -15,9 +16,10 @@ const EmployeeVacancyDetailPage = ({ backTo, respondTo }) => {
 
     const { id } = useParams();
     const dataProvider = useData();
+    const privateData = useContext(PrivateDataContext);
     const navigate = useNavigate();
 
-    // const { t } = useTranslation("SharedVacancy");
+    const { t } = useTranslation("Employee");
 
     const refresh = () => {
         dataProvider.getOne(DATA_RESOURCES.vacancies, id)
@@ -60,7 +62,13 @@ const EmployeeVacancyDetailPage = ({ backTo, respondTo }) => {
                     })
             }
         }
-        actions[commonActions.respond] = () => navigate(respondTo, { state: { vacancyId: item.id } })
+        actions[commonActions.respond] = () => {
+            if (privateData.CVApprovedCount > 0) {
+                navigate(respondTo, { state: { vacancyId: item.id } })
+            } else {
+                setError(t("Errors.NoCVExist"))
+            }
+        }
 
         return (
             <>
@@ -74,6 +82,7 @@ const EmployeeVacancyDetailPage = ({ backTo, respondTo }) => {
 
                 </div>
                 <div className="row">
+                    <ErrorLabel errorText={error} />
                     <VacancyDetail item={item} />
                 </div>
             </>

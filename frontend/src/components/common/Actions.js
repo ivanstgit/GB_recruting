@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { ObjectActions } from "../../routes/AppPaths";
 
 export const commonActions = {
@@ -185,11 +185,17 @@ export const ActionGroup = ({ actions, size = "", showText = false }) => {
         return (<></>)
 }
 
-export const ActionButtonCreate = ({ label = undefined, showText = true, navigateTo = ObjectActions.add }) => {
+export const ActionButtonCreate = ({ label = undefined, showText = true, navigateTo = ObjectActions.add, disabled = false }) => {
+    const navigate = useNavigate();
     const { t } = useTranslation("CommonActions");
     const linkText = label ? label : t("actions.create")
+
+    const handleClick = () => navigate(navigateTo)
     return (
-        <Link to={navigateTo} className="btn btn-primary">{linkText}</Link>
+        <button type="button"
+            className="btn btn-primary "
+            disabled={disabled}
+            onClick={handleClick}>{linkText}</button>
     )
 }
 export const ActionButtonHide = ({ showText = true, isHidden = true, setIsHidden }) => {

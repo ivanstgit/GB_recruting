@@ -42,6 +42,7 @@ const EmployerPage = () => {
     const [error, setError] = useState("")
     const [vacancyCount, setVacancyCount] = useState(0)
     const [vacancyRejectedCount, setVacancyRejectedCount] = useState(0)
+    const [vacancyApprovedCount, setVacancyApprovedCount] = useState(0)
     const [vacancyList, setVacancyList] = useState([])
     const [CVResponseCount, setCVResponseCount] = useState(0)
     const [CVResponseList, setCVResponseList] = useState([])
@@ -61,7 +62,7 @@ const EmployerPage = () => {
         {
             link: EmployerPaths.profile,
             text: t("Employer.Profile"),
-            badge: ((profile?.status?.id === EmployerStatuses.rejected)) ? "!" : ""
+            badge: ((profile?.status?.id === EmployerStatuses.approved)) ? "" : "!"
         },
         {
             link: EmployerPaths.vacancies,
@@ -89,12 +90,14 @@ const EmployerPage = () => {
                 if (res.error) {
                     setVacancyCount(0)
                     setVacancyRejectedCount(0)
+                    setVacancyApprovedCount(0)
                     setVacancyList([])
                     setError(res.error)
                     setStatus(dataStatuses.error)
                 } else {
                     setVacancyCount(res.count)
                     setVacancyRejectedCount(res.data.filter(v => (v?.status?.id === VacancyStatuses.rejected)).length)
+                    setVacancyApprovedCount(res.data.filter(v => (v?.status?.id === VacancyStatuses.approved)).length)
                     setVacancyList(res.data)
                     setError("")
                     setStatus(dataStatuses.success)
@@ -142,6 +145,7 @@ const EmployerPage = () => {
         vacancyList,
         vacancyCount,
         vacancyRejectedCount,
+        vacancyApprovedCount,
         refreshVacancyList,
         vacancyResponseList,
         vacancyResponseCount,
