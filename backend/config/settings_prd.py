@@ -177,6 +177,7 @@ SPECTACULAR_SETTINGS = {
     "SWAGGER_UI_DIST": "SIDECAR",  # shorthand to use the sidecar instead
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
+    "SERVE_PERMISSIONS": ["rest_framework.permissions.IsAdminUser"],
 }
 
 # Internationalization
@@ -207,11 +208,11 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
 ]
 
-EMAIL_HOST = get_secret("EMAIL_HOST", "127.0.0.1")
+EMAIL_HOST = get_secret("EMAIL_HOST", "mail")
 EMAIL_HOST_USER = get_secret("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = get_secret("EMAIL_HOST_PASSWORD", "")
 EMAIL_PORT = int(get_secret("EMAIL_PORT", 1025))
-EMAIL_USE_TLS = bool(get_secret("EMAIL_HOST", False))
+EMAIL_USE_TLS = False
 
 LOGGING = {
     "version": 1,

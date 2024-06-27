@@ -8,16 +8,13 @@ from userapp.models import CustomUser, UserRoles
 
 
 def send_confirmation_mail(user):
-    try:
-        send_mail(
-            "E-mail confirmation",
-            "Your confirmation code is " + user.validation_code,
-            "noreply@example.com",
-            [user.email],
-            fail_silently=True,
-        )
-    finally:
-        pass
+    send_mail(
+        "E-mail confirmation",
+        "Your confirmation code is " + user.validation_code,
+        "noreply@example.com",
+        [user.email],
+        fail_silently=False,
+    )
 
 
 class UserGroups(Enum):

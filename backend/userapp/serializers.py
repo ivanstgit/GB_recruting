@@ -45,7 +45,7 @@ class SignUpSerializer(serializers.ModelSerializer):
         user.save()
         try:
             send_confirmation_mail(user)
-        finally:
+        except Exception:
             pass
         return user
 
