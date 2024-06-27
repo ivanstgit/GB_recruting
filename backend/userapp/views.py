@@ -56,11 +56,11 @@ class EmailConfirmViewSet(
         if user.is_validated:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            send_confirmation_mail(user)
-            return Response(status=status.HTTP_201_CREATED)
-        except Exception:
-            return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # try:
+        send_confirmation_mail(user)
+        return Response(status=status.HTTP_201_CREATED)
+        # except Exception:
+        #   return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class SignInViewSet(

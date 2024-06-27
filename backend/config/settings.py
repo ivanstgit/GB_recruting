@@ -92,6 +92,7 @@ DATABASES = {
 }
 
 MEDIA_ROOT = os.path.join(os.getcwd(), "var", "media", "")
+STATIC_ROOT = os.path.join(os.getcwd(), "var", "static", "")
 
 STORAGES = {
     # uploaded by users, may be protected
